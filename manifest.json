@@ -1,0 +1,65 @@
+{
+  "action": {
+    "default_icon": {
+      "128": "icons/icon128.png",
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    },
+    "default_popup": "popup.html",
+    "default_title": "Xget for Chrome"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "content.js"
+      ],
+      "matches": [
+        "https://github.com/*",
+        "https://gitlab.com/*",
+        "https://huggingface.co/*"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "description": "Download accelerator that redirects downloads through Xget for faster speeds",
+  "host_permissions": [
+    "https://github.com/*",
+    "https://gitlab.com/*",
+    "https://huggingface.co/*"
+  ],
+  "icons": {
+    "128": "icons/icon128.png",
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png"
+  },
+  "manifest_version": 3,
+  "name": "Xget for Chrome",
+  "permissions": [
+    "downloads",
+    "storage",
+    "activeTab",
+    "webRequest",
+    "declarativeNetRequest"
+  ],
+  "version": "1.0.0",
+  "web_accessible_resources": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "resources": [
+        "icons/*"
+      ]
+    }
+  ]
+}      "resources": [
+        "icons/*"
+      ]
+    }
+  ]
+}

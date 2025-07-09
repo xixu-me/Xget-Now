@@ -1,0 +1,104 @@
+name: Publish to Chrome Web Store
+
+on:
+  push:
+    tags:
+      - "v*" # Triggers on version tags like v1.0.0, v1.2.3, etc.
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Validate manifest.json
+        run: |
+          # Validate that manifest.json is valid JSON
+          node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))"
+          echo "✅ manifest.json is valid"
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          # Extract version from git tag (remove 'v' prefix if present)
+          VERSION=${GITHUB_REF#refs/tags/}
+          VERSION=${VERSION#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+
+      - name: Update manifest version
+        run: |
+          # Update version in manifest.json to match the tag
+          node -e "
+            const fs = require('fs');
+            const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+            manifest.version = '${{ steps.version.outputs.version }}';
+            fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2));
+            console.log('Updated manifest.json version to:', manifest.version);
+          "
+
+      - name: Update package.json version
+        run: |
+          # Update version in package.json to match the tag
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            pkg.version = '${{ steps.version.outputs.version }}';
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+            console.log('Updated package.json version to:', pkg.version);
+          "
+
+      - name: Create extension package
+        run: |
+          # Create a zip file with all extension files
+          zip -r extension.zip . \
+            -x "*.git*" \
+            -x "node_modules/*" \
+            -x ".github/*" \
+            -x "*.md" \
+            -x "LICENSE" \
+            -x "*.zip"
+
+          echo "📦 Created extension.zip"
+          ls -la extension.zip
+
+      - name: Publish to Chrome Web Store
+        uses: mnao305/chrome-extension-upload@v5.0.0
+        with:
+          file-path: extension.zip
+          extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          publish: true # Set to false if you want to upload without publishing
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: extension.zip
+          generate_release_notes: true
+          body: |
+            ## Xget for Chrome v${{ steps.version.outputs.version }}
+
+            This release has been automatically published to the Chrome Web Store.
+
+            ### Changes
+            - See commit history for detailed changes
+
+            ### Installation
+            - Install from [Chrome Web Store](https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }})
+            - Or download the extension.zip and load unpacked in Chrome Developer Mode
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify success
+        run: |
+          echo "🎉 Successfully published Xget for Chrome v${{ steps.version.outputs.version }} to Chrome Web Store!"
+          echo "🔗 Extension URL: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"

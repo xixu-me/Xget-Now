@@ -1,0 +1,39 @@
+{
+  "author": "Xi Xu",
+  "browser": "chrome",
+  "bugs": {
+    "url": "https://github.com/xixu-me/Xget-for-Chrome/issues"
+  },
+  "dependencies": {},
+  "description": "Chrome extension that accelerates downloads by redirecting them through Xget",
+  "devDependencies": {},
+  "homepage": "https://github.com/xixu-me/Xget-for-Chrome#readme",
+  "keywords": [
+    "chrome-extension",
+    "download-accelerator",
+    "xget",
+    "proxy",
+    "github",
+    "gitlab",
+    "huggingface"
+  ],
+  "license": "GPL-3.0",
+  "main": "background.js",
+  "manifest_version": 3,
+  "name": "xget-for-chrome",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xixu-me/Xget-for-Chrome.git"
+  },
+  "scripts": {
+    "build": "echo 'No build process required - extension runs from source'",
+    "clean": "rm -f *.zip",
+    "dev": "echo 'Open chrome://extensions/ and load unpacked extension'",
+    "lint": "echo 'No linting configured - consider adding ESLint for JavaScript files'",
+    "package": "zip -r extension.zip . -x '*.git*' 'node_modules/*' '.github/*' '*.md' 'LICENSE' '*.zip'",
+    "release": "npm run validate && npm run package",
+    "test": "echo 'Load extension in Chrome Developer Mode to test'",
+    "validate": "node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); console.log('✅ manifest.json is valid')\""
+  },
+  "version": "1.0.0"
+}

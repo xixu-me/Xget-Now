@@ -1,0 +1,58 @@
+name: General Question
+description: Ask a question about the extension
+title: "[Question] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question about Xget for Chrome? We're here to help!
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Question Category
+      description: What type of question is this?
+      options:
+        - Setup and Configuration
+        - Usage and Features
+        - Troubleshooting
+        - Compatibility
+        - Performance
+        - Security and Privacy
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: "How do I..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Provide any additional context that might help us answer your question
+      placeholder: "I'm trying to... but I'm having trouble with..."
+
+  - type: input
+    id: xget_domain
+    attributes:
+      label: Xget Domain (if relevant)
+      description: What Xget domain are you using?
+      placeholder: "xget.xi-xu.me"
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I have checked the README and documentation
+          required: true
+        - label: I have searched existing issues for my question
+          required: true
