@@ -37,13 +37,7 @@
   },
   "manifest_version": 3,
   "name": "Xget for Chrome",
-  "permissions": [
-    "downloads",
-    "storage",
-    "activeTab",
-    "webRequest",
-    "declarativeNetRequest"
-  ],
+  "permissions": ["downloads", "storage", "activeTab"],
   "version": "1.0.0",
   "web_accessible_resources": [
     {
