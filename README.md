@@ -13,11 +13,33 @@ A powerful Chrome extension that accelerates downloads from GitHub, GitLab, and 
 
 ## 📦 Installation
 
-### From Chrome Web Store
+### Store Availability
 
+| Store | Status | Link |
+|-------|--------|------|
+| **Chrome Web Store** | ✅ Available | [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/ajiejgobfcifcikbahpijopolfjoodgf)](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) |
+| **Microsoft Edge Add-ons** | ✅ Available | Available on Microsoft Edge Add-ons |
+| **Manual Install** | ✅ Supported | Download from [GitHub Releases](https://github.com/xixu-me/Xget-for-Chrome/releases) |
+
+### Quick Install
+
+**Chrome Web Store**
 [![Available in the Chrome Web Store](https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png)](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf)
 
-### Manual Installation (Developer Mode)
+**Microsoft Edge Add-ons**
+Install directly from the Microsoft Edge Add-ons store for Edge browsers.
+
+### Manual Installation Options
+
+#### Option 1: Download from Releases
+
+1. Go to the [GitHub Releases](https://github.com/xixu-me/Xget-for-Chrome/releases) page
+2. Download your preferred format:
+   - `chrome-extension.zip` - For Chrome and Chromium browsers
+   - `edge-extension.zip` - For Microsoft Edge
+   - `extension.crx` - For direct installation (requires developer mode)
+
+#### Option 2: Build from Source
 
 1. **Download the Extension**
 
@@ -26,11 +48,60 @@ A powerful Chrome extension that accelerates downloads from GitHub, GitLab, and 
    cd Xget-for-Chrome
    ```
 
-2. **Load in Chrome**
+2. **Build Extension Packages** (Optional)
+
+   ```bash
+   # Using PowerShell (Windows)
+   .\build-extension.ps1 -Version "1.0.0"
+   
+   # Using Bash (Linux/macOS)
+   ./build-extension.sh 1.0.0
+   ```
+
+3. **Load in Browser**
+4. **Load in Browser**
+
+   **For Chrome/Chromium:**
    - Open Chrome and navigate to `chrome://extensions/`
    - Enable "Developer mode" (toggle in top-right corner)
    - Click "Load unpacked" and select the extension directory
+
+   **For Microsoft Edge:**
+   - Open Edge and navigate to `edge://extensions/`
+   - Enable "Developer mode" (toggle in top-right corner)  
+   - Click "Load unpacked" and select the extension directory
+
+   **For CRX files:**
+   - Drag and drop the `.crx` file onto the extensions page
+
    - The extension icon should appear in your browser toolbar
+
+## 🚀 Automated Publishing
+
+This project uses GitHub Actions to automatically publish to multiple platforms when a new version tag is pushed:
+
+- **Chrome Web Store** - Automatic publishing
+- **Microsoft Edge Add-ons** - Automatic publishing  
+- **GitHub Releases** - Creates release with multiple download formats
+
+### For Maintainers
+
+To release a new version:
+
+```bash
+# Create and push a new version tag
+git tag v1.2.3
+git push origin v1.2.3
+```
+
+The workflow will automatically:
+
+1. Update `manifest.json` and `package.json` versions
+2. Create extension packages for all platforms
+3. Publish to Chrome Web Store and Edge Add-ons
+4. Create a GitHub release with downloadable files
+
+See [`.github/workflows/README.md`](.github/workflows/README.md) for setup instructions.
 
 ## ⚙️ Setup
 

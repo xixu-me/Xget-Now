@@ -1,0 +1,195 @@
+name: Publish Extension to Multiple Stores
+
+on:
+  push:
+    tags:
+      - "v*" # Triggers on version tags like v1.0.0, v1.2.3, etc.
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Validate manifest.json
+        run: |
+          # Validate that manifest.json is valid JSON
+          node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))"
+          echo "✅ manifest.json is valid"
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          # Extract version from git tag (remove 'v' prefix if present)
+          VERSION=${GITHUB_REF#refs/tags/}
+          VERSION=${VERSION#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+
+      - name: Update manifest version
+        run: |
+          # Update version in manifest.json to match the tag
+          node -e "
+            const fs = require('fs');
+            const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+            manifest.version = '${{ steps.version.outputs.version }}';
+            fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2));
+            console.log('Updated manifest.json version to:', manifest.version);
+          "
+
+      - name: Update package.json version
+        run: |
+          # Update version in package.json to match the tag
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            pkg.version = '${{ steps.version.outputs.version }}';
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+            console.log('Updated package.json version to:', pkg.version);
+          "
+
+      - name: Create extension packages
+        run: |
+          # Create Chrome extension zip
+          zip -r chrome-extension.zip . \
+            -x "*.git*" \
+            -x "node_modules/*" \
+            -x ".github/*" \
+            -x "*.md" \
+            -x "LICENSE" \
+            -x "*.zip" \
+            -x "*.crx"
+
+          # Create Edge extension zip (same as Chrome for MV3)
+          cp chrome-extension.zip edge-extension.zip
+
+          echo "📦 Created extension packages"
+          ls -la *.zip
+
+      - name: Create CRX file for GitHub release
+        run: |
+          # Install chrome-extension-packer
+          npm install -g crx3
+
+          # Create private key for CRX signing (for distribution only)
+          openssl genrsa -out key.pem 2048
+
+          # Create CRX file
+          crx3 -o extension.crx -p key.pem ./ \
+            --exclude="*.git*" \
+            --exclude="node_modules/*" \
+            --exclude=".github/*" \
+            --exclude="*.md" \
+            --exclude="LICENSE" \
+            --exclude="*.zip" \
+            --exclude="*.crx" \
+            --exclude="*.pem"
+
+          echo "📦 Created extension.crx"
+          ls -la extension.crx
+
+      - name: Publish to Chrome Web Store
+        continue-on-error: true
+        id: chrome-publish
+        uses: mnao305/chrome-extension-upload@v5.0.0
+        with:
+          file-path: chrome-extension.zip
+          extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          publish: true # Set to false if you want to upload without publishing
+
+      - name: Publish to Microsoft Edge Add-ons
+        continue-on-error: true
+        id: edge-publish
+        uses: wdzeng/edge-addon@v1
+        with:
+          product-id: ${{ secrets.EDGE_PRODUCT_ID }}
+          zip-path: edge-extension.zip
+          client-id: ${{ secrets.EDGE_CLIENT_ID }}
+          client-secret: ${{ secrets.EDGE_CLIENT_SECRET }}
+          access-token-url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            chrome-extension.zip
+            edge-extension.zip
+            extension.crx
+          generate_release_notes: true
+          body: |
+            ## Xget for Chrome v${{ steps.version.outputs.version }}
+
+            This release has been automatically published to multiple extension stores.
+
+            ### 📥 Installation Options
+
+            **Chrome Web Store**
+            - Install from [Chrome Web Store](https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }})
+
+            **Microsoft Edge Add-ons**
+            - Install from Microsoft Edge Add-ons (check Partner Center for the link)
+
+            **Manual Installation**
+            - Download `chrome-extension.zip` for Chrome/Chromium browsers
+            - Download `edge-extension.zip` for Microsoft Edge
+            - Download `extension.crx` for direct installation (requires developer mode)
+
+            ### 🔧 Manual Installation Instructions
+
+            **Chrome/Edge (Developer Mode)**:
+            1. Download the appropriate .zip file
+            2. Open Chrome/Edge and go to `chrome://extensions/` or `edge://extensions/`
+            3. Enable "Developer mode"
+            4. Click "Load unpacked" and select the extracted folder
+
+            **CRX Installation**:
+            1. Download `extension.crx`
+            2. Open Chrome and go to `chrome://extensions/`
+            3. Enable "Developer mode"
+            4. Drag and drop the .crx file onto the extensions page
+
+            ### Changes
+            - See commit history for detailed changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check publication results
+        run: |
+          echo "📊 Publication Results Summary:"
+          echo "================================"
+
+          if [ "${{ steps.chrome-publish.outcome }}" = "success" ]; then
+            echo "✅ Chrome Web Store: Successfully published"
+          elif [ "${{ steps.chrome-publish.outcome }}" = "failure" ]; then
+            echo "❌ Chrome Web Store: Publication failed"
+          else
+            echo "⚠️ Chrome Web Store: Skipped (missing secrets)"
+          fi
+
+          if [ "${{ steps.edge-publish.outcome }}" = "success" ]; then
+            echo "✅ Microsoft Edge Add-ons: Successfully published"
+          elif [ "${{ steps.edge-publish.outcome }}" = "failure" ]; then
+            echo "❌ Microsoft Edge Add-ons: Publication failed"
+          else
+            echo "⚠️ Microsoft Edge Add-ons: Skipped (missing secrets)"
+          fi
+
+          echo "✅ GitHub Release: Created with extension files"
+          echo "================================"
+
+      - name: Notify success
+        run: |
+          echo "🎉 Successfully published Xget for Chrome v${{ steps.version.outputs.version }} to multiple stores!"
+          echo "🔗 Chrome Web Store: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"
+          echo "🔗 Microsoft Edge Add-ons: Check the releases page for manual installation files"
+          echo "📦 GitHub Release: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
