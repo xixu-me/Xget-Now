@@ -29,20 +29,25 @@ If you prefer to install the extension manually or the store versions are not av
 1. **Download the Extension**
    - Go to the [Releases page](https://github.com/xixu-me/Xget-for-Chrome/releases)
    - Download the latest release file:
-     - `chrome-extension.zip` - For Chrome/Chromium browsers
+     - `chrome-extension.zip` - For Chrome browsers
      - `edge-extension.zip` - For Microsoft Edge
-     - `extension.crx` - Pre-packaged Chrome extension (may require developer mode)
+     - `extension.crx` - Pre-packaged extension file for all Chromium-based browsers
 
-2. **Install in Chrome/Chromium**
+2. **Install in Chrome**
    - Open Chrome and go to `chrome://extensions/`
    - Enable "Developer mode" (toggle in top right)
    - Click "Load unpacked" and select the extracted folder from the ZIP file
    - Or drag and drop the `.crx` file directly onto the extensions page
 
 3. **Install in Microsoft Edge**
-   - Open Edge and go to `edge://extensions/`
+   - Open Microsoft Edge and go to `edge://extensions/`
    - Enable "Developer mode" (toggle in left sidebar)
    - Click "Load unpacked" and select the extracted folder from the ZIP file
+   - Or drag and drop the `.crx` file directly onto the extensions page
+
+4. **Install in other Chromium-based browsers**
+   - Follow similar steps as Chrome or Microsoft Edge, ensuring you enable "Developer mode" first
+   - Drag and drop the `.crx` file directly onto the extensions page
 
 #### Option 2: Install from Source Code
 

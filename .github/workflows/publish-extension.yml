@@ -71,7 +71,7 @@ jobs:
             -x "*.zip" \
             -x "*.crx"
 
-          # Create Edge extension zip (same as Chrome for MV3)
+          # Create Microsoft Edge extension zip (same as Chrome for MV3)
           cp chrome-extension.zip edge-extension.zip
 
           echo "📦 Created extension packages"
@@ -156,14 +156,14 @@ jobs:
             ### 📦 Installation Options
 
             - **Chrome Web Store**: [Install from Chrome Web Store](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf)
-            - **Microsoft Edge Add-ons**: [Install from Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/hbfflpongojnfojbgadppjgnkabkpjea)
+            - **Microsoft Edge Add-ons**: [Install from Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/hbfflpongojnfojbgadppjgnkabkpjea)
             - **Manual Installation**: Download the files below or see the [Installation Guide](https://github.com/xixu-me/Xget-for-Chrome?tab=readme-ov-file#-installation) for detailed instructions
 
             ### 📁 Available Files
 
-            - `chrome-extension.zip` - For Chrome/Chromium browsers (manual installation)
-            - `edge-extension.zip` - For Microsoft Edge (manual installation) 
-            - `extension.crx` - Pre-packaged Chrome extension file
+            - `chrome-extension.zip` - For Chrome browsers
+            - `edge-extension.zip` - For Microsoft Edge
+            - `extension.crx` - Pre-packaged extension file for all Chromium-based browsers
 
             ### Changes
             - See commit history for detailed changes
