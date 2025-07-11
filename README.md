@@ -15,19 +15,10 @@ A powerful Chrome extension that accelerates downloads from GitHub, GitLab, and 
 
 ### Store Availability
 
-| Store | Status | Link |
-|-------|--------|------|
-| **Chrome Web Store** | ✅ Available | [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/ajiejgobfcifcikbahpijopolfjoodgf)](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) |
-| **Microsoft Edge Add-ons** | ✅ Available | Available on Microsoft Edge Add-ons |
-| **Manual Install** | ✅ Supported | Download from [GitHub Releases](https://github.com/xixu-me/Xget-for-Chrome/releases) |
-
-### Quick Install
-
-**Chrome Web Store**
-[![Available in the Chrome Web Store](https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png)](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf)
-
-**Microsoft Edge Add-ons**
-Install directly from the Microsoft Edge Add-ons store for Edge browsers.
+| Store | Link |
+|-------|------|
+| **Chrome Web Store** | [![Available in the Chrome Web Store](https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png)](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) |
+| **Microsoft Edge Add-ons** | [Available in the Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/hbfflpongojnfojbgadppjgnkabkpjea) |
 
 ### Manual Installation Options
 
