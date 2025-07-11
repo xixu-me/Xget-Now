@@ -173,6 +173,40 @@
       .mini-toggle input:checked + .slider:before {
         transform: translateX(16px);
       }
+
+      .links {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .link-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        text-decoration: none;
+        color: white;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .link-item:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+      }
+
+      .link-icon {
+        margin-right: 10px;
+        font-size: 16px;
+      }
+
+      .link-text {
+        font-size: 13px;
+        font-weight: 500;
+      }
     </style>
   </head>
   <body>
@@ -236,6 +270,27 @@
               <span class="slider"></span>
             </label>
           </div>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="links">
+          <a
+            href="https://github.com/xixu-me/Xget"
+            target="_blank"
+            class="link-item"
+          >
+            <span class="link-icon">🚀</span>
+            <span class="link-text">Deploy Your Own Xget Service</span>
+          </a>
+          <a
+            href="https://github.com/xixu-me/Xget-for-Chrome"
+            target="_blank"
+            class="link-item"
+          >
+            <span class="link-icon">📖</span>
+            <span class="link-text">Source Code & Documentation</span>
+          </a>
         </div>
       </div>
 
