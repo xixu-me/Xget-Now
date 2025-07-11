@@ -171,6 +171,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Xget for Chrome v${{ steps.version.outputs.version }}
           files: |
             chrome-extension.zip
             edge-extension.zip
