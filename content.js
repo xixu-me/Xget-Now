@@ -181,15 +181,21 @@ function isDownloadLink(link) {
   }
 
   // Fourth check: GitLab-specific patterns
-  if (href.includes("gitlab.com")) {
-    // GitLab archive downloads
-    if (pathname.includes("/-/archive/")) {
-      return true;
+  const allowedGitLabHosts = ["gitlab.com"];
+  try {
+    const parsedUrl = new URL(href);
+    if (allowedGitLabHosts.includes(parsedUrl.host)) {
+      // GitLab archive downloads
+      if (pathname.includes("/-/archive/")) {
+        return true;
+      }
+      // GitLab release downloads
+      if (pathname.includes("/-/releases/") && pathname.includes("/downloads/")) {
+        return true;
+      }
     }
-    // GitLab release downloads
-    if (pathname.includes("/-/releases/") && pathname.includes("/downloads/")) {
-      return true;
-    }
+  } catch (e) {
+    console.error("Invalid URL:", href, e);
   }
 
   // Fifth check: Hugging Face file downloads
