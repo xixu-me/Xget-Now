@@ -1,6 +1,6 @@
 # Xget for Chrome
 
-A powerful Chrome extension that accelerates downloads from GitHub, GitLab, and Hugging Face by automatically redirecting them through the [Xget](https://github.com/xixu-me/Xget) proxy service.
+A powerful extension for Chromium-based browsers that accelerates downloads from GitHub, GitLab, and Hugging Face by automatically redirecting them through the [Xget](https://github.com/xixu-me/Xget) proxy service.
 
 ## 🚀 Features
 
