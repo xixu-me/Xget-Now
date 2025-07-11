@@ -149,32 +149,17 @@ jobs:
 
             This release has been automatically published to multiple extension stores.
 
-            ### 📥 Installation Options
+            ### 📦 Installation Options
 
-            **Chrome Web Store**
-            - Install from [Chrome Web Store](https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }})
+            - **Chrome Web Store**: [Install from Chrome Web Store](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf)
+            - **Microsoft Edge Add-ons**: [Install from Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/hbfflpongojnfojbgadppjgnkabkpjea)
+            - **Manual Installation**: Download the files below or see the [Installation Guide](https://github.com/xixu-me/Xget-for-Chrome?tab=readme-ov-file#-installation) for detailed instructions
 
-            **Microsoft Edge Add-ons**
-            - Install from Microsoft Edge Add-ons (check Partner Center for the link)
+            ### 📁 Available Files
 
-            **Manual Installation**
-            - Download `chrome-extension.zip` for Chrome/Chromium browsers
-            - Download `edge-extension.zip` for Microsoft Edge
-            - Download `extension.crx` for direct installation (requires developer mode)
-
-            ### 🔧 Manual Installation Instructions
-
-            **Chrome/Edge (Developer Mode)**:
-            1. Download the appropriate .zip file
-            2. Open Chrome/Edge and go to `chrome://extensions/` or `edge://extensions/`
-            3. Enable "Developer mode"
-            4. Click "Load unpacked" and select the extracted folder
-
-            **CRX Installation**:
-            1. Download `extension.crx`
-            2. Open Chrome and go to `chrome://extensions/`
-            3. Enable "Developer mode"
-            4. Drag and drop the .crx file onto the extensions page
+            - `chrome-extension.zip` - For Chrome/Chromium browsers (manual installation)
+            - `edge-extension.zip` - For Microsoft Edge (manual installation) 
+            - `extension.crx` - Pre-packaged Chrome extension file
 
             ### Changes
             - See commit history for detailed changes

@@ -20,79 +20,47 @@ A powerful Chrome extension that accelerates downloads from GitHub, GitLab, and 
 | **Chrome Web Store** | [![Available in the Chrome Web Store](https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png)](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) |
 | **Microsoft Edge Add-ons** | [Available in the Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/hbfflpongojnfojbgadppjgnkabkpjea) |
 
-### Manual Installation Options
+### Manual Installation
 
-#### Option 1: Download from Releases
+If you prefer to install the extension manually or the store versions are not available, you can download and install it directly:
 
-1. Go to the [GitHub Releases](https://github.com/xixu-me/Xget-for-Chrome/releases) page
-2. Download your preferred format:
-   - `chrome-extension.zip` - For Chrome and Chromium browsers
-   - `edge-extension.zip` - For Microsoft Edge
-   - `extension.crx` - For direct installation (requires developer mode)
-
-#### Option 2: Build from Source
+#### Option 1: Install from GitHub Releases (Recommended)
 
 1. **Download the Extension**
+   - Go to the [Releases page](https://github.com/xixu-me/Xget-for-Chrome/releases)
+   - Download the latest release file:
+     - `chrome-extension.zip` - For Chrome/Chromium browsers
+     - `edge-extension.zip` - For Microsoft Edge
+     - `extension.crx` - Pre-packaged Chrome extension (may require developer mode)
+
+2. **Install in Chrome/Chromium**
+   - Open Chrome and go to `chrome://extensions/`
+   - Enable "Developer mode" (toggle in top right)
+   - Click "Load unpacked" and select the extracted folder from the ZIP file
+   - Or drag and drop the `.crx` file directly onto the extensions page
+
+3. **Install in Microsoft Edge**
+   - Open Edge and go to `edge://extensions/`
+   - Enable "Developer mode" (toggle in left sidebar)
+   - Click "Load unpacked" and select the extracted folder from the ZIP file
+
+#### Option 2: Install from Source Code
+
+1. **Clone the Repository**
 
    ```bash
    git clone https://github.com/xixu-me/Xget-for-Chrome.git
    cd Xget-for-Chrome
    ```
 
-2. **Build Extension Packages** (Optional)
+2. **Load in Browser**
+   - Open your browser's extension management page
+   - Enable "Developer mode"
+   - Click "Load unpacked" and select the cloned folder
 
-   ```bash
-   # Using PowerShell (Windows)
-   .\build-extension.ps1 -Version "1.0.0"
-   
-   # Using Bash (Linux/macOS)
-   ./build-extension.sh 1.0.0
-   ```
+#### Verify Installation
 
-3. **Load in Browser**
-4. **Load in Browser**
-
-   **For Chrome/Chromium:**
-   - Open Chrome and navigate to `chrome://extensions/`
-   - Enable "Developer mode" (toggle in top-right corner)
-   - Click "Load unpacked" and select the extension directory
-
-   **For Microsoft Edge:**
-   - Open Edge and navigate to `edge://extensions/`
-   - Enable "Developer mode" (toggle in top-right corner)  
-   - Click "Load unpacked" and select the extension directory
-
-   **For CRX files:**
-   - Drag and drop the `.crx` file onto the extensions page
-
-   - The extension icon should appear in your browser toolbar
-
-## 🚀 Automated Publishing
-
-This project uses GitHub Actions to automatically publish to multiple platforms when a new version tag is pushed:
-
-- **Chrome Web Store** - Automatic publishing
-- **Microsoft Edge Add-ons** - Automatic publishing  
-- **GitHub Releases** - Creates release with multiple download formats
-
-### For Maintainers
-
-To release a new version:
-
-```bash
-# Create and push a new version tag
-git tag v1.2.3
-git push origin v1.2.3
-```
-
-The workflow will automatically:
-
-1. Update `manifest.json` and `package.json` versions
-2. Create extension packages for all platforms
-3. Publish to Chrome Web Store and Edge Add-ons
-4. Create a GitHub release with downloadable files
-
-See [`.github/workflows/README.md`](.github/workflows/README.md) for setup instructions.
+After installation, you should see the Xget extension icon in your browser toolbar. Click it to configure your Xget domain and start accelerating downloads!
 
 ## ⚙️ Setup
 
