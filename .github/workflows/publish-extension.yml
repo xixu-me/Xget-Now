@@ -172,31 +172,26 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
-          name: Xget for Chrome v${{ steps.version.outputs.version }}
+          name: Xget for Chrome ${{ steps.version.outputs.version }}
           files: |
             chrome-extension.zip
             edge-extension.zip
             extension.crx
           generate_release_notes: true
           body: |
-            ## Xget for Chrome v${{ steps.version.outputs.version }}
-
             This release has been automatically published to multiple extension stores.
 
-            ### 📦 Installation Options
+            ## 📦 Installation Options
 
             - **Chrome Web Store**: [Install from Chrome Web Store](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf)
             - **Microsoft Edge Add-ons**: [Install from Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/hbfflpongojnfojbgadppjgnkabkpjea)
             - **Manual Installation**: Download the files below or see the [Installation Guide](https://github.com/xixu-me/Xget-for-Chrome?tab=readme-ov-file#-installation) for detailed instructions
 
-            ### 📁 Available Files
+            ## 📁 Available Files
 
             - `chrome-extension.zip` - For Chrome browsers
             - `edge-extension.zip` - For Microsoft Edge
             - `extension.crx` - Pre-packaged extension file for all Chromium-based browsers
-
-            ### Changes
-            - See commit history for detailed changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
