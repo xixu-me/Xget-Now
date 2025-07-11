@@ -158,26 +158,32 @@ function isDownloadLink(link) {
   }
 
   // Third check: GitHub-specific patterns
-  if (href.includes("github.com")) {
-    // GitHub release asset download URLs follow pattern: /releases/download/
-    if (pathname.includes("/releases/download/")) {
-      return true;
+  const allowedGitHubHosts = ["github.com"];
+  try {
+    const parsedUrl = new URL(href);
+    if (allowedGitHubHosts.includes(parsedUrl.host)) {
+      // GitHub release asset download URLs follow pattern: /releases/download/
+      if (pathname.includes("/releases/download/")) {
+        return true;
+      }
+      // GitHub archive download URLs
+      if (
+        pathname.includes("/archive/") &&
+        (pathname.endsWith(".zip") || pathname.endsWith(".tar.gz"))
+      ) {
+        return true;
+      }
+      // GitHub raw file URLs - NEW: support for raw file links
+      if (pathname.includes("/raw/")) {
+        return true;
+      }
+      // Exclude navigation to releases page (just /releases or /releases/)
+      if (pathname.endsWith("/releases") || pathname.endsWith("/releases/")) {
+        return false;
+      }
     }
-    // GitHub archive download URLs
-    if (
-      pathname.includes("/archive/") &&
-      (pathname.endsWith(".zip") || pathname.endsWith(".tar.gz"))
-    ) {
-      return true;
-    }
-    // GitHub raw file URLs - NEW: support for raw file links
-    if (pathname.includes("/raw/")) {
-      return true;
-    }
-    // Exclude navigation to releases page (just /releases or /releases/)
-    if (pathname.endsWith("/releases") || pathname.endsWith("/releases/")) {
-      return false;
-    }
+  } catch (e) {
+    console.error("Invalid URL:", href, e);
   }
 
   // Fourth check: GitLab-specific patterns
@@ -190,7 +196,10 @@ function isDownloadLink(link) {
         return true;
       }
       // GitLab release downloads
-      if (pathname.includes("/-/releases/") && pathname.includes("/downloads/")) {
+      if (
+        pathname.includes("/-/releases/") &&
+        pathname.includes("/downloads/")
+      ) {
         return true;
       }
     }
@@ -199,11 +208,17 @@ function isDownloadLink(link) {
   }
 
   // Fifth check: Hugging Face file downloads
-  if (href.includes("huggingface.co")) {
-    // HF file download URLs contain /resolve/
-    if (pathname.includes("/resolve/")) {
-      return true;
+  const allowedHuggingFaceHosts = ["huggingface.co"];
+  try {
+    const parsedUrl = new URL(href);
+    if (allowedHuggingFaceHosts.includes(parsedUrl.host)) {
+      // HF file download URLs contain /resolve/
+      if (pathname.includes("/resolve/")) {
+        return true;
+      }
     }
+  } catch (e) {
+    console.error("Invalid URL:", href, e);
   }
 
   // Seventh check: explicit download text indicators (be more specific)
