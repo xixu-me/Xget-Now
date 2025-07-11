@@ -1,9 +1,12 @@
 name: Publish Extension to Multiple Stores
 
 on:
-  push:
-    tags:
-      - "v*" # Triggers on version tags like v1.0.0, v1.2.3, etc.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number (e.g., 1.0.0)"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -28,14 +31,13 @@ jobs:
           node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))"
           echo "✅ manifest.json is valid"
 
-      - name: Extract version from tag
+      - name: Set version from input
         id: version
         run: |
-          # Extract version from git tag (remove 'v' prefix if present)
-          VERSION=${GITHUB_REF#refs/tags/}
-          VERSION=${VERSION#v}
+          # Use the manually provided version
+          VERSION="${{ inputs.version }}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Extracted version: $VERSION"
+          echo "Manually set version: $VERSION"
 
       - name: Update manifest version
         run: |
@@ -58,6 +60,32 @@ jobs:
             fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
             console.log('Updated package.json version to:', pkg.version);
           "
+
+      - name: Commit and push version updates
+        run: |
+          # Configure git user for the commit
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # Add the updated files
+          git add manifest.json package.json
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No version changes to commit"
+          else
+            # Commit the version updates
+            git commit -m "chore: update version to ${{ steps.version.outputs.version }} [skip ci]"
+            
+            # Create and push a new tag for this version
+            git tag "v${{ steps.version.outputs.version }}"
+            
+            # Push to the main branch with the tag
+            git push origin HEAD:main
+            git push origin "v${{ steps.version.outputs.version }}"
+            
+            echo "✅ Version updates committed and pushed to main branch with tag"
+          fi
 
       - name: Create extension packages
         run: |
@@ -199,4 +227,4 @@ jobs:
           echo "🎉 Successfully published Xget for Chrome v${{ steps.version.outputs.version }} to multiple stores!"
           echo "🔗 Chrome Web Store: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"
           echo "🔗 Microsoft Edge Add-ons: Check the releases page for manual installation files"
-          echo "📦 GitHub Release: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
+          echo "📦 GitHub Release: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.version }}"
