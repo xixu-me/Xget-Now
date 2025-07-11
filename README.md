@@ -18,7 +18,7 @@ A powerful Chrome extension that accelerates downloads from GitHub, GitLab, and 
 | Store | Link |
 |-------|------|
 | **Chrome Web Store** | [![Available in the Chrome Web Store](https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png)](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) |
-| **Microsoft Edge Add-ons** | [Available in the Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/hbfflpongojnfojbgadppjgnkabkpjea) |
+| **Microsoft Edge Add-ons** | [Available in the Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc) |
 
 ### Manual Installation
 
