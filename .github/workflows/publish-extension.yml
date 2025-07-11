@@ -81,19 +81,37 @@ jobs:
           # Create private key for CRX signing (for distribution only)
           openssl genrsa -out key.pem 2048
 
-          # Create CRX file
-          crx3 -o extension.crx -p key.pem ./ \
-            --exclude="*.git*" \
-            --exclude="node_modules/*" \
-            --exclude=".github/*" \
-            --exclude="*.md" \
-            --exclude="LICENSE" \
-            --exclude="*.zip" \
-            --exclude="*.crx" \
-            --exclude="*.pem"
+          # Verify manifest.json exists
+          ls -la manifest.json
+          echo "Current directory: $(pwd)"
+          echo "Contents:"
+          ls -la
+
+          # Create temporary directory for extension files
+          mkdir -p extension-temp
+
+          # Copy extension files to temp directory
+          cp manifest.json extension-temp/
+          cp background.js extension-temp/
+          cp content.js extension-temp/
+          cp popup.html extension-temp/
+          cp popup.js extension-temp/
+          cp -r icons extension-temp/
+
+          # Verify temp directory contents
+          echo "Extension temp directory contents:"
+          ls -la extension-temp/
+
+          # Create CRX file from temp directory
+          cd extension-temp
+          crx3 -o ../extension.crx -p ../key.pem .
+          cd ..
 
           echo "📦 Created extension.crx"
           ls -la extension.crx
+
+          # Clean up
+          rm -rf extension-temp
 
       - name: Publish to Chrome Web Store
         continue-on-error: true
