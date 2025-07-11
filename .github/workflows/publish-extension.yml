@@ -137,7 +137,7 @@ jobs:
           notes-for-certification: "Automatic release v${{ steps.version.outputs.version }} - ${{ github.sha }}"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             chrome-extension.zip
