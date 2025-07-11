@@ -1,0 +1,66 @@
+version: 2
+updates:
+  # Enable version updates for npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    # Keep PRs manageable
+    open-pull-requests-limit: 5
+    # Auto-merge patch and minor updates for dev dependencies
+    assignees:
+      - "xixu-me"
+    reviewers:
+      - "xixu-me"
+    commit-message:
+      prefix: "npm"
+      include: "scope"
+    # Group related updates together
+    groups:
+      build-tools:
+        patterns:
+          - "webpack*"
+          - "rollup*"
+          - "vite*"
+          - "esbuild*"
+          - "parcel*"
+      linting-formatting:
+        patterns:
+          - "eslint*"
+          - "prettier*"
+          - "@typescript-eslint/*"
+          - "stylelint*"
+      testing:
+        patterns:
+          - "jest*"
+          - "mocha*"
+          - "chai*"
+          - "cypress*"
+          - "playwright*"
+          - "@testing-library/*"
+      types:
+        patterns:
+          - "@types/*"
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    assignees:
+      - "xixu-me"
+    reviewers:
+      - "xixu-me"
+    commit-message:
+      prefix: "actions"
+      include: "scope"
+    # Group all GitHub Actions updates together
+    groups:
+      github-actions:
+        patterns:
+          - "*"
