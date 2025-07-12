@@ -1,10 +1,10 @@
-name: Publish Extension to Multiple Stores
+name: 发布扩展到多个应用商店
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version number (e.g., 1.0.0)"
+        description: "版本号 (例如: 1.0.0)"
         required: true
         type: string
 
@@ -17,79 +17,79 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 检出代码
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 设置 Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "18"
 
-      - name: Validate manifest.json
+      - name: 验证 manifest.json
         run: |
-          # Validate that manifest.json is valid JSON
+          # 验证 manifest.json 是否为有效的 JSON
           node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))"
-          echo "✅ manifest.json is valid"
+          echo "✅ manifest.json 格式有效"
 
-      - name: Set version from input
+      - name: 从输入设置版本
         id: version
         run: |
-          # Use the manually provided version
+          # 使用手动提供的版本
           VERSION="${{ inputs.version }}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Manually set version: $VERSION"
+          echo "手动设置版本: $VERSION"
 
-      - name: Update manifest version
+      - name: 更新 manifest 版本
         run: |
-          # Update version in manifest.json to match the tag
+          # 更新 manifest.json 中的版本以匹配标签
           node -e "
             const fs = require('fs');
             const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
             manifest.version = '${{ steps.version.outputs.version }}';
             fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2));
-            console.log('Updated manifest.json version to:', manifest.version);
+            console.log('已更新 manifest.json 版本为:', manifest.version);
           "
 
-      - name: Update package.json version
+      - name: 更新 package.json 版本
         run: |
-          # Update version in package.json to match the tag
+          # 更新 package.json 中的版本以匹配标签
           node -e "
             const fs = require('fs');
             const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
             pkg.version = '${{ steps.version.outputs.version }}';
             fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
-            console.log('Updated package.json version to:', pkg.version);
+            console.log('已更新 package.json 版本为:', pkg.version);
           "
 
-      - name: Commit and push version updates
+      - name: 提交并推送版本更新
         run: |
-          # Configure git user for the commit
+          # 配置 git 用户信息以进行提交
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-          # Add the updated files
+          # 添加更新的文件
           git add manifest.json package.json
 
-          # Check if there are changes to commit
+          # 检查是否有需要提交的更改
           if git diff --staged --quiet; then
-            echo "No version changes to commit"
+            echo "没有版本更改需要提交"
           else
-            # Commit the version updates
-            git commit -m "chore: update version to ${{ steps.version.outputs.version }} [skip ci]"
+            # 提交版本更新
+            git commit -m "chore: 更新版本到 ${{ steps.version.outputs.version }} [skip ci]"
             
-            # Create and push a new tag for this version
+            # 为此版本创建并推送新标签
             git tag "v${{ steps.version.outputs.version }}"
             
-            # Push to the main branch with the tag
+            # 推送到主分支并包含标签
             git push origin HEAD:main
             git push origin "v${{ steps.version.outputs.version }}"
             
-            echo "✅ Version updates committed and pushed to main branch with tag"
+            echo "✅ 版本更新已提交并推送到主分支，包含标签"
           fi
 
-      - name: Create extension packages
+      - name: 创建扩展包
         run: |
-          # Create Chrome extension zip
+          # 创建 Chrome 扩展 zip 包
           zip -r chrome-extension.zip . \
             -x "*.git*" \
             -x "node_modules/*" \
@@ -99,30 +99,30 @@ jobs:
             -x "*.zip" \
             -x "*.crx"
 
-          # Create Microsoft Edge extension zip (same as Chrome for MV3)
+          # 创建 Microsoft Edge 扩展 zip 包（与 Chrome 的 MV3 相同）
           cp chrome-extension.zip edge-extension.zip
 
-          echo "📦 Created extension packages"
+          echo "📦 已创建扩展包"
           ls -la *.zip
 
-      - name: Create CRX file for GitHub release
+      - name: 为 GitHub 发布创建 CRX 文件
         run: |
-          # Install chrome-extension-packer
+          # 安装 chrome-extension-packer
           npm install -g crx3
 
-          # Create private key for CRX signing (for distribution only)
+          # 为 CRX 签名创建私钥（仅用于分发）
           openssl genrsa -out key.pem 2048
 
-          # Verify manifest.json exists
+          # 验证 manifest.json 是否存在
           ls -la manifest.json
-          echo "Current directory: $(pwd)"
-          echo "Contents:"
+          echo "当前目录: $(pwd)"
+          echo "目录内容:"
           ls -la
 
-          # Create temporary directory for extension files
+          # 为扩展文件创建临时目录
           mkdir -p extension-temp
 
-          # Copy extension files to temp directory
+          # 将扩展文件复制到临时目录
           cp manifest.json extension-temp/
           cp background.js extension-temp/
           cp content.js extension-temp/
@@ -130,22 +130,22 @@ jobs:
           cp popup.js extension-temp/
           cp -r icons extension-temp/
 
-          # Verify temp directory contents
-          echo "Extension temp directory contents:"
+          # 验证临时目录内容
+          echo "扩展临时目录内容:"
           ls -la extension-temp/
 
-          # Create CRX file from temp directory
+          # 从临时目录创建 CRX 文件
           cd extension-temp
           crx3 -o ../extension.crx -p ../key.pem .
           cd ..
 
-          echo "📦 Created extension.crx"
+          echo "📦 已创建 extension.crx"
           ls -la extension.crx
 
-          # Clean up
+          # 清理
           rm -rf extension-temp
 
-      - name: Publish to Chrome Web Store
+      - name: 发布到 Chrome 网上应用店
         continue-on-error: true
         id: chrome-publish
         uses: mnao305/chrome-extension-upload@v5.0.0
@@ -155,9 +155,9 @@ jobs:
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
-          publish: true # Set to false if you want to upload without publishing
+          publish: true # 如果只想上传而不发布，设置为 false
 
-      - name: Publish to Microsoft Edge Add-ons
+      - name: 发布到 Microsoft Edge 加载项
         continue-on-error: true
         id: edge-publish
         uses: wdzeng/edge-addon@v2
@@ -166,9 +166,9 @@ jobs:
           zip-path: edge-extension.zip
           api-key: ${{ secrets.EDGE_API_KEY }}
           client-id: ${{ secrets.EDGE_CLIENT_ID }}
-          notes-for-certification: "Automatic release v${{ steps.version.outputs.version }} - ${{ github.sha }}"
+          notes-for-certification: "自动发布 v${{ steps.version.outputs.version }} - ${{ github.sha }}"
 
-      - name: Create GitHub Release
+      - name: 创建 GitHub 发布
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
@@ -179,49 +179,49 @@ jobs:
             extension.crx
           generate_release_notes: true
           body: |
-            This release has been automatically published to multiple extension stores.
+            此版本已自动发布到多个扩展商店。
 
-            ## 📦 Installation Options
+            ## 📦 安装选项
 
-            - **Chrome Web Store**: [Install from Chrome Web Store](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf)
-            - **Microsoft Edge Add-ons**: [Install from Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc)
-            - **Manual Installation**: Download the files below or see the [Installation Guide](https://github.com/xixu-me/Xget-for-Chrome?tab=readme-ov-file#-installation) for detailed instructions
+            - **Chrome 网上应用店**: [从 Chrome 网上应用店安装](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf)
+            - **Microsoft Edge 加载项**: [从 Microsoft Edge 加载项安装](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc)
+            - **手动安装**: 下载下面的文件或查看 [安装指南](https://github.com/xixu-me/Xget-for-Chrome?tab=readme-ov-file#-installation) 获取详细说明
 
-            ## 📁 Available Files
+            ## 📁 可用文件
 
-            - `chrome-extension.zip` - For Chrome browsers
-            - `edge-extension.zip` - For Microsoft Edge
-            - `extension.crx` - Pre-packaged extension file for all Chromium-based browsers
+            - `chrome-extension.zip` - 适用于 Chrome 浏览器
+            - `edge-extension.zip` - 适用于 Microsoft Edge
+            - `extension.crx` - 适用于所有基于 Chromium 的浏览器的预打包扩展文件
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check publication results
+      - name: 检查发布结果
         run: |
-          echo "📊 Publication Results Summary:"
+          echo "📊 发布结果摘要:"
           echo "================================"
 
           if [ "${{ steps.chrome-publish.outcome }}" = "success" ]; then
-            echo "✅ Chrome Web Store: Successfully published"
+            echo "✅ Chrome 网上应用店: 发布成功"
           elif [ "${{ steps.chrome-publish.outcome }}" = "failure" ]; then
-            echo "❌ Chrome Web Store: Publication failed"
+            echo "❌ Chrome 网上应用店: 发布失败"
           else
-            echo "⚠️ Chrome Web Store: Skipped (missing secrets)"
+            echo "⚠️ Chrome 网上应用店: 已跳过（缺少密钥）"
           fi
 
           if [ "${{ steps.edge-publish.outcome }}" = "success" ]; then
-            echo "✅ Microsoft Edge Add-ons: Successfully published"
+            echo "✅ Microsoft Edge 加载项: 发布成功"
           elif [ "${{ steps.edge-publish.outcome }}" = "failure" ]; then
-            echo "❌ Microsoft Edge Add-ons: Publication failed"
+            echo "❌ Microsoft Edge 加载项: 发布失败"
           else
-            echo "⚠️ Microsoft Edge Add-ons: Skipped (missing secrets)"
+            echo "⚠️ Microsoft Edge 加载项: 已跳过（缺少密钥）"
           fi
 
-          echo "✅ GitHub Release: Created with extension files"
+          echo "✅ GitHub 发布: 已创建扩展文件"
           echo "================================"
 
-      - name: Notify success
+      - name: 通知成功
         run: |
-          echo "🎉 Successfully published Xget for Chrome v${{ steps.version.outputs.version }} to multiple stores!"
-          echo "🔗 Chrome Web Store: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"
-          echo "🔗 Microsoft Edge Add-ons: Check the releases page for manual installation files"
-          echo "📦 GitHub Release: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.version }}"
+          echo "🎉 成功发布 Xget for Chrome v${{ steps.version.outputs.version }} 到多个商店！"
+          echo "🔗 Chrome 网上应用店: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"
+          echo "🔗 Microsoft Edge 加载项: 查看发布页面获取手动安装文件"
+          echo "📦 GitHub 发布: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.version }}"
