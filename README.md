@@ -51,7 +51,7 @@
 
 #### 选项 2：从源码安装
 
-1. **克隆仓库**
+1. **克隆存储库**
 
    ```bash
    git clone https://github.com/xixu-me/Xget-for-Chrome.git
@@ -93,8 +93,8 @@
 
 ### 支持的下载类型
 
-- **GitHub**：发布资源、仓库存档、原始文件、Git LFS 文件
-- **GitLab**：项目存档、发布下载、仓库导出
+- **GitHub**：发布资源、存储库存档、原始文件、Git LFS 文件
+- **GitLab**：项目存档、发布下载、存储库导出
 - **Hugging Face**：模型文件、数据集文件、模型卡片、分词器
 
 ## 🔧 工作原理
@@ -130,7 +130,7 @@ Xget：     https://xget.xi-xu.me/hf/user/model/resolve/main/model.bin
 使用 Xget 的实际性能改进：
 
 - **GitHub 发布**：下载速度提升高达 5 倍
-- **大型仓库**：多 GB 存档的显著改进  
+- **大型存储库**：多 GB 存档的显著改进  
 - **国际用户**：通过边缘缓存显著加快下载速度
 - **不稳定连接**：自动重试机制处理网络问题
 - **并发下载**：与直接平台下载相比，没有速率限制
@@ -140,7 +140,7 @@ Xget：     https://xget.xi-xu.me/hf/user/model/resolve/main/model.bin
 | 文件类型 | 原始速度 | 使用 Xget | 提升 |
 |-----------|----------------|-----------|-------------|
 | GitHub Release (100MB) | 2.5 MB/s | 12.8 MB/s | **快 5.1 倍** |
-| 仓库存档 (50MB) | 1.8 MB/s | 8.2 MB/s | **快 4.6 倍** |
+| 存储库存档 (50MB) | 1.8 MB/s | 8.2 MB/s | **快 4.6 倍** |
 | Hugging Face 模型 (500MB) | 3.2 MB/s | 15.1 MB/s | **快 4.7 倍** |
 
 > **注意**：结果可能因位置、网络条件和服务器负载而异
@@ -150,7 +150,7 @@ Xget：     https://xget.xi-xu.me/hf/user/model/resolve/main/model.bin
 - **Chrome 浏览器**：版本 88+（Manifest V3 支持）
 - **Xget 服务**：访问 Xget 实例
   - 使用公共实例：`xget.xi-xu.me`
-  - 或部署你自己的：[Xget 仓库](https://github.com/xixu-me/Xget)（推荐）
+  - 或部署你自己的：[Xget 存储库](https://github.com/xixu-me/Xget)（推荐）
 
 ### 关于 Xget 服务
 
@@ -162,7 +162,7 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 - **安全性**：全面的安全标头和内容保护
 - **可靠性**：内置超时保护和性能监控
 
-在 [xget.xi-xu.me](https://xget.xi-xu.me) 或 [Xget 仓库](https://github.com/xixu-me/Xget) 了解更多。
+在 [xget.xi-xu.me](https://xget.xi-xu.me) 或 [Xget 存储库](https://github.com/xixu-me/Xget) 了解更多。
 
 ## 🔒 隐私与安全
 
@@ -223,13 +223,13 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 
 是的，扩展完全免费且在 GPL-3.0 许可证下开源。
 
-### 这对私有仓库有效吗？
+### 这对私有存储库有效吗？
 
-扩展适用于任何可下载链接，但你需要对私有仓库有适当的访问权限。
+扩展适用于任何可下载链接，但你需要对私有存储库有适当的访问权限。
 
 ### 我可以使用自己的 Xget 服务器吗？
 
-当然可以！你可以使用 [Xget 仓库](https://github.com/xixu-me/Xget) 部署自己的 Xget 实例，并配置扩展使用你的域名。
+当然可以！你可以使用 [Xget 存储库](https://github.com/xixu-me/Xget) 部署自己的 Xget 实例，并配置扩展使用你的域名。
 
 ### 为什么有些下载仍然通过原始服务器？
 
@@ -251,7 +251,7 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 
 如果你觉得这个扩展有用，请：
 
-- ⭐ 为此仓库点星
+- ⭐ 为此存储库点星
 - 📝 在 [Chrome 网上应用店](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) 留下评价
 - 🐛 通过 [GitHub Issues](https://github.com/xixu-me/Xget-for-Chrome/issues) 报告错误或建议功能
 - 📢 与其他可能受益于更快下载的人分享
