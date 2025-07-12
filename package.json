@@ -5,7 +5,7 @@
     "url": "https://github.com/xixu-me/Xget-for-Chrome/issues"
   },
   "dependencies": {},
-  "description": "Chrome extension that accelerates downloads by redirecting them through Xget",
+  "description": "通过 Xget 重定向下载实现加速的 Chrome 扩展",
   "devDependencies": {},
   "homepage": "https://github.com/xixu-me/Xget-for-Chrome#readme",
   "keywords": [
@@ -26,14 +26,14 @@
     "url": "https://github.com/xixu-me/Xget-for-Chrome.git"
   },
   "scripts": {
-    "build": "echo 'No build process required - extension runs from source'",
+    "build": "不需要构建过程 - 扩展直接从源码运行",
     "clean": "rm -f *.zip",
-    "dev": "echo 'Open chrome://extensions/ and load unpacked extension'",
-    "lint": "echo 'No linting configured - consider adding ESLint for JavaScript files'",
+    "dev": "打开 chrome://extensions/ 并加载解压的扩展",
+    "lint": "未配置代码检查 - 建议为 JavaScript 文件添加 ESLint",
     "package": "zip -r extension.zip . -x '*.git*' 'node_modules/*' '.github/*' '*.md' 'LICENSE' '*.zip'",
     "release": "npm run validate && npm run package",
-    "test": "echo 'Load extension in Chrome Developer Mode to test'",
-    "validate": "node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); console.log('✅ manifest.json is valid')\""
+    "test": "在 Chrome 开发者模式下加载扩展进行测试",
+    "validate": "node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); console.log('✅ manifest.json 格式有效')\""
   },
   "version": "1.1.0"
 }

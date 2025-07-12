@@ -1,62 +1,62 @@
 # Pull Request
 
-## Description
-<!-- Provide a brief description of the changes in this PR -->
+## 描述
+<!-- 简要描述此 PR 中的更改 -->
 
-## Type of Change
-<!-- Mark the relevant option with an "x" -->
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] Documentation update
-- [ ] Code refactoring (no functional changes)
-- [ ] Performance improvement
+## 更改类型
+<!-- 用 "x" 标记相关选项 -->
+- [ ] Bug 修复（修复问题的非破坏性更改）
+- [ ] 新功能（添加功能的非破坏性更改）
+- [ ] 破坏性更改（会导致现有功能无法正常工作的修复或功能）
+- [ ] 文档更新
+- [ ] 代码重构（无功能更改）
+- [ ] 性能改进
 
-## Related Issues
-<!-- Link any related issues using #issue_number -->
-Fixes #(issue_number)
+## 相关问题
+<!-- 使用 #issue_number 链接任何相关问题 -->
+修复 #(问题编号)
 
-## Changes Made
-<!-- Describe the specific changes made in this PR -->
+## 所做更改
+<!-- 描述此 PR 中的具体更改 -->
 -
 -
 -
 
-## Testing
-<!-- Describe how you tested these changes -->
-- [ ] Tested on GitHub
-- [ ] Tested on GitLab  
-- [ ] Tested on Hugging Face
-- [ ] Tested extension popup/settings
-- [ ] Tested with multiple file types
-- [ ] Verified no console errors
+## 测试
+<!-- 描述你如何测试这些更改 -->
+- [ ] 在 GitHub 上测试
+- [ ] 在 GitLab 上测试
+- [ ] 在 Hugging Face 上测试
+- [ ] 测试扩展弹出窗口/设置
+- [ ] 测试多种文件类型
+- [ ] 验证无控制台错误
 
-## Platform Compatibility
-<!-- Check all platforms where you've tested the changes -->
+## 平台兼容性
+<!-- 检查你测试更改的所有平台 -->
 - [ ] GitHub
 - [ ] GitLab
 - [ ] Hugging Face
 
-## Browser Testing
-<!-- Check browsers where you've tested -->
+## 浏览器测试
+<!-- 检查你测试过的浏览器 -->
 - [ ] Chrome
 - [ ] Microsoft Edge
 - [ ] Brave
-- [ ] Other: ____________
+- [ ] 其他：____________
 
-## Screenshots/Videos
-<!-- Add screenshots or videos if applicable -->
+## 截图/视频
+<!-- 如果适用，添加截图或视频 -->
 
-## Checklist
+## 检查清单
 
-- [ ] I have read and followed the project guidelines
-- [ ] My code follows the existing code style
-- [ ] I have performed a self-review of my code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] My changes generate no new console errors or warnings
-- [ ] I have tested that existing functionality still works
-- [ ] Any new features include appropriate error handling
-- [ ] The extension manifest version has been updated if needed
+- [ ] 我已阅读并遵循项目指南
+- [ ] 我的代码遵循现有代码风格
+- [ ] 我已对我的代码进行自我审查
+- [ ] 我已对我的代码进行注释，特别是在难以理解的地方
+- [ ] 我的更改不会产生新的控制台错误或警告
+- [ ] 我已测试现有功能仍然正常工作
+- [ ] 任何新功能都包含适当的错误处理
+- [ ] 如果需要，扩展清单版本已更新
 
-## Additional Notes
-<!-- Add any additional notes or context for reviewers -->
+## 附加说明
+<!-- 为审查者添加任何附加说明或上下文 -->

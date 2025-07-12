@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  // Load current settings
+  // 加载当前设置
   await loadSettings();
 
-  // Set up event listeners
+  // 设置事件监听器
   setupEventListeners();
 });
 
@@ -12,38 +12,38 @@ async function loadSettings() {
       action: "getSettings",
     });
 
-    // Update UI with current settings
+    // 使用当前设置更新 UI
     const domainValue = settings.xgetDomain || "";
     document.getElementById("domainInput").value = domainValue;
 
-    // Only enable the toggle if domain is set
+    // 仅在设置了域名时启用切换
     const enabledValue = settings.enabled && domainValue.trim() !== "";
     document.getElementById("enabledToggle").checked = enabledValue;
 
-    // Update platform toggles
+    // 更新平台切换
     document.getElementById("ghToggle").checked = settings.enabledPlatforms.gh;
     document.getElementById("glToggle").checked = settings.enabledPlatforms.gl;
     document.getElementById("hfToggle").checked = settings.enabledPlatforms.hf;
 
-    // Show status if domain is missing
+    // 如果缺少域名则显示状态
     if (!domainValue && settings.enabled) {
-      showStatus("Please configure your Xget domain", "error");
+      showStatus("请配置你的 Xget 域名", "error");
     } else if (domainValue && enabledValue) {
-      showStatus("Extension is active and ready", "success");
+      showStatus("扩展已激活并准备就绪", "success");
     }
   } catch (error) {
-    console.error("Error loading settings:", error);
-    showStatus("Error loading settings", "error");
+    console.error("加载设置时出错：", error);
+    showStatus("加载设置时出错", "error");
   }
 }
 
 function setupEventListeners() {
-  // Enable/disable toggle
+  // 启用/禁用切换
   document
     .getElementById("enabledToggle")
     .addEventListener("change", handleEnableToggle);
 
-  // Domain input
+  // 域名输入
   document
     .getElementById("domainInput")
     .addEventListener("input", debounce(handleDomainChange, 500));
@@ -51,7 +51,7 @@ function setupEventListeners() {
     .getElementById("domainInput")
     .addEventListener("blur", validateDomain);
 
-  // Platform toggles
+  // 平台切换
   document.getElementById("ghToggle").addEventListener("change", saveSettings);
   document.getElementById("glToggle").addEventListener("change", saveSettings);
   document.getElementById("hfToggle").addEventListener("change", saveSettings);
@@ -62,10 +62,10 @@ async function saveSettings() {
     const domainValue = document.getElementById("domainInput").value.trim();
     const enabledValue = document.getElementById("enabledToggle").checked;
 
-    // Prevent enabling if no domain is set
+    // 如果没有设置域名则防止启用
     if (enabledValue && !domainValue) {
       document.getElementById("enabledToggle").checked = false;
-      showStatus("Cannot enable extension without a domain", "error");
+      showStatus("没有域名不能启用扩展", "error");
       return;
     }
 
@@ -79,7 +79,7 @@ async function saveSettings() {
       },
     };
 
-    // Clean up domain URL
+    // 清理域名 URL
     if (settings.xgetDomain) {
       settings.xgetDomain = cleanupDomain(settings.xgetDomain);
     }
@@ -90,49 +90,43 @@ async function saveSettings() {
     });
 
     if (response.success) {
-      // Show appropriate status
+      // 显示适当的状态
       if (!settings.xgetDomain && settings.enabled) {
-        showStatus("Please configure your Xget domain", "error");
+        showStatus("请配置你的 Xget 域名", "error");
       } else if (settings.xgetDomain && settings.enabled) {
-        showStatus(
-          "✅ Settings saved! Check page notifications for refresh button",
-          "success"
-        );
+        showStatus("✅ 设置已保存！查看页面通知中的刷新按钮", "success");
       } else {
-        showStatus(
-          "✅ Settings saved! Check page notifications for refresh button",
-          "success"
-        );
+        showStatus("✅ 设置已保存！查看页面通知中的刷新按钮", "success");
       }
     }
   } catch (error) {
-    console.error("Error saving settings:", error);
-    showStatus("Error saving settings", "error");
+    console.error("保存设置时出错：", error);
+    showStatus("保存设置时出错", "error");
   }
 }
 
 function validateDomain() {
   const domain = document.getElementById("domainInput").value.trim();
   if (domain && !isValidDomain(domain)) {
-    showStatus("Invalid domain format", "error");
+    showStatus("域名格式无效", "error");
   }
 }
 
 function cleanupDomain(domain) {
-  // Remove any protocol if accidentally included
+  // 如果意外包含协议，则删除它
   domain = domain.replace(/^https?:\/\//, "");
 
-  // Remove trailing slash
+  // 删除末尾斜杠
   domain = domain.replace(/\/$/, "");
 
   return domain;
 }
 
 function isValidDomain(domain) {
-  // Remove protocol if present
+  // 如果存在协议则删除它
   domain = domain.replace(/^https?:\/\//, "");
 
-  // Basic domain validation pattern
+  // 基本域名验证模式
   const domainPattern =
     /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
@@ -154,7 +148,7 @@ function showStatus(message, type) {
   statusElement.className = `status ${type}`;
   statusElement.style.display = "block";
 
-  // Auto-hide success messages
+  // 自动隐藏成功消息
   if (type === "success") {
     setTimeout(hideStatus, 3000);
   }
@@ -182,9 +176,9 @@ async function handleEnableToggle() {
   const domainInput = document.getElementById("domainInput");
 
   if (enabledToggle.checked && !domainInput.value.trim()) {
-    // Prevent enabling if no domain is set
+    // 如果没有设置域名则防止启用
     enabledToggle.checked = false;
-    showStatus("Please configure your Xget domain before enabling", "error");
+    showStatus("启用前请配置你的 Xget 域名", "error");
     return;
   }
 
@@ -195,10 +189,10 @@ async function handleDomainChange() {
   const domainInput = document.getElementById("domainInput");
   const enabledToggle = document.getElementById("enabledToggle");
 
-  // If domain is cleared and extension is enabled, disable it
+  // 如果域名被清空且扩展已启用，则禁用它
   if (!domainInput.value.trim() && enabledToggle.checked) {
     enabledToggle.checked = false;
-    showStatus("Extension disabled: domain cleared", "error");
+    showStatus("扩展已禁用：域名已清空", "error");
   }
 
   await saveSettings();

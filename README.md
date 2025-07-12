@@ -1,257 +1,257 @@
 # Xget for Chrome
 
-A powerful extension for Chromium-based browsers that accelerates downloads from GitHub, GitLab, and Hugging Face by automatically redirecting them through the [Xget](https://github.com/xixu-me/Xget) proxy service.
+一个强大的 Chromium 浏览器扩展，通过自动将下载重定向到 [Xget](https://github.com/xixu-me/Xget) 代理服务，从而加速 GitHub、GitLab 和 Hugging Face 的下载。
 
-## 🚀 Features
+## 🚀 功能特性
 
-- **🎯 Automatic Download Acceleration**: Seamlessly redirects downloads through Xget for faster speeds
-- **🌐 Multi-Platform Support**: Works with GitHub, GitLab, and Hugging Face
-- **⚙️ Configurable Settings**: Customize your Xget domain and platform preferences
-- **🔔 Smart Notifications**: Visual feedback when downloads are redirected
-- **🛡️ Privacy-First**: All processing happens locally in your browser
-- **🎛️ Per-Platform Control**: Enable/disable acceleration for specific platforms
+- **🎯 自动下载加速**：无缝重定向下载通过 Xget 获得更快速度
+- **🌐 多平台支持**：支持 GitHub、GitLab 和 Hugging Face
+- **⚙️ 可配置设置**：自定义你的 Xget 域名和平台偏好
+- **🔔 智能通知**：下载重定向时的可视化反馈
+- **🛡️ 隐私优先**：所有处理都在你的浏览器本地进行
+- **🎛️ 按平台控制**：为特定平台启用/禁用加速
 
-## 📦 Installation
+## 📦 安装
 
-### Store Availability
+### 应用商店可用性
 
-| Store | Link |
+| 商店 | 链接 |
 |-------|------|
-| **Chrome Web Store** | [![Available in the Chrome Web Store](https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png)](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) |
-| **Microsoft Edge Add-ons** | [Available in the Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc) |
+| **Chrome 网上应用店** | [![Available in the Chrome Web Store](https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png)](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) |
+| **Microsoft Edge 加载项** | [Available in the Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc) |
 
-### Manual Installation
+### 手动安装
 
-If you prefer to install the extension manually or the store versions are not available, you can download and install it directly:
+如果你更喜欢手动安装扩展或应用商店版本不可用，你可以直接下载并安装：
 
-#### Option 1: Install from GitHub Releases (Recommended)
+#### 选项 1：从 GitHub Releases 安装（推荐）
 
-1. **Download the Extension**
-   - Go to the [Releases page](https://github.com/xixu-me/Xget-for-Chrome/releases)
-   - Download the latest release file:
-     - `chrome-extension.zip` - For Chrome browsers
-     - `edge-extension.zip` - For Microsoft Edge
-     - `extension.crx` - Pre-packaged extension file for all Chromium-based browsers
+1. **下载扩展**
+   - 前往 [Releases 页面](https://github.com/xixu-me/Xget-for-Chrome/releases)
+   - 下载最新发布文件：
+     - `chrome-extension.zip` - 适用于 Chrome 浏览器
+     - `edge-extension.zip` - 适用于 Microsoft Edge
+     - `extension.crx` - 适用于所有基于 Chromium 的浏览器的预打包扩展文件
 
-2. **Install in Chrome**
-   - Open Chrome and go to `chrome://extensions/`
-   - Enable "Developer mode" (toggle in top right)
-   - Click "Load unpacked" and select the extracted folder from the ZIP file
-   - Or drag and drop the `.crx` file directly onto the extensions page
+2. **在 Chrome 中安装**
+   - 打开 Chrome 并前往 `chrome://extensions/`
+   - 启用「开发者模式」（右上角的切换开关）
+   - 点击「加载已解压的扩展程序」并选择从 ZIP 文件解压的文件夹
+   - 或者直接将 `.crx` 文件拖放到扩展页面
 
-3. **Install in Microsoft Edge**
-   - Open Microsoft Edge and go to `edge://extensions/`
-   - Enable "Developer mode" (toggle in left sidebar)
-   - Click "Load unpacked" and select the extracted folder from the ZIP file
-   - Or drag and drop the `.crx` file directly onto the extensions page
+3. **在 Microsoft Edge 中安装**
+   - 打开 Microsoft Edge 并前往 `edge://extensions/`
+   - 启用「开发人员模式」（左侧边栏的切换开关）
+   - 点击「加载解压缩的扩展」并选择从 ZIP 文件解压的文件夹
+   - 或者直接将 `.crx` 文件拖放到扩展页面
 
-4. **Install in other Chromium-based browsers**
-   - Follow similar steps as Chrome or Microsoft Edge, ensuring you enable "Developer mode" first
-   - Drag and drop the `.crx` file directly onto the extensions page
+4. **在其他基于 Chromium 的浏览器中安装**
+   - 遵循与 Chrome 或 Microsoft Edge 类似的步骤，确保首先启用「开发者模式」
+   - 直接将 `.crx` 文件拖放到扩展页面
 
-#### Option 2: Install from Source Code
+#### 选项 2：从源码安装
 
-1. **Clone the Repository**
+1. **克隆仓库**
 
    ```bash
    git clone https://github.com/xixu-me/Xget-for-Chrome.git
    cd Xget-for-Chrome
    ```
 
-2. **Load in Browser**
-   - Open your browser's extension management page
-   - Enable "Developer mode"
-   - Click "Load unpacked" and select the cloned folder
+2. **在浏览器中加载**
+   - 打开浏览器的扩展管理页面
+   - 启用「开发者模式」
+   - 点击「加载已解压的扩展程序」并选择克隆的文件夹
 
-#### Verify Installation
+#### 验证安装
 
-After installation, you should see the Xget extension icon in your browser toolbar. Click it to configure your Xget domain and start accelerating downloads!
+安装后，你应该在浏览器工具栏中看到 Xget 扩展图标。点击它来配置你的 Xget 域名并开始加速下载！
 
-## ⚙️ Setup
+## ⚙️ 设置
 
-1. **Configure Xget Domain**
-   - Click the extension icon in your toolbar
-   - Enter your Xget domain (e.g., `xget.xi-xu.me`)
-   - Enable the extension
+1. **配置 Xget 域名**
+   - 点击工具栏中的扩展图标
+   - 输入你的 Xget 域名（例如 `xget.xi-xu.me`）
+   - 启用扩展
 
-2. **Choose Platforms** (Optional)
-   - Toggle individual platforms on/off as needed
-   - All platforms (GitHub, GitLab, Hugging Face) are enabled by default
+2. **选择平台**（可选）
+   - 根据需要切换各个平台的开关
+   - 默认启用所有平台（GitHub、GitLab、Hugging Face）
 
-3. **Start Downloading**
-   - Visit any supported platform
-   - Click download links as usual
-   - Downloads will be automatically accelerated through Xget
+3. **开始下载**
+   - 访问任何受支持的平台
+   - 像往常一样点击下载链接
+   - 下载将自动通过 Xget 加速
 
-## 🎯 Supported Platforms
+## 🎯 支持的平台
 
-| Platform | Status | URL Pattern | Extension ID |
+| 平台 | 状态 | URL 模式 | 扩展 ID |
 |----------|---------|-------------|--------------|
-| **GitHub** | ✅ Supported | `github.com/*` | `gh` |
-| **GitLab** | ✅ Supported | `gitlab.com/*` | `gl` |
-| **Hugging Face** | ✅ Supported | `huggingface.co/*` | `hf` |
+| **GitHub** | ✅ 支持 | `github.com/*` | `gh` |
+| **GitLab** | ✅ 支持 | `gitlab.com/*` | `gl` |
+| **Hugging Face** | ✅ 支持 | `huggingface.co/*` | `hf` |
 
-### Supported Download Types
+### 支持的下载类型
 
-- **GitHub**: Release assets, repository archives, raw files, Git LFS files
-- **GitLab**: Project archives, release downloads, repository exports
-- **Hugging Face**: Model files, dataset files, model cards, tokenizers
+- **GitHub**：发布资源、仓库存档、原始文件、Git LFS 文件
+- **GitLab**：项目存档、发布下载、仓库导出
+- **Hugging Face**：模型文件、数据集文件、模型卡片、分词器
 
-## 🔧 How It Works
+## 🔧 工作原理
 
-1. **Detection**: The extension monitors download links on supported platforms
-2. **Transformation**: URLs are automatically converted to Xget-compatible format
-3. **Redirection**: Downloads are routed through your configured Xget domain
-4. **Acceleration**: Xget's global CDN and optimization features deliver faster download speeds
+1. **检测**：扩展监控受支持平台上的下载链接
+2. **转换**：URL 自动转换为 Xget 兼容格式
+3. **重定向**：下载通过你配置的 Xget 域名路由
+4. **加速**：Xget 的全球 CDN 和优化功能提供更快的下载速度
 
-### URL Transformation Examples
+### URL 转换示例
 
 ```text
-Original:  https://github.com/user/repo/archive/main.zip
-Xget:      https://xget.xi-xu.me/gh/user/repo/archive/main.zip
+原始：     https://github.com/user/repo/archive/main.zip
+Xget：     https://xget.xi-xu.me/gh/user/repo/archive/main.zip
 
-Original:  https://gitlab.com/user/repo/-/archive/main.zip  
-Xget:      https://xget.xi-xu.me/gl/user/repo/-/archive/main.zip
+原始：     https://gitlab.com/user/repo/-/archive/main.zip  
+Xget：     https://xget.xi-xu.me/gl/user/repo/-/archive/main.zip
 
-Original:  https://huggingface.co/user/model/resolve/main/model.bin
-Xget:      https://xget.xi-xu.me/hf/user/model/resolve/main/model.bin
+原始：     https://huggingface.co/user/model/resolve/main/model.bin
+Xget：     https://xget.xi-xu.me/hf/user/model/resolve/main/model.bin
 ```
 
-### Why Xget Makes Downloads Faster
+### 为什么 Xget 让下载更快
 
-- **Edge Caching**: Files are cached at Cloudflare's global edge locations
-- **HTTP/3 Support**: Uses the latest protocol for improved performance
-- **Intelligent Routing**: Automatically routes through the fastest available server
-- **Compression**: Automatic content compression reduces transfer times
-- **Connection Optimization**: Persistent connections and preconnection features
+- **边缘缓存**：文件在 Cloudflare 的全球边缘位置进行缓存
+- **HTTP/3 支持**：使用最新协议提高性能
+- **智能路由**：自动通过最快的可用服务器路由
+- **压缩**：自动内容压缩减少传输时间
+- **连接优化**：持久连接和预连接功能
 
-## 📈 Performance Benefits
+## 📈 性能优势
 
-Real-world performance improvements with Xget:
+使用 Xget 的实际性能改进：
 
-- **GitHub releases**: Up to 5x faster download speeds
-- **Large repositories**: Significant improvement for multi-GB archives  
-- **International users**: Dramatically faster downloads through edge caching
-- **Unstable connections**: Automatic retry mechanisms handle network issues
-- **Concurrent downloads**: No rate limiting compared to direct platform downloads
+- **GitHub 发布**：下载速度提升高达 5 倍
+- **大型仓库**：多 GB 存档的显著改进  
+- **国际用户**：通过边缘缓存显著加快下载速度
+- **不稳定连接**：自动重试机制处理网络问题
+- **并发下载**：与直接平台下载相比，没有速率限制
 
-### Benchmarks
+### 基准测试
 
-| File Type | Original Speed | With Xget | Improvement |
+| 文件类型 | 原始速度 | 使用 Xget | 提升 |
 |-----------|----------------|-----------|-------------|
-| GitHub Release (100MB) | 2.5 MB/s | 12.8 MB/s | **5.1x faster** |
-| Repository Archive (50MB) | 1.8 MB/s | 8.2 MB/s | **4.6x faster** |
-| Hugging Face Model (500MB) | 3.2 MB/s | 15.1 MB/s | **4.7x faster** |
+| GitHub Release (100MB) | 2.5 MB/s | 12.8 MB/s | **快 5.1 倍** |
+| 仓库存档 (50MB) | 1.8 MB/s | 8.2 MB/s | **快 4.6 倍** |
+| Hugging Face 模型 (500MB) | 3.2 MB/s | 15.1 MB/s | **快 4.7 倍** |
 
-> **Note**: Results may vary based on location, network conditions, and server load
+> **注意**：结果可能因位置、网络条件和服务器负载而异
 
-## 📋 Requirements
+## 📋 要求
 
-- **Chrome Browser**: Version 88+ (Manifest V3 support)
-- **Xget Service**: Access to an Xget instance
-  - Use the public instance: `xget.xi-xu.me`
-  - Or deploy your own: [Xget Repository](https://github.com/xixu-me/Xget) (Recommended)
+- **Chrome 浏览器**：版本 88+（Manifest V3 支持）
+- **Xget 服务**：访问 Xget 实例
+  - 使用公共实例：`xget.xi-xu.me`
+  - 或部署你自己的：[Xget 仓库](https://github.com/xixu-me/Xget)（推荐）
 
-### About Xget Service
+### 关于 Xget 服务
 
-Xget is a high-performance, secure proxy service built on Cloudflare Workers that provides:
+Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，提供：
 
-- **Global Edge Distribution**: Faster downloads through Cloudflare's global network
-- **Multi-Platform Support**: Optimized for GitHub, GitLab, and Hugging Face
-- **Advanced Features**: HTTP/3 support, intelligent caching, automatic retries
-- **Security**: Comprehensive security headers and content protection
-- **Reliability**: Built-in timeout protection and performance monitoring
+- **全球边缘分发**：通过 Cloudflare 的全球网络加快下载速度
+- **多平台支持**：针对 GitHub、GitLab 和 Hugging Face 进行优化
+- **高级功能**：HTTP/3 支持、智能缓存、自动重试
+- **安全性**：全面的安全标头和内容保护
+- **可靠性**：内置超时保护和性能监控
 
-Learn more at [xget.xi-xu.me](https://xget.xi-xu.me) or the [Xget repository](https://github.com/xixu-me/Xget).
+在 [xget.xi-xu.me](https://xget.xi-xu.me) 或 [Xget 仓库](https://github.com/xixu-me/Xget) 了解更多。
 
-## 🔒 Privacy & Security
+## 🔒 隐私与安全
 
-- **Local Processing**: All URL transformations happen in your browser
-- **No Data Collection**: The extension doesn't collect or transmit personal data
-- **Minimal Permissions**: Only requests necessary permissions for functionality
-- **Open Source**: Full source code available for inspection
+- **本地处理**：所有 URL 转换都在你的浏览器中进行
+- **无数据收集**：扩展不收集或传输个人数据
+- **最小权限**：仅请求功能所需的必要权限
+- **开源**：完整源码可供检查
 
-See our [Privacy Policy](PRIVACY_POLICY.md) for complete details.
+查看我们的 [隐私政策](PRIVACY_POLICY.md) 了解完整详情。
 
-## 🐛 Troubleshooting
+## 🐛 故障排除
 
-### Common Issues
+### 常见问题
 
-**Extension not working?**
+**扩展不工作？**
 
-- Ensure you've configured a valid Xget domain
-- Check that the extension is enabled in the popup
-- Verify the target platform is enabled
-- Try refreshing the page after changing settings
+- 确保你已配置有效的 Xget 域名
+- 检查扩展在弹出窗口中是否已启用
+- 验证目标平台是否已启用
+- 更改设置后尝试刷新页面
 
-**Downloads not being redirected?**
+**下载没有被重定向？**
 
-- Refresh the page after changing settings
-- Check browser console for error messages (F12 → Console)
-- Ensure the link is a recognized download type
-- Verify you're clicking actual download links, not navigation links
+- 更改设置后刷新页面
+- 检查浏览器控制台的错误消息（F12 → 控制台）
+- 确保链接是被识别的下载类型
+- 验证你点击的是实际的下载链接，而不是导航链接
 
-**Xget domain issues?**
+**Xget 域名问题？**
 
-- Domain should be without `https://` protocol
-- Example: `xget.xi-xu.me` (not `https://xget.xi-xu.me`)
-- Check that the domain is accessible in your browser
-- Try using the default public instance: `xget.xi-xu.me`
+- 域名应该不带 `https://` 协议
+- 示例：`xget.xi-xu.me`（不是 `https://xget.xi-xu.me`）
+- 检查域名在浏览器中是否可访问
+- 尝试使用默认的公共实例：`xget.xi-xu.me`
 
-**Performance issues?**
+**性能问题？**
 
-- Check your network connection
-- Try a different Xget domain if available
-- Verify the target platform's servers are responsive
-- Clear browser cache and reload the extension
+- 检查你的网络连接
+- 如果可用，尝试其他 Xget 域名
+- 验证目标平台的服务器是否响应
+- 清除浏览器缓存并重新加载扩展
 
-### Debug Mode
+### 调试模式
 
-Enable Chrome Developer Tools and check the Console tab for debug messages:
+启用 Chrome 开发者工具并检查控制台选项卡中的调试消息：
 
-- Extension loading: "Xget for Chrome: Content script loaded"
-- Download redirection: "Redirecting download: [original] -> [xget]"
-- Settings changes: "Settings updated! Click to refresh page"
+- 扩展加载：「Xget for Chrome：内容脚本已加载」
+- 下载重定向：「重定向下载：[原始] -> [xget]」
+- 设置更改：「设置已更新！点击刷新页面」
 
-## 📄 License
+## 📄 许可证
 
-This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
+本项目采用 GPL-3.0 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
 
-## ❓ Frequently Asked Questions
+## ❓ 常见问题
 
-### Is this extension free?
+### 这个扩展是免费的吗？
 
-Yes, the extension is completely free and open source under the GPL-3.0 license.
+是的，扩展完全免费且在 GPL-3.0 许可证下开源。
 
-### Does this work with private repositories?
+### 这对私有仓库有效吗？
 
-The extension works with any downloadable link, but you need appropriate access permissions for private repositories.
+扩展适用于任何可下载链接，但你需要对私有仓库有适当的访问权限。
 
-### Can I use my own Xget server?
+### 我可以使用自己的 Xget 服务器吗？
 
-Absolutely! You can deploy your own Xget instance using the [Xget repository](https://github.com/xixu-me/Xget) and configure the extension to use your domain.
+当然可以！你可以使用 [Xget 仓库](https://github.com/xixu-me/Xget) 部署自己的 Xget 实例，并配置扩展使用你的域名。
 
-### Why do some downloads still go through the original servers?
+### 为什么有些下载仍然通过原始服务器？
 
-The extension only redirects recognized download links. Navigation links, preview links, and some dynamic content may not be redirected.
+扩展只重定向被识别的下载链接。导航链接、预览链接和一些动态内容可能不会被重定向。
 
-### Is my browsing data collected?
+### 我的浏览数据会被收集吗？
 
-No, the extension operates entirely locally. No browsing data is collected or transmitted. See our [Privacy Policy](PRIVACY_POLICY.md) for details.
+不会，扩展完全在本地运行。不收集或传输浏览数据。查看我们的 [隐私政策](PRIVACY_POLICY.md) 了解详情。
 
-### How much faster are downloads?
+### 下载能快多少？
 
-Speed improvements vary based on your location, network, and file size. Typical improvements range from 2x to 10x faster.
+速度提升因你的位置、网络和文件大小而异。典型的改进范围从 2 倍到 10 倍。
 
-### Can I disable the extension for specific sites?
+### 我可以为特定网站禁用扩展吗？
 
-Yes, use the per-platform toggles in the extension popup to disable acceleration for specific platforms.
+是的，使用扩展弹出窗口中的按平台切换开关来禁用特定平台的加速。
 
-## 🌟 Show Your Support
+## 🌟 支持我们
 
-If you find this extension helpful, please:
+如果你觉得这个扩展有用，请：
 
-- ⭐ Star this repository
-- 📝 Leave a review on the [Chrome Web Store](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf)
-- 🐛 Report bugs or suggest features via [GitHub Issues](https://github.com/xixu-me/Xget-for-Chrome/issues)
-- 📢 Share with others who might benefit from faster downloads
+- ⭐ 为此仓库点星
+- 📝 在 [Chrome 网上应用店](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) 留下评价
+- 🐛 通过 [GitHub Issues](https://github.com/xixu-me/Xget-for-Chrome/issues) 报告错误或建议功能
+- 📢 与其他可能受益于更快下载的人分享

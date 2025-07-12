@@ -1,66 +1,66 @@
-# Security Policy
+# 安全政策
 
-## Supported Versions
+## 支持的版本
 
-We actively support the latest version of Xget for Chrome. Security updates are provided for:
+我们积极支持 Xget for Chrome 的最新版本。为以下版本提供安全更新：
 
-| Version | Supported          |
+| 版本 | 支持状态 |
 | ------- | ------------------ |
 | 1.x.x   | :white_check_mark: |
 
-## Reporting a Vulnerability
+## 报告漏洞
 
-If you discover a security vulnerability in Xget for Chrome, please report it responsibly:
+如果你在 Xget for Chrome 中发现安全漏洞，请负责任地报告：
 
-### How to Report
+### 如何报告
 
-1. **Do not** create a public GitHub issue for security vulnerabilities
-2. Email the maintainer directly or create a private security advisory
-3. Include as much detail as possible:
-   - Description of the vulnerability
-   - Steps to reproduce
-   - Potential impact
-   - Suggested fix (if any)
+1. **不要** 为安全漏洞创建公开的 GitHub 问题
+2. 直接发邮件给维护者或创建私人安全咨询
+3. 包含尽可能多的详细信息：
+   - 漏洞描述
+   - 重现步骤
+   - 潜在影响
+   - 建议修复（如果有）
 
-### What to Expect
+### 期望结果
 
-- **Response Time**: We aim to respond within 48 hours
-- **Investigation**: We will investigate and assess the severity
-- **Fix Timeline**: Critical vulnerabilities will be patched within 7 days
-- **Disclosure**: We will coordinate responsible disclosure with you
+- **响应时间**：我们目标在 48 小时内响应
+- **调查**：我们将调查并评估严重性
+- **修复时间表**：关键漏洞将在 7 天内修补
+- **披露**：我们将与你协调负责任的披露
 
-### Security Considerations
+### 安全考虑
 
-This extension:
+此扩展：
 
-- Processes URLs locally in your browser
-- Does not collect or transmit personal data
-- Uses Chrome's standard extension APIs
-- Redirects downloads through user-configured Xget domains
+- 在你的浏览器中本地处理 URL
+- 不收集或传输个人数据
+- 使用 Chrome 的标准扩展 API
+- 通过用户配置的 Xget 域名重定向下载
 
-### Scope
+### 范围
 
-Security issues we consider in scope:
+我们认为在范围内的安全问题：
 
-- Code injection vulnerabilities
-- Privilege escalation
-- Data leakage or privacy violations
-- Malicious URL handling
-- Extension permission abuse
+- 代码注入漏洞
+- 权限提升
+- 数据泄露或隐私违规
+- 恶意 URL 处理
+- 扩展权限滥用
 
-Out of scope:
+超出范围：
 
-- Issues with third-party Xget servers
-- Browser-level vulnerabilities
-- Social engineering attacks
+- 第三方 Xget 服务器的问题
+- 浏览器级别的漏洞
+- 社会工程攻击
 
-## Security Best Practices
+## 安全最佳实践
 
-When using this extension:
+使用此扩展时：
 
-- Only configure trusted Xget domains
-- Keep the extension updated
-- Review permissions when updating
-- Report suspicious behavior
+- 仅配置可信的 Xget 域名
+- 保持扩展更新
+- 更新时审查权限
+- 报告可疑行为
 
-Thank you for helping keep Xget for Chrome secure!
+感谢你帮助保持 Xget for Chrome 的安全！

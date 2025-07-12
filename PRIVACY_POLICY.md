@@ -1,202 +1,202 @@
-# Privacy Policy for Xget for Chrome
+# Xget for Chrome 隐私政策
 
-## Last updated: July 9, 2025
+## 最后更新：2025 年 7 月 9 日
 
-## Overview
+## 概述
 
-Xget for Chrome is a browser extension that accelerates downloads by redirecting them through Xget proxy servers. This privacy policy explains how we collect, use, and protect your information when you use our extension.
+Xget for Chrome 是一个浏览器扩展，通过将下载重定向到 Xget 代理服务器来加速下载。此隐私政策解释了我们在你使用我们的扩展时如何收集、使用和保护你的信息。
 
-## Information We Collect
+## 我们收集的信息
 
-### 1. User Settings and Configuration Data
+### 1. 用户设置和配置数据
 
-We collect and store the following information locally on your device:
+我们在你的设备本地收集和存储以下信息：
 
-- **Xget Domain Configuration**: The domain you configure for the Xget service (e.g., "xget.xi-xu.me")
-- **Extension Enable/Disable Status**: Whether the extension is currently enabled
-- **Platform Preferences**: Your preferences for which platforms (GitHub, GitLab, Hugging Face) to use with the extension
+- **Xget 域名配置**：你为 Xget 服务配置的域名（例如「xget.xi-xu.me」）
+- **扩展启用/禁用状态**：扩展当前是否已启用
+- **平台偏好**：你对哪些平台（GitHub、GitLab、Hugging Face）使用扩展的偏好
 
-### 2. Download Activity Data
+### 2. 下载活动数据
 
-The extension processes the following data during operation:
+扩展在运行期间处理以下数据：
 
-- **Download URLs**: URLs of files you attempt to download from supported platforms
-- **Referrer Information**: The webpage from which downloads are initiated
-- **File Information**: Basic file metadata like filenames when available
+- **下载 URL**：你尝试从支持的平台下载的文件的 URL
+- **来源信息**：发起下载的网页
+- **文件信息**：如文件名等基本文件元数据（如果可用）
 
-### 3. Browser Interaction Data
+### 3. 浏览器交互数据
 
-- **Tab Information**: Limited tab data to send notifications about redirected downloads
-- **Click Events**: Detection of clicks on download links to trigger redirection
+- **标签页信息**：有限的标签页数据，用于发送关于重定向下载的通知
+- **点击事件**：检测下载链接的点击以触发重定向
 
-## How We Use Your Information
+## 我们如何使用你的信息
 
-### Local Processing Only
+### 仅本地处理
 
-- All settings and preferences are stored locally in your browser using Chrome's storage API
-- Download URL transformation happens locally within the extension
-- No personal data is transmitted to our servers
+- 所有设置和偏好都使用 Chrome 的存储 API 在你的浏览器中本地存储
+- 下载 URL 转换在扩展内本地进行
+- 没有个人数据传输到我们的服务器
 
-### Download Redirection
+### 下载重定向
 
-- We modify download URLs to redirect through your configured Xget domain
-- The original download URLs are processed locally to create Xget-compatible URLs
-- Redirected downloads are handled by the Xget service according to their privacy policy
+- 我们修改下载 URL 以通过你配置的 Xget 域名重定向
+- 原始下载 URL 在本地处理以创建 Xget 兼容的 URL
+- 重定向的下载由 Xget 服务根据其隐私政策处理
 
-### Notifications
+### 通知
 
-- We display local notifications to inform you when downloads are redirected
-- These notifications appear only in your browser and are not logged or transmitted
+- 我们显示本地通知以告知你下载已被重定向
+- 这些通知仅在你的浏览器中出现，不会被记录或传输
 
-## Data Storage and Security
+## 数据存储和安全
 
-### Local Storage
+### 本地存储
 
-- All extension settings are stored using Chrome's synchronized storage API
-- Settings may sync across your Chrome browsers if you're signed into Chrome
-- No sensitive personal information is stored
+- 所有扩展设置都使用 Chrome 的同步存储 API 存储
+- 如果你已登录 Chrome，设置可能会在你的 Chrome 浏览器之间同步
+- 不存储敏感的个人信息
 
-### Data Retention
+### 数据保留
 
-- Settings persist until you uninstall the extension or manually clear them
-- Download URLs are not stored; they are processed in real-time only
-- No browsing history or personal files are retained
+- 设置会保留到你卸载扩展或手动清除它们
+- 下载 URL 不被存储；它们仅实时处理
+- 不保留浏览历史或个人文件
 
-### Security Measures
+### 安全措施
 
-- All data processing occurs locally within your browser
-- No external communication except for redirected downloads through your configured Xget domain
-- Extension follows Chrome's security model and permissions system
+- 所有数据处理都在你的浏览器内本地进行
+- 除了通过你配置的 Xget 域名重定向下载外，没有外部通信
+- 扩展遵循 Chrome 的安全模型和权限系统
 
-## Third-Party Services
+## 第三方服务
 
-### Xget Service
+### Xget 服务
 
-- When you download files, they are redirected through the Xget service you configure
-- The Xget service may have its own privacy policy governing how they handle downloads
-- We recommend reviewing the privacy policy of your chosen Xget service provider
+- 当你下载文件时，它们会通过你配置的 Xget 服务重定向
+- Xget 服务可能有自己的隐私政策来管理他们如何处理下载
+- 我们建议查看你选择的 Xget 服务提供商的隐私政策
 
-### Supported Platforms
+### 支持的平台
 
-The extension operates on these platforms:
+扩展在这些平台上运行：
 
 - **GitHub** (github.com)
 - **GitLab** (gitlab.com)
 - **Hugging Face** (huggingface.co)
 
-We do not collect or store any account information from these platforms.
+我们不收集或存储来自这些平台的任何账户信息。
 
-## Permissions Explained
+## 权限说明
 
-### Why We Need These Permissions
+### 为什么我们需要这些权限
 
-**Downloads Permission**:
+**下载权限**：
 
-- Required to intercept and redirect download requests
-- Allows the extension to cancel original downloads and start redirected ones
+- 需要拦截和重定向下载请求
+- 允许扩展取消原始下载并开始重定向的下载
 
-**Storage Permission**:
+**存储权限**：
 
-- Used to save your extension settings and preferences locally
-- Enables settings synchronization across your Chrome browsers
+- 用于在本地保存你的扩展设置和偏好
+- 启用在你的 Chrome 浏览器之间的设置同步
 
-**Active Tab Permission**:
+**活动标签页权限**：
 
-- Needed to send notifications about redirected downloads
-- Does not allow reading page content or personal information
+- 需要发送关于重定向下载的通知
+- 不允许读取页面内容或个人信息
 
-**Host Permissions** (github.com, gitlab.com, huggingface.co):
+**主机权限**（github.com、gitlab.com、huggingface.co）：
 
-- Required to run the extension on supported platforms
-- Allows detection and redirection of download links
+- 需要在支持的平台上运行扩展
+- 允许检测和重定向下载链接
 
-**Web Request Permissions**:
+**网络请求权限**：
 
-- Used for download interception functionality
-- Does not monitor general browsing activity
+- 用于下载拦截功能
+- 不监控一般的浏览活动
 
-## Your Privacy Rights
+## 你的隐私权利
 
-### Control Over Your Data
+### 对你数据的控制
 
-- You can disable the extension at any time through the popup interface
-- You can configure which platforms to use with the extension
-- You can change or remove your Xget domain configuration
-- Uninstalling the extension removes all stored settings
+- 你可以随时通过弹出界面禁用扩展
+- 你可以配置与扩展一起使用的平台
+- 你可以更改或删除你的 Xget 域名配置
+- 卸载扩展会删除所有存储的设置
 
-### Data Portability
+### 数据可移植性
 
-- Settings are stored in standard Chrome storage format
-- You can export/backup Chrome extension settings through Chrome's sync feature
+- 设置以标准 Chrome 存储格式存储
+- 你可以通过 Chrome 的同步功能导出/备份 Chrome 扩展设置
 
-### Data Deletion
+### 数据删除
 
-- Clear extension data by uninstalling the extension
-- Reset settings through the extension popup interface
-- Clear Chrome's extension storage to remove all traces
+- 通过卸载扩展清除扩展数据
+- 通过扩展弹出界面重置设置
+- 清除 Chrome 的扩展存储以删除所有痕迹
 
-## Children's Privacy
+## 儿童隐私
 
-This extension is not intended for use by children under 13 years of age. We do not knowingly collect personal information from children under 13.
+此扩展不适用于 13 岁以下的儿童使用。我们不会故意收集 13 岁以下儿童的个人信息。
 
-## Changes to This Privacy Policy
+## 隐私政策的更改
 
-We may update this privacy policy from time to time. When we do, we will:
+我们可能会不时更新此隐私政策。当我们这样做时，我们将：
 
-- Update the "Last updated" date at the top of this policy
-- Notify users through the extension interface if there are material changes
-- Maintain previous versions for reference
+- 更新此政策顶部的「最后更新」日期
+- 如果有重大更改，通过扩展界面通知用户
+- 保留以前的版本供参考
 
-## Compliance
+## 合规性
 
-This extension is designed to comply with:
+此扩展设计为符合：
 
-- Chrome Web Store Developer Policies
-- General Data Protection Regulation (GDPR)
-- California Consumer Privacy Act (CCPA)
-- Other applicable privacy laws
+- Chrome 网上应用店开发者政策
+- 通用数据保护条例（GDPR）
+- 加州消费者隐私法案（CCPA）
+- 其他适用的隐私法律
 
-## Technical Implementation
+## 技术实现
 
-### Data Minimization
+### 数据最小化
 
-- We collect only the minimum data necessary for functionality
-- No analytics, tracking, or telemetry data is collected
-- No user identification or profiling occurs
+- 我们只收集功能所需的最少数据
+- 不收集分析、跟踪或遥测数据
+- 不进行用户识别或分析
 
-### Transparency
+### 透明度
 
-- All source code is available for review
-- Extension behavior is predictable and documented
-- No hidden data collection or processing
+- 所有源代码都可供审查
+- 扩展行为是可预测和有文档记录的
+- 没有隐藏的数据收集或处理
 
-## Contact Information
+## 联系信息
 
-If you have any questions about this privacy policy or the extension's data practices:
+如果你对此隐私政策或扩展的数据实践有任何疑问：
 
-- **Developer**: Xi Xu
-- **Repository**: [Xget for Chrome on GitHub](https://github.com/xixu-me/Xget-for-Chrome)
-- **Issues**: [Report Issues](https://github.com/xixu-me/Xget-for-Chrome/issues)
+- **开发者**：Xi Xu
+- **仓库**：[Xget for Chrome on GitHub](https://github.com/xixu-me/Xget-for-Chrome)
+- **问题**：[报告问题](https://github.com/xixu-me/Xget-for-Chrome/issues)
 
-## Open Source Commitment
+## 开源承诺
 
-This extension is open source software licensed under GPL-3.0. You can:
+此扩展是在 GPL-3.0 许可证下的开源软件。你可以：
 
-- Review the complete source code
-- Verify our privacy practices
-- Submit issues or improvements
-- Fork and modify the code
+- 审查完整的源代码
+- 验证我们的隐私实践
+- 提交问题或改进
+- 分叉和修改代码
 
-## Data Protection Summary
+## 数据保护摘要
 
-| Data Type | Collection | Storage | Sharing | Retention |
+| 数据类型 | 收集 | 存储 | 共享 | 保留 |
 |-----------|------------|---------|---------|-----------|
-| Extension Settings | Local only | Browser storage | Chrome sync only | Until uninstall |
-| Download URLs | Processed locally | Not stored | Redirected only | Real-time only |
-| Personal Information | None | None | None | None |
-| Browsing History | None | None | None | None |
-| User Identity | None | None | None | None |
+| 扩展设置 | 仅本地 | 浏览器存储 | 仅 Chrome 同步 | 直到卸载 |
+| 下载 URL | 本地处理 | 不存储 | 仅重定向 | 仅实时 |
+| 个人信息 | 无 | 无 | 无 | 无 |
+| 浏览历史 | 无 | 无 | 无 | 无 |
+| 用户身份 | 无 | 无 | 无 | 无 |
 
 ---
 
-By using Xget for Chrome, you acknowledge that you have read and understood this privacy policy and agree to the data practices described herein.
+通过使用 Xget for Chrome，你确认已阅读并理解此隐私政策，并同意此处描述的数据实践。

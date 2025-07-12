@@ -1,4 +1,4 @@
-// Platform configurations matching the worker.js
+// 与 worker.js 匹配的平台配置
 const PLATFORMS = {
   gh: {
     base: "https://github.com",
@@ -20,7 +20,7 @@ const PLATFORMS = {
   },
 };
 
-// Default settings
+// 默认设置
 const DEFAULT_SETTINGS = {
   enabled: true,
   xgetDomain: "xget.xi-xu.me",
@@ -31,16 +31,16 @@ const DEFAULT_SETTINGS = {
   },
 };
 
-// Initialize extension
+// 初始化扩展
 chrome.runtime.onInstalled.addListener(async () => {
-  console.log("Xget for Chrome installed");
+  console.log("Xget for Chrome 已安装");
 
-  // Set default settings if not already set
+  // 如果尚未设置，则设置默认设置
   const settings = await chrome.storage.sync.get(DEFAULT_SETTINGS);
   await chrome.storage.sync.set(settings);
 });
 
-// Listen for download events
+// 监听下载事件
 chrome.downloads.onDeterminingFilename.addListener((downloadItem, suggest) => {
   handleDownload(downloadItem, suggest);
 });
@@ -49,7 +49,7 @@ async function handleDownload(downloadItem, suggest) {
   try {
     const settings = await chrome.storage.sync.get(DEFAULT_SETTINGS);
 
-    // Check if extension is enabled and domain is configured
+    // 检查扩展是否已启用并配置了域名
     if (!settings.enabled || !settings.xgetDomain) {
       suggest();
       return;
@@ -59,39 +59,39 @@ async function handleDownload(downloadItem, suggest) {
     const redirectedUrl = transformUrl(url, settings);
 
     if (redirectedUrl && redirectedUrl !== url) {
-      console.log("Redirecting download:", url, "->", redirectedUrl);
+      console.log("重定向下载：", url, "->", redirectedUrl);
 
-      // Cancel the original download
+      // 取消原始下载
       chrome.downloads.cancel(downloadItem.id);
 
-      // Start new download with redirected URL
+      // 使用重定向的 URL 开始新下载
       chrome.downloads.download({
         url: redirectedUrl,
         filename: downloadItem.filename || undefined,
         conflictAction: "uniquify",
       });
 
-      // Show notification via content script
+      // 通过内容脚本显示通知
       try {
         await chrome.tabs.sendMessage(downloadItem.tabId, {
           action: "showNotification",
-          message: "Download redirected through Xget",
+          message: "下载已通过 Xget 重定向",
         });
       } catch (error) {
-        console.log("Could not send notification to tab");
+        console.log("无法向标签页发送通知");
       }
     } else {
       suggest();
     }
   } catch (error) {
-    console.error("Error handling download:", error);
+    console.error("处理下载时出错：", error);
     suggest();
   }
 }
 
 function transformUrl(url, settings) {
   try {
-    // Find matching platform
+    // 找到匹配的平台
     for (const [platformKey, platform] of Object.entries(PLATFORMS)) {
       if (!settings.enabledPlatforms[platformKey]) continue;
 
@@ -99,27 +99,27 @@ function transformUrl(url, settings) {
         const urlObj = new URL(url);
         const path = urlObj.pathname + urlObj.search + urlObj.hash;
 
-        // Transform the URL using Xget domain (add https:// protocol)
+        // 使用 Xget 域名转换 URL（添加 https:// 协议）
         const xgetUrl = `https://${settings.xgetDomain}/${platformKey}${path}`;
         return xgetUrl;
       }
     }
 
-    return null; // No transformation needed
+    return null; // 不需要转换
   } catch (error) {
-    console.error("Error transforming URL:", error);
+    console.error("转换 URL 时出错：", error);
     return null;
   }
 }
 
-// Listen for messages from popup/options
+// 监听来自弹出窗口/选项的消息
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "getSettings") {
     chrome.storage.sync.get(DEFAULT_SETTINGS).then(sendResponse);
     return true;
   } else if (request.action === "saveSettings") {
     chrome.storage.sync.set(request.settings).then(async () => {
-      // Notify relevant tabs to refresh
+      // 通知相关标签页刷新
       try {
         const tabs = await chrome.tabs.query({
           url: [
@@ -133,15 +133,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           try {
             await chrome.tabs.sendMessage(tab.id, {
               action: "showNotification",
-              message: "Settings updated! Click to refresh page",
+              message: "设置已更新！点击刷新页面",
               showRefreshButton: true,
             });
           } catch (error) {
-            // Tab might not have content script loaded, ignore
+            // 标签页可能没有加载内容脚本，忽略
           }
         }
       } catch (error) {
-        console.log("Could not notify tabs about settings update");
+        console.log("无法通知标签页设置更新");
       }
 
       sendResponse({ success: true });
