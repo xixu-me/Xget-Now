@@ -1,4 +1,4 @@
-# Xget for Chrome
+# Xget for Chromium
 
 一个强大的 Chromium 浏览器扩展，通过自动将下载重定向到 [Xget](https://github.com/xixu-me/Xget) 代理服务，从而加速 GitHub、GitLab 和 Hugging Face 的下载。
 
@@ -209,7 +209,7 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 
 启用 Chrome 开发者工具并检查控制台选项卡中的调试消息：
 
-- 扩展加载：「Xget for Chrome：内容脚本已加载」
+- 扩展加载：「Xget for Chromium：内容脚本已加载」
 - 下载重定向：「重定向下载：[原始] -> [xget]」
 - 设置更改：「设置已更新！点击刷新页面」
 

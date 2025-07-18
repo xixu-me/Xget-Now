@@ -172,7 +172,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
-          name: Xget for Chrome ${{ steps.version.outputs.version }}
+          name: Xget for Chromium ${{ steps.version.outputs.version }}
           files: |
             chrome-extension.zip
             edge-extension.zip
@@ -221,7 +221,7 @@ jobs:
 
       - name: 通知成功
         run: |
-          echo "🎉 成功发布 Xget for Chrome ${{ steps.version.outputs.version }} 到多个商店！"
+          echo "🎉 成功发布 Xget for Chromium ${{ steps.version.outputs.version }} 到多个商店！"
           echo "🔗 Chrome 网上应用店: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"
           echo "🔗 Microsoft Edge 加载项: 查看发布页面获取手动安装文件"
           echo "📦 GitHub 发布: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.version }}"
