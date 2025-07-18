@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Have a question about Xget for Chrome? We're here to help!
+        Have a question about Xget for Chromium? We're here to help!
 
   - type: dropdown
     id: category

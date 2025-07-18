@@ -21,7 +21,7 @@ const PLATFORMS = {
 
 // 初始化内容脚本
 (async function () {
-  console.log("Xget for Chrome：内容脚本已加载");
+  console.log("Xget for Chromium：内容脚本已加载");
 
   // 监听来自后台脚本的消息
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

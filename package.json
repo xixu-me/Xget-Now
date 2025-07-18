@@ -2,12 +2,12 @@
   "author": "Xi Xu",
   "browser": "chrome",
   "bugs": {
-    "url": "https://github.com/xixu-me/Xget-for-Chrome/issues"
+    "url": "https://github.com/xixu-me/Xget for Chromium/issues"
   },
   "dependencies": {},
   "description": "通过 Xget 重定向下载实现加速的 Chrome 扩展",
   "devDependencies": {},
-  "homepage": "https://github.com/xixu-me/Xget-for-Chrome#readme",
+  "homepage": "https://github.com/xixu-me/Xget for Chromium#readme",
   "keywords": [
     "chrome-extension",
     "download-accelerator",
@@ -20,10 +20,10 @@
   "license": "GPL-3.0",
   "main": "background.js",
   "manifest_version": 3,
-  "name": "xget-for-chrome",
+  "name": "xget for chromium",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xixu-me/Xget-for-Chrome.git"
+    "url": "https://github.com/xixu-me/Xget for Chromium.git"
   },
   "scripts": {
     "build": "不需要构建过程 - 扩展直接从源码运行",

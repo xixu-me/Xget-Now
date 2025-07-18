@@ -1,4 +1,4 @@
-# Xget for Chrome
+# Xget for Chromium
 
 一个强大的 Chromium 浏览器扩展，通过自动将下载重定向到 [Xget](https://github.com/xixu-me/Xget) 代理服务，从而加速 GitHub、GitLab 和 Hugging Face 的下载。
 
@@ -27,7 +27,7 @@
 #### 选项 1：从 GitHub Releases 安装（推荐）
 
 1. **下载扩展**
-   - 前往 [Releases 页面](https://github.com/xixu-me/Xget-for-Chrome/releases)
+   - 前往 [Releases 页面](<https://github.com/xixu-me/Xget> for Chromium/releases)
    - 下载最新发布文件：
      - `chrome-extension.zip` - 适用于 Chrome 浏览器
      - `edge-extension.zip` - 适用于 Microsoft Edge
@@ -54,8 +54,8 @@
 1. **克隆存储库**
 
    ```bash
-   git clone https://github.com/xixu-me/Xget-for-Chrome.git
-   cd Xget-for-Chrome
+   git clone https://github.com/xixu-me/Xget for Chromium.git
+   cd Xget for Chromium
    ```
 
 2. **在浏览器中加载**
@@ -209,7 +209,7 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 
 启用 Chrome 开发者工具并检查控制台选项卡中的调试消息：
 
-- 扩展加载：「Xget for Chrome：内容脚本已加载」
+- 扩展加载：「Xget for Chromium：内容脚本已加载」
 - 下载重定向：「重定向下载：[原始] -> [xget]」
 - 设置更改：「设置已更新！点击刷新页面」
 
@@ -253,5 +253,5 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 
 - ⭐ 为此存储库点星
 - 📝 在 [Chrome 网上应用店](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) 留下评价
-- 🐛 通过 [GitHub Issues](https://github.com/xixu-me/Xget-for-Chrome/issues) 报告错误或建议功能
+- 🐛 通过 [GitHub Issues](<https://github.com/xixu-me/Xget> for Chromium/issues) 报告错误或建议功能
 - 📢 与其他可能受益于更快下载的人分享

@@ -4,13 +4,13 @@
 
 ## 概述
 
-Xget for Chrome 是一个开源浏览器扩展，旨在通过 Xget 代理服务重定向下载链接来加速 GitHub、GitLab 和 Hugging Face 的下载。我们承诺保护您的隐私并确保数据处理的透明度。
+Xget for Chromium 是一个开源浏览器扩展，旨在通过 Xget 代理服务重定向下载链接来加速 GitHub、GitLab 和 Hugging Face 的下载。我们承诺保护您的隐私并确保数据处理的透明度。
 
 ## 我们的隐私承诺
 
 **我们不收集、存储或传输您的个人数据。**
 
-Xget for Chrome 扩展遵循“隐私优先”的设计原则，所有处理都在您的浏览器本地进行。
+Xget for Chromium 扩展遵循“隐私优先”的设计原则，所有处理都在您的浏览器本地进行。
 
 ## 收集的信息
 
@@ -121,7 +121,7 @@ Xget for Chrome 扩展遵循“隐私优先”的设计原则，所有处理都�
 ### 开源透明性
 
 - 扩展是完全开源的
-- 源代码可在 [GitHub](https://github.com/xixu-me/Xget-for-Chrome) 上获得
+- 源代码可在 [GitHub](<https://github.com/xixu-me/Xget> for Chromium) 上获得
 - 您可以审查、验证和审计所有代码
 
 ## 您的权利
@@ -168,7 +168,7 @@ Xget for Chrome 扩展遵循“隐私优先”的设计原则，所有处理都�
 
 如果您对此隐私政策有任何问题、疑虑或建议，请：
 
-- **GitHub Issues**：在我们的 [GitHub 存储库](https://github.com/xixu-me/Xget-for-Chrome/issues) 上打开一个 issue
+- **GitHub Issues**：在我们的 [GitHub 存储库](<https://github.com/xixu-me/Xget> for Chromium/issues) 上打开一个 issue
 - **电子邮件**：通过我们的 GitHub 配置文件联系维护者
 
 ## 法律合规
@@ -211,6 +211,6 @@ Xget for Chrome 扩展遵循“隐私优先”的设计原则，所有处理都�
 ---
 
 **最后更新**：2025 年 7 月 18 日  
-**联系方式**：[GitHub Issues](https://github.com/xixu-me/Xget-for-Chrome/issues)
+**联系方式**：[GitHub Issues](<https://github.com/xixu-me/Xget> for Chromium/issues)
 
 此隐私政策是我们对透明度和用户隐私承诺的一部分。我们相信您有权了解您使用的软件如何处理您的数据，以及在这种情况下，确认它不会处理您的个人数据。
