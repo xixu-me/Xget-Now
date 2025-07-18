@@ -4,13 +4,13 @@
 
 ## 概述
 
-Xget for Chromium 是一个开源浏览器扩展，旨在通过 Xget 代理服务重定向下载链接来加速 GitHub、GitLab 和 Hugging Face 的下载。我们承诺保护您的隐私并确保数据处理的透明度。
+Xget for Chrome 是一个开源浏览器扩展，旨在通过 Xget 代理服务重定向下载链接来加速 GitHub、GitLab 和 Hugging Face 的下载。我们承诺保护您的隐私并确保数据处理的透明度。
 
 ## 我们的隐私承诺
 
 **我们不收集、存储或传输您的个人数据。**
 
-Xget for Chromium 扩展遵循“隐私优先”的设计原则，所有处理都在您的浏览器本地进行。
+Xget for Chrome 扩展遵循“隐私优先”的设计原则，所有处理都在您的浏览器本地进行。
 
 ## 收集的信息
 

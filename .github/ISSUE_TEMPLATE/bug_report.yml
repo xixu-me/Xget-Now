@@ -12,7 +12,7 @@ body:
     id: version
     attributes:
       label: Extension Version
-      description: What version of Xget for Chromium are you using?
+      description: What version of Xget for Chrome are you using?
       placeholder: "1.0.0"
     validations:
       required: true

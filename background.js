@@ -33,7 +33,7 @@ const DEFAULT_SETTINGS = {
 
 // 初始化扩展
 chrome.runtime.onInstalled.addListener(async () => {
-  console.log("Xget for Chromium 已安装");
+  console.log("Xget for Chrome 已安装");
 
   // 如果尚未设置，则设置默认设置
   const settings = await chrome.storage.sync.get(DEFAULT_SETTINGS);
