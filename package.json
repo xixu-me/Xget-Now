@@ -35,5 +35,5 @@
     "test": "在 Chrome 开发者模式下加载扩展进行测试",
     "validate": "node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); console.log('✅ manifest.json 格式有效')\""
   },
-  "version": "1.2.0"
+  "version": "1.3.0"
 }
