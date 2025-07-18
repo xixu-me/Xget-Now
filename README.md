@@ -27,7 +27,7 @@
 #### 选项 1：从 GitHub Releases 安装（推荐）
 
 1. **下载扩展**
-   - 前往 [Releases 页面](<https://github.com/xixu-me/Xget> for Chromium/releases)
+   - 前往 [Releases 页面](https://github.com/xixu-me/Xget-for-Chromium/releases)
    - 下载最新发布文件：
      - `chrome-extension.zip` - 适用于 Chrome 浏览器
      - `edge-extension.zip` - 适用于 Microsoft Edge
@@ -54,8 +54,8 @@
 1. **克隆存储库**
 
    ```bash
-   git clone https://github.com/xixu-me/Xget for Chromium.git
-   cd Xget for Chromium
+   git clone https://github.com/xixu-me/Xget-for-Chromium.git
+   cd Xget-for-Chromium
    ```
 
 2. **在浏览器中加载**
@@ -253,5 +253,5 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 
 - ⭐ 为此存储库点星
 - 📝 在 [Chrome 网上应用店](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) 留下评价
-- 🐛 通过 [GitHub Issues](<https://github.com/xixu-me/Xget> for Chromium/issues) 报告错误或建议功能
+- 🐛 通过 [GitHub Issues](https://github.com/xixu-me/Xget-for-Chromium/issues) 报告错误或建议功能
 - 📢 与其他可能受益于更快下载的人分享
