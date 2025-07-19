@@ -1,10 +1,10 @@
 {
   "action": {
     "default_icon": {
+      "128": "icons/icon128.png",
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+      "48": "icons/icon48.png"
     },
     "default_popup": "popup.html",
     "default_title": "Xget for Chromium"
@@ -14,9 +14,7 @@
   },
   "content_scripts": [
     {
-      "js": [
-        "content.js"
-      ],
+      "js": ["content.js"],
       "matches": [
         "https://github.com/*",
         "https://gitlab.com/*",
@@ -25,34 +23,26 @@
       "run_at": "document_end"
     }
   ],
-  "description": "通过 Xget 重定向下载实现加速的下载器扩展",
+  "description": "为 GitHub、GitLab 和 Hugging Face 提供更快的文件下载体验",
   "host_permissions": [
     "https://github.com/*",
     "https://gitlab.com/*",
     "https://huggingface.co/*"
   ],
   "icons": {
+    "128": "icons/icon128.png",
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "48": "icons/icon48.png"
   },
   "manifest_version": 3,
   "name": "Xget for Chromium",
-  "permissions": [
-    "downloads",
-    "storage",
-    "activeTab"
-  ],
+  "permissions": ["downloads", "storage", "activeTab"],
   "version": "1.3.0",
   "web_accessible_resources": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
-      "resources": [
-        "icons/*"
-      ]
+      "matches": ["<all_urls>"],
+      "resources": ["icons/*"]
     }
   ]
 }

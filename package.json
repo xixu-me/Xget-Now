@@ -5,7 +5,7 @@
     "url": "https://github.com/xixu-me/Xget-for-Chromium/issues"
   },
   "dependencies": {},
-  "description": "通过 Xget 重定向下载实现加速的 Chrome 扩展",
+  "description": "为 GitHub、GitLab 和 Hugging Face 提供更快的文件下载体验",
   "devDependencies": {},
   "homepage": "https://github.com/xixu-me/Xget-for-Chromium#readme",
   "keywords": [
