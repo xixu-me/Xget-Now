@@ -29,7 +29,7 @@
 1. **下载扩展**
    - 前往 [Releases 页面](https://github.com/xixu-me/Xget-for-Chromium/releases)
    - 下载最新发布文件：
-     - `chrome-extension.zip` - 适用于 Chrome 浏览器
+     - `chrome-extension.zip` - 适用于 Chrome
      - `edge-extension.zip` - 适用于 Microsoft Edge
      - `extension.crx` - 适用于所有基于 Chromium 的浏览器的预打包扩展文件
 
@@ -147,7 +147,7 @@ Xget：     https://xget.xi-xu.me/hf/user/model/resolve/main/model.bin
 
 ## 📋 要求
 
-- **Chrome 浏览器**：版本 88+（Manifest V3 支持）
+- **Chrome**：版本 88+（Manifest V3 支持）
 - **Xget 服务**：访问 Xget 实例
   - 使用公共实例：`xget.xi-xu.me`
   - 或部署你自己的：[Xget 存储库](https://github.com/xixu-me/Xget)（推荐）

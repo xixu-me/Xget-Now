@@ -189,7 +189,7 @@ jobs:
 
             ## 📁 可用文件
 
-            - `chrome-extension.zip` - 适用于 Chrome 浏览器
+            - `chrome-extension.zip` - 适用于 Chrome
             - `edge-extension.zip` - 适用于 Microsoft Edge
             - `extension.crx` - 适用于所有基于 Chromium 的浏览器的预打包扩展文件
         env:
