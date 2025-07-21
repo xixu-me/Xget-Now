@@ -145,7 +145,7 @@ jobs:
           # 清理
           rm -rf extension-temp
 
-      - name: 发布到 Chrome 网上应用店
+      - name: 发布到 Chrome 应用商店
         continue-on-error: true
         id: chrome-publish
         uses: mnao305/chrome-extension-upload@v5.0.0
@@ -183,8 +183,8 @@ jobs:
 
             ## 📦 安装选项
 
-            - **Chrome 网上应用店**: [从 Chrome 网上应用店安装](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf)
-            - **Microsoft Edge 加载项**: [从 Microsoft Edge 加载项安装](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc)
+            - **Chrome 应用商店**: [从 Chrome 应用商店安装](https://chromewebstore.google.com/detail/xget-for-chrome/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN)
+            - **Microsoft Edge 加载项**: [从 Microsoft Edge 加载项安装](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN)
             - **手动安装**: 下载下面的文件或查看 [安装指南](https://github.com/xixu-me/Xget-for-Chromium?tab=readme-ov-file#-%E5%AE%89%E8%A3%85) 获取详细说明
 
             ## 📁 可用文件
@@ -201,11 +201,11 @@ jobs:
           echo "================================"
 
           if [ "${{ steps.chrome-publish.outcome }}" = "success" ]; then
-            echo "✅ Chrome 网上应用店: 发布成功"
+            echo "✅ Chrome 应用商店: 发布成功"
           elif [ "${{ steps.chrome-publish.outcome }}" = "failure" ]; then
-            echo "❌ Chrome 网上应用店: 发布失败"
+            echo "❌ Chrome 应用商店: 发布失败"
           else
-            echo "⚠️ Chrome 网上应用店: 已跳过（缺少密钥）"
+            echo "⚠️ Chrome 应用商店: 已跳过（缺少密钥）"
           fi
 
           if [ "${{ steps.edge-publish.outcome }}" = "success" ]; then
@@ -222,6 +222,6 @@ jobs:
       - name: 通知成功
         run: |
           echo "🎉 成功发布 Xget for Chromium ${{ steps.version.outputs.version }} 到多个商店！"
-          echo "🔗 Chrome 网上应用店: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"
+          echo "🔗 Chrome 应用商店: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"
           echo "🔗 Microsoft Edge 加载项: 查看发布页面获取手动安装文件"
           echo "📦 GitHub 发布: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.version }}"

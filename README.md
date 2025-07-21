@@ -17,8 +17,8 @@
 
 | 商店 | 链接 |
 |-------|------|
-| **Chrome 网上应用店** | [![Available in the Chrome Web Store](https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png)](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) |
-| **Microsoft Edge 加载项** | [Available in the Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc) |
+| **Chrome 应用商店** | [![Available in the Chrome Web Store](https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png)](https://chromewebstore.google.com/detail/xget-for-chrome/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN) |
+| **Microsoft Edge 加载项** | [Available in the Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN) |
 
 ### 手动安装
 
@@ -252,6 +252,6 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 如果你觉得这个扩展有用，请：
 
 - ⭐ 为此存储库点星
-- 📝 在 [Chrome 网上应用店](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf) 留下评价
+- 📝 在 [Chrome 应用商店](https://chromewebstore.google.com/detail/xget-for-chrome/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN) 留下评价
 - 🐛 通过 [GitHub Issues](https://github.com/xixu-me/Xget-for-Chromium/issues) 报告错误或建议功能
 - 📢 与其他可能受益于更快下载的人分享
