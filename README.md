@@ -27,7 +27,7 @@
 #### 选项 1：从 GitHub Releases 安装（推荐）
 
 1. **下载扩展**
-   - 前往 [Releases 页面](https://github.com/xixu-me/Xget-for-Chromium/releases)
+   - 前往 [Releases 页面](https://github.com/xixu-me/Xget-for-Chromium/releases/latest)
    - 下载最新发布文件：`extension.zip` - 适用于所有基于 Chromium 的浏览器
 
 2. **在 Chrome 中安装**
