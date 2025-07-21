@@ -28,26 +28,21 @@
 
 1. **下载扩展**
    - 前往 [Releases 页面](https://github.com/xixu-me/Xget-for-Chromium/releases)
-   - 下载最新发布文件：
-     - `chrome-extension.zip` - 适用于 Chrome
-     - `edge-extension.zip` - 适用于 Microsoft Edge
-     - `extension.crx` - 适用于所有基于 Chromium 的浏览器的预打包扩展文件
+   - 下载最新发布文件：`extension.zip` - 适用于所有基于 Chromium 的浏览器
 
 2. **在 Chrome 中安装**
    - 打开 Chrome 并前往 `chrome://extensions/`
    - 启用「开发者模式」（右上角的切换开关）
    - 点击「加载已解压的扩展程序」并选择从 ZIP 文件解压的文件夹
-   - 或者直接将 `.crx` 文件拖放到扩展页面
 
 3. **在 Microsoft Edge 中安装**
    - 打开 Microsoft Edge 并前往 `edge://extensions/`
    - 启用「开发人员模式」（左侧边栏的切换开关）
    - 点击「加载解压缩的扩展」并选择从 ZIP 文件解压的文件夹
-   - 或者直接将 `.crx` 文件拖放到扩展页面
 
 4. **在其他基于 Chromium 的浏览器中安装**
    - 遵循与 Chrome 或 Microsoft Edge 类似的步骤，确保首先启用「开发者模式」
-   - 直接将 `.crx` 文件拖放到扩展页面
+   - 按照相应浏览器的扩展安装指南进行操作
 
 #### 选项 2：从源码安装
 

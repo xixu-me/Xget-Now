@@ -89,8 +89,8 @@ jobs:
 
       - name: 创建扩展包
         run: |
-          # 创建 Chrome 扩展 zip 包
-          zip -r chrome-extension.zip . \
+          # 创建通用扩展 zip 包（适用于所有基于 Chromium 的浏览器）
+          zip -r extension.zip . \
             -x "*.git*" \
             -x "node_modules/*" \
             -x ".github/*" \
@@ -99,58 +99,15 @@ jobs:
             -x "*.zip" \
             -x "*.crx"
 
-          # 创建 Microsoft Edge 扩展 zip 包（与 Chrome 的 MV3 相同）
-          cp chrome-extension.zip edge-extension.zip
-
           echo "📦 已创建扩展包"
           ls -la *.zip
-
-      - name: 为 GitHub 发布创建 CRX 文件
-        run: |
-          # 安装 chrome-extension-packer
-          npm install -g crx3
-
-          # 为 CRX 签名创建私钥（仅用于分发）
-          openssl genrsa -out key.pem 2048
-
-          # 验证 manifest.json 是否存在
-          ls -la manifest.json
-          echo "当前目录: $(pwd)"
-          echo "目录内容:"
-          ls -la
-
-          # 为扩展文件创建临时目录
-          mkdir -p extension-temp
-
-          # 将扩展文件复制到临时目录
-          cp manifest.json extension-temp/
-          cp background.js extension-temp/
-          cp content.js extension-temp/
-          cp popup.html extension-temp/
-          cp popup.js extension-temp/
-          cp -r icons extension-temp/
-
-          # 验证临时目录内容
-          echo "扩展临时目录内容:"
-          ls -la extension-temp/
-
-          # 从临时目录创建 CRX 文件
-          cd extension-temp
-          crx3 -o ../extension.crx -p ../key.pem .
-          cd ..
-
-          echo "📦 已创建 extension.crx"
-          ls -la extension.crx
-
-          # 清理
-          rm -rf extension-temp
 
       - name: 发布到 Chrome 应用商店
         continue-on-error: true
         id: chrome-publish
         uses: mnao305/chrome-extension-upload@v5.0.0
         with:
-          file-path: chrome-extension.zip
+          file-path: extension.zip
           extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
@@ -163,7 +120,7 @@ jobs:
         uses: wdzeng/edge-addon@v2
         with:
           product-id: ${{ secrets.EDGE_PRODUCT_ID }}
-          zip-path: edge-extension.zip
+          zip-path: extension.zip
           api-key: ${{ secrets.EDGE_API_KEY }}
           client-id: ${{ secrets.EDGE_CLIENT_ID }}
           notes-for-certification: "自动发布 v${{ steps.version.outputs.version }} - ${{ github.sha }}"
@@ -174,9 +131,7 @@ jobs:
           tag_name: v${{ steps.version.outputs.version }}
           name: Xget for Chromium ${{ steps.version.outputs.version }}
           files: |
-            chrome-extension.zip
-            edge-extension.zip
-            extension.crx
+            extension.zip
           generate_release_notes: true
           body: |
             此版本已自动发布到多个扩展商店。
@@ -185,13 +140,11 @@ jobs:
 
             - **Chrome 应用商店**: [从 Chrome 应用商店安装](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN)
             - **Microsoft Edge 加载项**: [从 Microsoft Edge 加载项安装](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN)
-            - **手动安装**: 下载下面的文件或查看 [安装指南](https://github.com/xixu-me/Xget-for-Chromium?tab=readme-ov-file#-%E5%AE%89%E8%A3%85) 获取详细说明
+            - **手动安装**: 下载下面的 `extension.zip` 文件或查看 [安装指南](https://github.com/xixu-me/Xget-for-Chromium?tab=readme-ov-file#-%E5%AE%89%E8%A3%85) 获取详细说明
 
             ## 📁 可用文件
 
-            - `chrome-extension.zip` - 适用于 Chrome
-            - `edge-extension.zip` - 适用于 Microsoft Edge
-            - `extension.crx` - 适用于所有基于 Chromium 的浏览器的预打包扩展文件
+            - `extension.zip` - 适用于所有基于 Chromium 的浏览器（Chrome、Edge、Brave、Opera 等）
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
