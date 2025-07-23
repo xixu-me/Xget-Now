@@ -19,6 +19,7 @@
 |-------|------|
 | **Chrome 应用商店** | [![Available in the Chrome Web Store](https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png)](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN) |
 | **Microsoft Edge 加载项** | [Available in the Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN) |
+| **Crx 搜搜（镜像）** | [在 Crx 搜搜查看](https://www.crxsoso.com/webstore/detail/ajiejgobfcifcikbahpijopolfjoodgf) |
 
 ### 手动安装
 
