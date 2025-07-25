@@ -1,6 +1,6 @@
 # Xget for Chromium
 
-一个强大的 Chromium 浏览器扩展，通过自动将下载重定向到 [Xget](https://github.com/xixu-me/Xget) 代理服务，从而加速 GitHub、GitLab 和 Hugging Face 的下载。
+一个强大的 Chromium 浏览器扩展，通过自动将下载重定向到 [Xget](https://github.com/xixu-me/Xget) 加速服务，从而加速 GitHub、GitLab 和 Hugging Face 的下载。
 
 ## 🚀 功能特性
 
