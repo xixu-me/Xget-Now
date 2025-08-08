@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Xget for Chromium</title>
     <style>
+      :root {
+        --primary-accent-color: #8a2be2;
+        --success-color: #4caf50;
+        --container-bg: rgba(255, 255, 255, 0.1);
+        --container-border: rgba(255, 255, 255, 0.2);
+        --text-color: white;
+        --text-secondary-color: rgba(255, 255, 255, 0.7);
+        --input-bg: rgba(0, 0, 0, 0.2);
+        --hover-bg: rgba(255, 255, 255, 0.2);
+      }
+
+      html {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        overflow: hidden; /* Prevents scrollbars from appearing on the html element */
+      }
+
       body {
         width: 380px;
         min-height: 400px;
@@ -12,52 +28,88 @@
         padding: 0;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        color: var(--text-color);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        background-color: rgba(40, 40, 40, 0.3);
+        border-radius: 16px;
+        overflow: hidden;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
       }
 
       .header {
         padding: 20px;
         text-align: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid var(--container-border);
+        background: rgba(255, 255, 255, 0.05);
       }
 
       .header h1 {
         margin: 0;
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 600;
-      }
-
-      .header .subtitle {
-        margin: 5px 0 0 0;
-        font-size: 12px;
-        opacity: 0.8;
+        letter-spacing: 0.5px;
       }
 
       .content {
         padding: 20px;
+        max-height: calc(100vh - 70px); /* Adjust based on header height */
+        overflow-y: auto;
+      }
+
+      /* Custom Scrollbar */
+      .content::-webkit-scrollbar {
+        width: 6px;
+      }
+      .content::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .content::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 3px;
+      }
+      .content::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
       }
 
       .setting-group {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
+        padding: 15px;
+        background: var(--container-bg);
+        border: 1px solid var(--container-border);
+        border-radius: 12px;
+        transition: all 0.3s ease;
       }
 
-      .setting-group:last-child {
-        margin-bottom: 0;
+      .setting-group:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
       }
 
       .setting-label {
         display: block;
         font-size: 14px;
         font-weight: 500;
-        margin-bottom: 8px;
+        margin-bottom: 12px;
+        color: var(--text-secondary-color);
       }
 
       .toggle-switch {
         position: relative;
         display: inline-block;
         width: 50px;
-        height: 24px;
+        height: 28px;
       }
 
       .toggle-switch input {
@@ -73,83 +125,82 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(255, 255, 255, 0.2);
-        transition: 0.3s;
-        border-radius: 24px;
+        background-color: rgba(0, 0, 0, 0.3);
+        transition: 0.4s;
+        border-radius: 28px;
       }
 
       .slider:before {
         position: absolute;
         content: "";
-        height: 18px;
-        width: 18px;
+        height: 22px;
+        width: 22px;
         left: 3px;
         bottom: 3px;
         background-color: white;
-        transition: 0.3s;
+        transition: 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         border-radius: 50%;
       }
 
       input:checked + .slider {
-        background-color: #4caf50;
+        background-color: var(--primary-accent-color);
       }
 
       input:checked + .slider:before {
-        transform: translateX(26px);
+        transform: translateX(22px);
       }
 
       .domain-input {
         width: 100%;
-        padding: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 6px;
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
+        padding: 12px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        background: var(--input-bg);
+        color: var(--text-color);
         font-size: 14px;
         box-sizing: border-box;
+        transition: all 0.3s ease;
       }
 
       .domain-input::placeholder {
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--text-secondary-color);
       }
 
       .domain-input:focus {
         outline: none;
-        border-color: rgba(255, 255, 255, 0.4);
-        background: rgba(255, 255, 255, 0.15);
+        border-color: var(--primary-accent-color);
+        background: rgba(0, 0, 0, 0.3);
+        box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.3);
       }
 
       .platforms {
-        max-height: 200px;
+        max-height: 220px;
         overflow-y: auto;
         margin-top: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 6px;
-        background: rgba(255, 255, 255, 0.05);
+        padding: 5px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.1);
       }
 
       .platform-category {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         padding: 8px 12px 0 12px;
-      }
-
-      .platform-category:last-child {
-        border-bottom: none;
+        margin-bottom: 10px;
       }
 
       .category-title {
         font-size: 11px;
         font-weight: 600;
-        color: rgba(255, 255, 255, 0.8);
-        margin-bottom: 6px;
+        color: var(--text-secondary-color);
+        margin-bottom: 10px;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.8px;
+        padding-left: 5px;
       }
 
       .platform-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 6px;
+        gap: 8px;
         margin-bottom: 8px;
       }
 
@@ -157,44 +208,74 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        border: 1px solid transparent;
+        transition: all 0.2s ease-in-out;
+      }
+
+      .platform-item:hover {
         background: rgba(255, 255, 255, 0.1);
-        padding: 6px 10px;
-        border-radius: 4px;
-        font-size: 12px;
+        border-color: rgba(255, 255, 255, 0.2);
       }
 
       .status {
         margin-top: 15px;
-        padding: 10px;
-        border-radius: 6px;
-        font-size: 12px;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 13px;
         text-align: center;
+        border: 1px solid transparent;
+        animation: status-pop-in 0.3s ease;
+      }
+
+      @keyframes status-pop-in {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .status.hiding {
+        animation: fadeOut 0.3s ease forwards;
+      }
+
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+        }
       }
 
       .status.success {
-        background: rgba(76, 175, 80, 0.2);
-        border: 1px solid rgba(76, 175, 80, 0.3);
+        background: rgba(76, 175, 80, 0.25);
+        border-color: rgba(76, 175, 80, 0.4);
       }
 
       .status.error {
-        background: rgba(244, 67, 54, 0.2);
-        border: 1px solid rgba(244, 67, 54, 0.3);
+        background: rgba(244, 67, 54, 0.25);
+        border-color: rgba(244, 67, 54, 0.4);
       }
 
       .mini-toggle {
-        width: 32px;
-        height: 16px;
+        width: 36px;
+        height: 20px;
       }
 
       .mini-toggle .slider {
-        border-radius: 16px;
+        border-radius: 20px;
       }
 
       .mini-toggle .slider:before {
-        height: 12px;
-        width: 12px;
-        left: 2px;
-        bottom: 2px;
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
       }
 
       .mini-toggle input:checked + .slider:before {
@@ -204,34 +285,35 @@
       .links {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
       }
 
       .link-item {
         display: flex;
         align-items: center;
-        padding: 10px 12px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 6px;
+        padding: 12px 15px;
+        background: var(--container-bg);
+        border-radius: 8px;
         text-decoration: none;
-        color: white;
+        color: var(--text-color);
         transition: all 0.2s ease;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--container-border);
       }
 
       .link-item:hover {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: rgba(255, 255, 255, 0.2);
-        transform: translateY(-1px);
+        background: var(--hover-bg);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px) scale(1.02);
       }
 
       .link-icon {
-        margin-right: 10px;
-        font-size: 16px;
+        margin-right: 12px;
+        font-size: 18px;
+        opacity: 0.8;
       }
 
       .link-text {
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 500;
       }
     </style>
@@ -251,7 +333,7 @@
               justify-content: space-between;
             "
           >
-            启用扩展
+            <span>启用扩展</span>
             <label class="toggle-switch">
               <input type="checkbox" id="enabledToggle" />
               <span class="slider"></span>
@@ -266,7 +348,7 @@
           type="text"
           id="domainInput"
           class="domain-input"
-          placeholder="你的-xget-域名.com"
+          placeholder="your-xget-domain.com"
         />
       </div>
 
@@ -425,7 +507,7 @@
             target="_blank"
             class="link-item"
           >
-            <span class="link-icon">🔗</span>
+            <span class="link-icon">🚀</span>
             <span class="link-text">Xget 存储库</span>
           </a>
           <a
@@ -433,8 +515,8 @@
             target="_blank"
             class="link-item"
           >
-            <span class="link-icon">📚</span>
-            <span class="link-text">扩展文档</span>
+            <span class="link-icon">📖</span>
+            <span class="link-text">扩展存储库</span>
           </a>
         </div>
       </div>

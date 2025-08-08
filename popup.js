@@ -233,6 +233,7 @@ function showStatus(message, type) {
   statusElement.textContent = message;
   statusElement.className = `status ${type}`;
   statusElement.style.display = "block";
+  statusElement.classList.remove("hiding");
 
   // 自动隐藏成功消息
   if (type === "success") {
@@ -242,7 +243,15 @@ function showStatus(message, type) {
 
 function hideStatus() {
   const statusElement = document.getElementById("status");
-  statusElement.style.display = "none";
+  statusElement.classList.add("hiding");
+  statusElement.addEventListener(
+    "animationend",
+    () => {
+      statusElement.style.display = "none";
+      statusElement.classList.remove("hiding");
+    },
+    { once: true }
+  );
 }
 
 function debounce(func, wait) {
