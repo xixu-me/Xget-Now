@@ -64,23 +64,62 @@
 
       .content {
         padding: 20px;
-        max-height: calc(100vh - 70px); /* Adjust based on header height */
+        max-height: calc(400px - 70px); /* Fixed height instead of viewport */
         overflow-y: auto;
+        scroll-behavior: smooth;
       }
 
-      /* Custom Scrollbar */
-      .content::-webkit-scrollbar {
+      /* Enhanced Custom Scrollbar */
+      .content::-webkit-scrollbar,
+      .platforms::-webkit-scrollbar {
         width: 6px;
       }
-      .content::-webkit-scrollbar-track {
+
+      .content::-webkit-scrollbar-track,
+      .platforms::-webkit-scrollbar-track {
         background: transparent;
-      }
-      .content::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.3);
         border-radius: 3px;
       }
-      .content::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.5);
+
+      .content::-webkit-scrollbar-thumb,
+      .platforms::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+        transition: background 0.2s ease;
+      }
+
+      .content::-webkit-scrollbar-thumb:hover,
+      .platforms::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.4);
+      }
+
+      .content::-webkit-scrollbar-thumb:active,
+      .platforms::-webkit-scrollbar-thumb:active {
+        background: rgba(255, 255, 255, 0.6);
+      }
+
+      /* Scrollbar corner for better appearance */
+      .content::-webkit-scrollbar-corner,
+      .platforms::-webkit-scrollbar-corner {
+        background: transparent;
+      }
+
+      /* Smooth scrolling support for Firefox */
+      .content,
+      .platforms {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+      }
+
+      /* Auto-hide scrollbar behavior */
+      .content:not(:hover):not(:focus-within),
+      .platforms:not(:hover):not(:focus-within) {
+        scrollbar-width: none;
+      }
+
+      .content:not(:hover):not(:focus-within)::-webkit-scrollbar,
+      .platforms:not(:hover):not(:focus-within)::-webkit-scrollbar {
+        width: 0;
       }
 
       .setting-group {
@@ -174,12 +213,15 @@
       }
 
       .platforms {
-        max-height: 220px;
+        max-height: 200px;
         overflow-y: auto;
+        overflow-x: hidden;
         margin-top: 8px;
         padding: 5px;
         border-radius: 8px;
         background: rgba(0, 0, 0, 0.1);
+        scroll-behavior: smooth;
+        scrollbar-gutter: stable;
       }
 
       .platform-category {

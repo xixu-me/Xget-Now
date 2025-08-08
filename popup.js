@@ -112,6 +112,118 @@ function setupEventListeners() {
       element.addEventListener("change", saveSettings);
     }
   });
+
+  // 滚动优化逻辑
+  setupScrollOptimization();
+}
+
+function setupScrollOptimization() {
+  const contentElement = document.querySelector(".content");
+  const platformsElement = document.querySelector(".platforms");
+
+  // 为主内容区域添加滚动优化
+  if (contentElement) {
+    let scrollTimeout;
+
+    contentElement.addEventListener("scroll", () => {
+      // 添加滚动中的视觉反馈
+      contentElement.style.scrollbarWidth = "auto";
+
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        // 滚动结束后隐藏滚动条（仅在不悬停时）
+        if (!contentElement.matches(":hover")) {
+          contentElement.style.scrollbarWidth = "thin";
+        }
+      }, 1000);
+    });
+
+    // 鼠标悬停时显示滚动条
+    contentElement.addEventListener("mouseenter", () => {
+      contentElement.style.scrollbarWidth = "auto";
+    });
+
+    contentElement.addEventListener("mouseleave", () => {
+      contentElement.style.scrollbarWidth = "thin";
+    });
+  }
+
+  // 为平台列表添加滚动优化
+  if (platformsElement) {
+    let scrollTimeout;
+
+    platformsElement.addEventListener("scroll", () => {
+      platformsElement.style.scrollbarWidth = "auto";
+
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        if (!platformsElement.matches(":hover")) {
+          platformsElement.style.scrollbarWidth = "thin";
+        }
+      }, 1000);
+    });
+
+    platformsElement.addEventListener("mouseenter", () => {
+      platformsElement.style.scrollbarWidth = "auto";
+    });
+
+    platformsElement.addEventListener("mouseleave", () => {
+      platformsElement.style.scrollbarWidth = "thin";
+    });
+  }
+
+  // 添加键盘导航支持
+  document.addEventListener("keydown", (e) => {
+    const activeElement = document.activeElement;
+    const isInScrollableArea =
+      activeElement &&
+      (contentElement.contains(activeElement) ||
+        platformsElement.contains(activeElement));
+
+    if (isInScrollableArea) {
+      switch (e.key) {
+        case "ArrowUp":
+          if (e.ctrlKey) {
+            e.preventDefault();
+            const scrollable = contentElement.contains(activeElement)
+              ? contentElement
+              : platformsElement;
+            scrollable.scrollBy({ top: -50, behavior: "smooth" });
+          }
+          break;
+        case "ArrowDown":
+          if (e.ctrlKey) {
+            e.preventDefault();
+            const scrollable = contentElement.contains(activeElement)
+              ? contentElement
+              : platformsElement;
+            scrollable.scrollBy({ top: 50, behavior: "smooth" });
+          }
+          break;
+        case "Home":
+          if (e.ctrlKey) {
+            e.preventDefault();
+            const scrollable = contentElement.contains(activeElement)
+              ? contentElement
+              : platformsElement;
+            scrollable.scrollTo({ top: 0, behavior: "smooth" });
+          }
+          break;
+        case "End":
+          if (e.ctrlKey) {
+            e.preventDefault();
+            const scrollable = contentElement.contains(activeElement)
+              ? contentElement
+              : platformsElement;
+            scrollable.scrollTo({
+              top: scrollable.scrollHeight,
+              behavior: "smooth",
+            });
+          }
+          break;
+      }
+    }
+  });
 }
 
 async function saveSettings() {
