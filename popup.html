@@ -131,6 +131,11 @@
         transition: all 0.3s ease;
       }
 
+      .setting-group.compact {
+        padding: 10px 15px;
+        margin-bottom: 20px;
+      }
+
       .setting-group:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -142,6 +147,10 @@
         font-weight: 500;
         margin-bottom: 12px;
         color: var(--text-secondary-color);
+      }
+
+      .setting-label.compact {
+        margin-bottom: 0;
       }
 
       .toggle-switch {
@@ -366,13 +375,14 @@
     </div>
 
     <div class="content">
-      <div class="setting-group">
-        <label class="setting-label">
+      <div class="setting-group compact">
+        <label class="setting-label compact">
           <div
             style="
               display: flex;
               align-items: center;
               justify-content: space-between;
+              min-height: 28px;
             "
           >
             <span>启用扩展</span>
