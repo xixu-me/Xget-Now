@@ -7,7 +7,7 @@
     <style>
       body {
         width: 380px;
-        min-height: 280px;
+        min-height: 400px;
         margin: 0;
         padding: 0;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -120,10 +120,37 @@
       }
 
       .platforms {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .platform-category {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 8px 12px 0 12px;
+      }
+
+      .platform-category:last-child {
+        border-bottom: none;
+      }
+
+      .category-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .platform-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-top: 8px;
+        gap: 6px;
+        margin-bottom: 8px;
       }
 
       .platform-item {
@@ -131,9 +158,9 @@
         align-items: center;
         justify-content: space-between;
         background: rgba(255, 255, 255, 0.1);
-        padding: 8px 12px;
-        border-radius: 6px;
-        font-size: 13px;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 12px;
       }
 
       .status {
@@ -212,7 +239,6 @@
   <body>
     <div class="header">
       <h1>Xget for Chromium</h1>
-      <div class="subtitle">下载加速器</div>
     </div>
 
     <div class="content">
@@ -247,26 +273,147 @@
       <div class="setting-group">
         <label class="setting-label">启用的平台</label>
         <div class="platforms">
-          <div class="platform-item">
-            <span>GitHub</span>
-            <label class="toggle-switch mini-toggle">
-              <input type="checkbox" id="ghToggle" />
-              <span class="slider"></span>
-            </label>
+          <div class="platform-category">
+            <div class="category-title">代码托管</div>
+            <div class="platform-grid">
+              <div class="platform-item">
+                <span>GitHub</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="ghToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>GitLab</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="glToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>Gitea</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="giteaToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>Codeberg</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="codebergToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>SourceForge</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="sfToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>AOSP</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="aospToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
           </div>
-          <div class="platform-item">
-            <span>GitLab</span>
-            <label class="toggle-switch mini-toggle">
-              <input type="checkbox" id="glToggle" />
-              <span class="slider"></span>
-            </label>
+
+          <div class="platform-category">
+            <div class="category-title">AI/ML</div>
+            <div class="platform-grid">
+              <div class="platform-item">
+                <span>Hugging Face</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="hfToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
           </div>
-          <div class="platform-item">
-            <span>Hugging Face</span>
-            <label class="toggle-switch mini-toggle">
-              <input type="checkbox" id="hfToggle" />
-              <span class="slider"></span>
-            </label>
+
+          <div class="platform-category">
+            <div class="category-title">包管理</div>
+            <div class="platform-grid">
+              <div class="platform-item">
+                <span>npm</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="npmToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>PyPI</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="pypiToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>Conda</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="condaToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>Maven</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="mavenToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>RubyGems</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="rubygemsToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>Crates.io</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="cratesToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>NuGet</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="nugetToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>Go Modules</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="golangToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="platform-category">
+            <div class="category-title">其他</div>
+            <div class="platform-grid">
+              <div class="platform-item">
+                <span>arXiv</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="arxivToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="platform-item">
+                <span>F-Droid</span>
+                <label class="toggle-switch mini-toggle">
+                  <input type="checkbox" id="fdroidToggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -278,16 +425,16 @@
             target="_blank"
             class="link-item"
           >
-            <span class="link-icon">🚀</span>
-            <span class="link-text">部署你自己的 Xget 服务</span>
+            <span class="link-icon">🔗</span>
+            <span class="link-text">Xget 存储库</span>
           </a>
           <a
             href="https://github.com/xixu-me/Xget-for-Chromium"
             target="_blank"
             class="link-item"
           >
-            <span class="link-icon">📖</span>
-            <span class="link-text">源码和文档</span>
+            <span class="link-icon">📚</span>
+            <span class="link-text">扩展文档</span>
           </a>
         </div>
       </div>

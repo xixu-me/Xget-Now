@@ -1,11 +1,10 @@
 # Xget for Chromium
 
-一个强大的 Chromium 浏览器扩展，通过自动将下载重定向到 [Xget](https://github.com/xixu-me/Xget) 加速引擎，从而加速 GitHub、GitLab 和 Hugging Face 的下载。
+为 Chromium 浏览器提供的 [Xget](https://github.com/xixu-me/Xget) 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速。
 
 ## 🚀 功能特性
 
 - **🎯 自动下载加速**：无缝重定向下载通过 Xget 获得更快速度
-- **🌐 多平台支持**：支持 GitHub、GitLab 和 Hugging Face
 - **⚙️ 可配置设置**：自定义你的 Xget 域名和平台偏好
 - **🔔 智能通知**：下载重定向时的可视化反馈
 - **🛡️ 隐私优先**：所有处理都在你的浏览器本地进行
@@ -70,28 +69,14 @@
    - 输入你的 Xget 域名（例如 `xget.xi-xu.me`）
    - 启用扩展
 
-2. **选择平台**（可选）
+2. **选择平台**
    - 根据需要切换各个平台的开关
-   - 默认启用所有平台（GitHub、GitLab、Hugging Face）
+   - 默认启用所有平台
 
 3. **开始下载**
    - 访问任何受支持的平台
    - 像往常一样点击下载链接
    - 下载将自动通过 Xget 加速
-
-## 🎯 支持的平台
-
-| 平台 | 状态 | URL 模式 | 扩展 ID |
-|----------|---------|-------------|--------------|
-| **GitHub** | ✅ 支持 | `github.com/*` | `gh` |
-| **GitLab** | ✅ 支持 | `gitlab.com/*` | `gl` |
-| **Hugging Face** | ✅ 支持 | `huggingface.co/*` | `hf` |
-
-### 支持的下载类型
-
-- **GitHub**：发布资源、存储库存档、原始文件、Git LFS 文件
-- **GitLab**：项目存档、发布下载、存储库导出
-- **Hugging Face**：模型文件、数据集文件、模型卡片、分词器
 
 ## 🔧 工作原理
 
@@ -99,19 +84,6 @@
 2. **转换**：URL 自动转换为 Xget 兼容格式
 3. **重定向**：下载通过你配置的 Xget 域名路由
 4. **加速**：Xget 的全球 CDN 和优化功能提供更快的下载速度
-
-### URL 转换示例
-
-```text
-原始：     https://github.com/user/repo/archive/main.zip
-Xget：     https://xget.xi-xu.me/gh/user/repo/archive/main.zip
-
-原始：     https://gitlab.com/user/repo/-/archive/main.zip  
-Xget：     https://xget.xi-xu.me/gl/user/repo/-/archive/main.zip
-
-原始：     https://huggingface.co/user/model/resolve/main/model.bin
-Xget：     https://xget.xi-xu.me/hf/user/model/resolve/main/model.bin
-```
 
 ### 为什么 Xget 让下载更快
 
@@ -146,14 +118,13 @@ Xget：     https://xget.xi-xu.me/hf/user/model/resolve/main/model.bin
 - **Chrome**：版本 88+（Manifest V3 支持）
 - **Xget 服务**：访问 Xget 实例
   - 使用公共实例：`xget.xi-xu.me`
-  - 或部署你自己的：[Xget 存储库](https://github.com/xixu-me/Xget)（推荐）
+  - 或部署你自己的：[Xget 存储库](https://github.com/xixu-me/Xget)
 
 ### 关于 Xget 服务
 
 Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，提供：
 
 - **全球边缘分发**：通过 Cloudflare 的全球网络加快下载速度
-- **多平台支持**：针对 GitHub、GitLab 和 Hugging Face 进行优化
 - **高级功能**：HTTP/3 支持、智能缓存、自动重试
 - **安全性**：全面的安全标头和内容保护
 - **可靠性**：内置超时保护和性能监控

@@ -1,7 +1,8 @@
 // 内容脚本，在支持的平台上注入下载拦截功能
 
-// 平台检测和 URL 转换
+// 平台配置
 const PLATFORMS = {
+  // 代码托管平台
   gh: {
     base: "https://github.com",
     name: "GitHub",
@@ -12,10 +13,126 @@ const PLATFORMS = {
     name: "GitLab",
     pattern: /^https:\/\/gitlab\.com\//,
   },
+  gitea: {
+    base: "https://gitea.com",
+    name: "Gitea",
+    pattern: /^https:\/\/gitea\.com\//,
+  },
+  codeberg: {
+    base: "https://codeberg.org",
+    name: "Codeberg",
+    pattern: /^https:\/\/codeberg\.org\//,
+  },
+  sf: {
+    base: "https://sourceforge.net",
+    name: "SourceForge",
+    pattern: /^https:\/\/sourceforge\.net\//,
+  },
+  aosp: {
+    base: "https://android.googlesource.com",
+    name: "AOSP",
+    pattern: /^https:\/\/android\.googlesource\.com\//,
+  },
+
+  // AI/ML 平台
   hf: {
     base: "https://huggingface.co",
     name: "Hugging Face",
     pattern: /^https:\/\/huggingface\.co\//,
+  },
+
+  // 包管理平台
+  npm: {
+    base: "https://registry.npmjs.org",
+    name: "npm",
+    pattern: /^https:\/\/registry\.npmjs\.org\//,
+  },
+  pypi: {
+    base: "https://pypi.org",
+    name: "PyPI",
+    pattern: /^https:\/\/pypi\.org\//,
+  },
+  "pypi-files": {
+    base: "https://files.pythonhosted.org",
+    name: "PyPI Files",
+    pattern: /^https:\/\/files\.pythonhosted\.org\//,
+  },
+  conda: {
+    base: "https://repo.anaconda.com",
+    name: "Conda",
+    pattern: /^https:\/\/repo\.anaconda\.com\//,
+  },
+  "conda-community": {
+    base: "https://conda.anaconda.org",
+    name: "Conda Community",
+    pattern: /^https:\/\/conda\.anaconda\.org\//,
+  },
+  maven: {
+    base: "https://repo1.maven.org",
+    name: "Maven",
+    pattern: /^https:\/\/repo1\.maven\.org\//,
+  },
+  apache: {
+    base: "https://downloads.apache.org",
+    name: "Apache",
+    pattern: /^https:\/\/downloads\.apache\.org\//,
+  },
+  gradle: {
+    base: "https://plugins.gradle.org",
+    name: "Gradle",
+    pattern: /^https:\/\/plugins\.gradle\.org\//,
+  },
+  rubygems: {
+    base: "https://rubygems.org",
+    name: "RubyGems",
+    pattern: /^https:\/\/rubygems\.org\//,
+  },
+  cran: {
+    base: "https://cran.r-project.org",
+    name: "CRAN",
+    pattern: /^https:\/\/cran\.r-project\.org\//,
+  },
+  cpan: {
+    base: "https://www.cpan.org",
+    name: "CPAN",
+    pattern: /^https:\/\/www\.cpan\.org\//,
+  },
+  ctan: {
+    base: "https://tug.ctan.org",
+    name: "CTAN",
+    pattern: /^https:\/\/tug\.ctan\.org\//,
+  },
+  golang: {
+    base: "https://proxy.golang.org",
+    name: "Go Modules",
+    pattern: /^https:\/\/proxy\.golang\.org\//,
+  },
+  nuget: {
+    base: "https://api.nuget.org",
+    name: "NuGet",
+    pattern: /^https:\/\/api\.nuget\.org\//,
+  },
+  crates: {
+    base: "https://crates.io",
+    name: "Crates.io",
+    pattern: /^https:\/\/crates\.io\//,
+  },
+  packagist: {
+    base: "https://repo.packagist.org",
+    name: "Packagist",
+    pattern: /^https:\/\/repo\.packagist\.org\//,
+  },
+
+  // 其他平台
+  arxiv: {
+    base: "https://arxiv.org",
+    name: "arXiv",
+    pattern: /^https:\/\/arxiv\.org\//,
+  },
+  fdroid: {
+    base: "https://f-droid.org",
+    name: "F-Droid",
+    pattern: /^https:\/\/f-droid\.org\//,
   },
 };
 
@@ -221,7 +338,101 @@ function isDownloadLink(link) {
     console.error("无效的 URL：", href, e);
   }
 
-  // 第七检查：明确的下载文本指示器（更具体）
+  // 第六检查：npm 包下载
+  const allowedNpmHosts = ["registry.npmjs.org"];
+  try {
+    const parsedUrl = new URL(href);
+    if (allowedNpmHosts.includes(parsedUrl.host)) {
+      // npm tarball URL 包含 /-/
+      if (pathname.includes("/-/") && pathname.endsWith(".tgz")) {
+        return true;
+      }
+    }
+  } catch (e) {
+    console.error("无效的 URL：", href, e);
+  }
+
+  // 第七检查：PyPI 包下载
+  const allowedPypiHosts = ["pypi.org", "files.pythonhosted.org"];
+  try {
+    const parsedUrl = new URL(href);
+    if (allowedPypiHosts.includes(parsedUrl.host)) {
+      // PyPI 包文件下载
+      if (
+        pathname.includes("/packages/") &&
+        (pathname.endsWith(".tar.gz") ||
+          pathname.endsWith(".whl") ||
+          pathname.endsWith(".egg"))
+      ) {
+        return true;
+      }
+    }
+  } catch (e) {
+    console.error("无效的 URL：", href, e);
+  }
+
+  // 第八检查：SourceForge 下载
+  const allowedSourceForgeHosts = ["sourceforge.net"];
+  try {
+    const parsedUrl = new URL(href);
+    if (allowedSourceForgeHosts.includes(parsedUrl.host)) {
+      // SourceForge 下载 URL 包含 /download
+      if (
+        pathname.includes("/download") ||
+        url.searchParams.get("use_mirror")
+      ) {
+        return true;
+      }
+    }
+  } catch (e) {
+    console.error("无效的 URL：", href, e);
+  }
+
+  // 第九检查：Conda 包下载
+  const allowedCondaHosts = ["repo.anaconda.com", "conda.anaconda.org"];
+  try {
+    const parsedUrl = new URL(href);
+    if (allowedCondaHosts.includes(parsedUrl.host)) {
+      // Conda 包文件
+      if (pathname.endsWith(".conda") || pathname.endsWith(".tar.bz2")) {
+        return true;
+      }
+    }
+  } catch (e) {
+    console.error("无效的 URL：", href, e);
+  }
+
+  // 第十检查：其他包管理平台
+  const packageManagerHosts = [
+    "rubygems.org",
+    "cran.r-project.org",
+    "crates.io",
+    "repo.packagist.org",
+    "api.nuget.org",
+    "proxy.golang.org",
+  ];
+  try {
+    const parsedUrl = new URL(href);
+    if (packageManagerHosts.includes(parsedUrl.host)) {
+      // 各种包管理器的下载文件
+      const packageExtensions = [
+        ".gem",
+        ".tar.gz",
+        ".crate",
+        ".zip",
+        ".nupkg",
+        ".tgz",
+        ".tar.bz2",
+      ];
+      if (packageExtensions.some((ext) => pathname.endsWith(ext))) {
+        return true;
+      }
+    }
+  } catch (e) {
+    console.error("无效的 URL：", href, e);
+  }
+
+  // 第十一检查：明确的下载文本指示器（更具体）
   const downloadTextIndicators = ["download", "download file", "get file"];
   const linkText = link.textContent.toLowerCase().trim();
   if (

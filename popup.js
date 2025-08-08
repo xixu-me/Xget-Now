@@ -21,9 +21,43 @@ async function loadSettings() {
     document.getElementById("enabledToggle").checked = enabledValue;
 
     // 更新平台切换
-    document.getElementById("ghToggle").checked = settings.enabledPlatforms.gh;
-    document.getElementById("glToggle").checked = settings.enabledPlatforms.gl;
-    document.getElementById("hfToggle").checked = settings.enabledPlatforms.hf;
+    const platformToggles = {
+      // 代码托管平台
+      gh: document.getElementById("ghToggle"),
+      gl: document.getElementById("glToggle"),
+      gitea: document.getElementById("giteaToggle"),
+      codeberg: document.getElementById("codebergToggle"),
+      sf: document.getElementById("sfToggle"),
+      aosp: document.getElementById("aospToggle"),
+
+      // AI/ML 平台
+      hf: document.getElementById("hfToggle"),
+
+      // 包管理平台
+      npm: document.getElementById("npmToggle"),
+      pypi: document.getElementById("pypiToggle"),
+      conda: document.getElementById("condaToggle"),
+      maven: document.getElementById("mavenToggle"),
+      rubygems: document.getElementById("rubygemsToggle"),
+      crates: document.getElementById("cratesToggle"),
+      nuget: document.getElementById("nugetToggle"),
+      golang: document.getElementById("golangToggle"),
+
+      // 其他平台
+      arxiv: document.getElementById("arxivToggle"),
+      fdroid: document.getElementById("fdroidToggle"),
+    };
+
+    // 设置平台切换状态
+    Object.entries(platformToggles).forEach(([platform, toggle]) => {
+      if (
+        toggle &&
+        settings.enabledPlatforms &&
+        settings.enabledPlatforms[platform] !== undefined
+      ) {
+        toggle.checked = settings.enabledPlatforms[platform];
+      }
+    });
 
     // 如果缺少域名则显示状态
     if (!domainValue && settings.enabled) {
@@ -52,9 +86,32 @@ function setupEventListeners() {
     .addEventListener("blur", validateDomain);
 
   // 平台切换
-  document.getElementById("ghToggle").addEventListener("change", saveSettings);
-  document.getElementById("glToggle").addEventListener("change", saveSettings);
-  document.getElementById("hfToggle").addEventListener("change", saveSettings);
+  const platformToggles = [
+    "ghToggle",
+    "glToggle",
+    "giteaToggle",
+    "codebergToggle",
+    "sfToggle",
+    "aospToggle",
+    "hfToggle",
+    "npmToggle",
+    "pypiToggle",
+    "condaToggle",
+    "mavenToggle",
+    "rubygemsToggle",
+    "cratesToggle",
+    "nugetToggle",
+    "golangToggle",
+    "arxivToggle",
+    "fdroidToggle",
+  ];
+
+  platformToggles.forEach((toggleId) => {
+    const element = document.getElementById(toggleId);
+    if (element) {
+      element.addEventListener("change", saveSettings);
+    }
+  });
 }
 
 async function saveSettings() {
@@ -73,9 +130,38 @@ async function saveSettings() {
       enabled: document.getElementById("enabledToggle").checked,
       xgetDomain: domainValue,
       enabledPlatforms: {
-        gh: document.getElementById("ghToggle").checked,
-        gl: document.getElementById("glToggle").checked,
-        hf: document.getElementById("hfToggle").checked,
+        // 代码托管平台
+        gh: document.getElementById("ghToggle")?.checked || false,
+        gl: document.getElementById("glToggle")?.checked || false,
+        gitea: document.getElementById("giteaToggle")?.checked || false,
+        codeberg: document.getElementById("codebergToggle")?.checked || false,
+        sf: document.getElementById("sfToggle")?.checked || false,
+        aosp: document.getElementById("aospToggle")?.checked || false,
+
+        // AI/ML 平台
+        hf: document.getElementById("hfToggle")?.checked || false,
+
+        // 包管理平台
+        npm: document.getElementById("npmToggle")?.checked || false,
+        pypi: document.getElementById("pypiToggle")?.checked || false,
+        "pypi-files": true, // 默认开启
+        conda: document.getElementById("condaToggle")?.checked || false,
+        "conda-community": true, // 默认开启
+        maven: document.getElementById("mavenToggle")?.checked || false,
+        apache: true, // 默认开启
+        gradle: true, // 默认开启
+        rubygems: document.getElementById("rubygemsToggle")?.checked || false,
+        cran: true, // 默认开启
+        cpan: true, // 默认开启
+        ctan: true, // 默认开启
+        golang: document.getElementById("golangToggle")?.checked || false,
+        nuget: document.getElementById("nugetToggle")?.checked || false,
+        crates: document.getElementById("cratesToggle")?.checked || false,
+        packagist: true, // 默认开启
+
+        // 其他平台
+        arxiv: document.getElementById("arxivToggle")?.checked || false,
+        fdroid: document.getElementById("fdroidToggle")?.checked || false,
       },
     };
 

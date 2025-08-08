@@ -1,39 +1,63 @@
 {
   "author": "Xi Xu",
-  "browser": "chrome",
   "bugs": {
     "url": "https://github.com/xixu-me/Xget-for-Chromium/issues"
   },
-  "dependencies": {},
-  "description": "为 GitHub、GitLab 和 Hugging Face 提供更快的文件下载体验",
-  "devDependencies": {},
-  "homepage": "https://github.com/xixu-me/Xget-for-Chromium#readme",
+  "description": "为 Chromium 浏览器提供的 Xget 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速",
+  "engines": {
+    "chrome": ">=88"
+  },
+  "homepage": "https://github.com/xixu-me/Xget-for-Chromium",
   "keywords": [
     "chrome-extension",
     "download-accelerator",
-    "xget",
-    "proxy",
     "github",
     "gitlab",
-    "huggingface"
+    "npm",
+    "pypi",
+    "xget",
+    "download-proxy"
   ],
   "license": "GPL-3.0",
   "main": "background.js",
-  "manifest_version": 3,
+  "manifest": {
+    "platforms": [
+      "github.com",
+      "gitlab.com",
+      "gitea.com",
+      "codeberg.org",
+      "sourceforge.net",
+      "android.googlesource.com",
+      "huggingface.co",
+      "registry.npmjs.org",
+      "pypi.org",
+      "files.pythonhosted.org",
+      "repo.anaconda.com",
+      "conda.anaconda.org",
+      "repo1.maven.org",
+      "downloads.apache.org",
+      "plugins.gradle.org",
+      "rubygems.org",
+      "cran.r-project.org",
+      "www.cpan.org",
+      "tug.ctan.org",
+      "proxy.golang.org",
+      "api.nuget.org",
+      "crates.io",
+      "repo.packagist.org",
+      "arxiv.org",
+      "f-droid.org"
+    ],
+    "version": 3
+  },
   "name": "xget-for-chromium",
   "repository": {
     "type": "git",
     "url": "https://github.com/xixu-me/Xget-for-Chromium.git"
   },
   "scripts": {
-    "build": "不需要构建过程 - 扩展直接从源码运行",
-    "clean": "rm -f *.zip",
-    "dev": "打开 chrome://extensions/ 并加载解压的扩展",
-    "lint": "未配置代码检查 - 建议为 JavaScript 文件添加 ESLint",
-    "package": "zip -r extension.zip . -x '*.git*' 'node_modules/*' '.github/*' '*.md' 'LICENSE' '*.zip'",
-    "release": "npm run validate && npm run package",
-    "test": "在 Chrome 开发者模式下加载扩展进行测试",
-    "validate": "node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); console.log('✅ manifest.json 格式有效')\""
+    "build": "echo 'No build process needed for Chrome extension'",
+    "test": "echo 'No tests specified'"
   },
-  "version": "1.3.0"
+  "version": "2.0.0"
 }

@@ -1,10 +1,10 @@
 # 隐私政策
 
-## 生效日期：2025 年 7 月 12 日
+## 生效日期：2025 年 8 月 8 日
 
 ## 概述
 
-Xget for Chromium 是一个开源浏览器扩展，旨在通过 Xget 代理服务重定向下载链接来加速 GitHub、GitLab 和 Hugging Face 的下载。我们承诺保护您的隐私并确保数据处理的透明度。
+Xget for Chromium 是一个开源浏览器扩展，旨在通过 Xget 代理服务重定向下载链接来加速众多软件开发和研究平台的下载，包括 GitHub、GitLab、Hugging Face、npm、PyPI、Maven、RubyGems、CRAN 等 20+ 个平台。我们承诺保护您的隐私并确保数据处理的透明度。
 
 ## 我们的隐私承诺
 
@@ -35,7 +35,7 @@ Xget for Chromium 扩展遵循“隐私优先”的设计原则，所有处理�
 
 - **Xget 域名配置**：您设置的自定义 Xget 服务域名
 - **扩展启用状态**：扩展是否启用的开关状态
-- **平台偏好设置**：为 GitHub、GitLab 和 Hugging Face 启用/禁用的选择
+- **平台偏好设置**：为支持的各个平台（GitHub、GitLab、Hugging Face、npm、PyPI、Maven、RubyGems、CRAN 等）启用/禁用的选择
 
 这些设置：
 
@@ -84,9 +84,11 @@ Xget for Chromium 扩展遵循“隐私优先”的设计原则，所有处理�
 
 该扩展在以下平台上运行：
 
-- GitHub (github.com)
-- GitLab (gitlab.com)  
-- Hugging Face (huggingface.co)
+- **代码托管平台**：GitHub、GitLab、Gitea、Codeberg、SourceForge、Android Source
+- **包管理平台**：npm、PyPI、Anaconda、Maven Central、Gradle Plugin Portal、RubyGems、CRAN、CPAN、CTAN、Go Proxy、NuGet、Crates.io、Packagist
+- **AI/ML 平台**：Hugging Face
+- **学术平台**：arXiv
+- **应用分发**：F-Droid
 
 扩展不会与这些平台共享任何数据，也不会修改您与这些平台的交互，除了重定向下载链接。
 
@@ -99,14 +101,14 @@ Xget for Chromium 扩展遵循“隐私优先”的设计原则，所有处理�
 1. **`downloads`**：检测和管理下载以进行重定向
 2. **`storage`**：在本地存储您的扩展设置
 3. **`activeTab`**：在当前标签页中显示通知
-4. **`host_permissions`**：访问受支持平台以检测下载链接
+4. **`host_permissions`**：访问受支持的 20+ 个平台以检测下载链接
 
 ### 权限使用
 
 - **下载权限**：仅用于检测下载并将其重定向到 Xget
 - **存储权限**：仅用于保存您的扩展设置
 - **标签页权限**：仅用于显示下载重定向通知
-- **主机权限**：仅用于在受支持平台上检测下载链接
+- **主机权限**：仅用于在受支持的各个平台上检测下载链接
 
 我们不使用这些权限来收集数据、跟踪您的活动或任何其他目的。
 
@@ -210,7 +212,7 @@ Xget for Chromium 扩展遵循“隐私优先”的设计原则，所有处理�
 
 ---
 
-**最后更新**：2025 年 7 月 18 日  
+**最后更新**：2025 年 8 月 8 日  
 **联系方式**：[GitHub Issues](https://github.com/xixu-me/Xget-for-Chromium/issues)
 
 此隐私政策是我们对透明度和用户隐私承诺的一部分。我们相信您有权了解您使用的软件如何处理您的数据，以及在这种情况下，确认它不会处理您的个人数据。
