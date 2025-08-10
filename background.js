@@ -209,27 +209,29 @@ chrome.runtime.onInstalled.addListener(async () => {
   await chrome.storage.sync.set(settings);
 });
 
+// 防止监听器被多次注册
+let downloadListenerAdded = false;
+
 // 监听下载事件
-chrome.downloads.onDeterminingFilename.addListener((downloadItem, suggest) => {
-  handleDownload(downloadItem, suggest);
-});
+if (!downloadListenerAdded) {
+  chrome.downloads.onDeterminingFilename.addListener(handleDownload);
+  downloadListenerAdded = true;
+}
 
-async function handleDownload(downloadItem, suggest) {
-  let suggestionCalled = false;
+function handleDownload(downloadItem, suggest) {
+  // 立即调用 suggest 来防止多次调用错误
+  suggest();
 
-  const callSuggest = () => {
-    if (!suggestionCalled) {
-      suggestionCalled = true;
-      suggest();
-    }
-  };
+  // 然后异步处理重定向逻辑
+  processDownloadRedirect(downloadItem);
+}
 
+async function processDownloadRedirect(downloadItem) {
   try {
     const settings = await chrome.storage.sync.get(DEFAULT_SETTINGS);
 
     // 检查扩展是否已启用并配置了域名
     if (!settings.enabled || !settings.xgetDomain) {
-      callSuggest();
       return;
     }
 
@@ -243,31 +245,32 @@ async function handleDownload(downloadItem, suggest) {
     if (redirectedUrl && redirectedUrl !== url) {
       console.log("重定向下载：", url, "->", redirectedUrl);
 
-      // 取消原始下载
-      chrome.downloads.cancel(downloadItem.id);
-
-      // 使用重定向的 URL 开始新下载
-      chrome.downloads.download({
-        url: redirectedUrl,
-        filename: downloadItem.filename || undefined,
-        conflictAction: "uniquify",
-      });
-
-      // 通过内容脚本显示通知
       try {
-        await chrome.tabs.sendMessage(downloadItem.tabId, {
-          action: "showNotification",
-          message: "下载已通过 Xget 重定向",
+        // 取消原始下载
+        await chrome.downloads.cancel(downloadItem.id);
+
+        // 使用重定向的 URL 开始新下载
+        await chrome.downloads.download({
+          url: redirectedUrl,
+          filename: downloadItem.filename || undefined,
+          conflictAction: "uniquify",
         });
+
+        // 通过内容脚本显示通知
+        try {
+          await chrome.tabs.sendMessage(downloadItem.tabId, {
+            action: "showNotification",
+            message: "下载已通过 Xget 重定向",
+          });
+        } catch (error) {
+          console.log("无法向标签页发送通知");
+        }
       } catch (error) {
-        console.log("无法向标签页发送通知");
+        console.error("重定向下载时出错：", error);
       }
-    } else {
-      callSuggest();
     }
   } catch (error) {
-    console.error("处理下载时出错：", error);
-    callSuggest();
+    console.error("处理下载重定向时出错：", error);
   }
 }
 
