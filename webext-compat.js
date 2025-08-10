@@ -22,7 +22,14 @@
  */
 const detectBrowser = () => {
   const ua = navigator.userAgent;
-  const manifest = chrome.runtime.getManifest();
+  let manifest;
+  
+  try {
+    manifest = chrome.runtime.getManifest();
+  } catch (error) {
+    console.warn("Could not get manifest in current context:", error);
+    manifest = { version: "0.0.0" }; // 默认版本
+  }
 
   const flavor = {
     major: 0,
@@ -81,8 +88,22 @@ const webextFlavor = detectBrowser();
 // 统一的 WebExtension API
 const webext = (() => {
   // Firefox 使用 browser API，Chrome 使用 chrome API
-  const api =
-    typeof browser !== "undefined" && browser.runtime ? browser : chrome;
+  let api;
+  try {
+    api = typeof browser !== "undefined" && browser.runtime ? browser : chrome;
+    if (!api || !api.runtime) {
+      throw new Error("No WebExtension API available");
+    }
+  } catch (error) {
+    console.error("Failed to initialize WebExtension API:", error);
+    // 创建一个最小的 API 存根
+    api = {
+      runtime: { getManifest: () => ({ version: "0.0.0" }) },
+      storage: { local: {}, sync: {} },
+      tabs: {},
+      downloads: {}
+    };
+  }
 
   // Promise 化函数的包装器
   const promisify = (context, methodName) => {
@@ -125,33 +146,171 @@ const webext = (() => {
     }
   };
 
+  // 专门的 sendMessage 包装器
+  const createSendMessage = (runtimeAPI) => {
+    if (!runtimeAPI || !runtimeAPI.sendMessage) {
+      return async () => {
+        console.warn("runtime.sendMessage not available");
+        return null;
+      };
+    }
+
+    return function (...args) {
+      return new Promise((resolve, reject) => {
+        try {
+          if (args.length === 1) {
+            // sendMessage(message)
+            runtimeAPI.sendMessage(args[0], (response) => {
+              if (api.runtime.lastError) {
+                console.warn("SendMessage failed:", api.runtime.lastError.message);
+                resolve(null);
+              } else {
+                resolve(response);
+              }
+            });
+          } else if (args.length === 2) {
+            // 检查第二个参数是否是函数（回调）
+            if (typeof args[1] === 'function') {
+              // sendMessage(message, callback) - 直接调用回调，不使用 Promise
+              runtimeAPI.sendMessage(args[0], args[1]);
+              resolve(undefined); // 立即解析 Promise
+            } else if (typeof args[0] === 'string' && args[0].length > 10) {
+              // sendMessage(extensionId, message)
+              runtimeAPI.sendMessage(args[0], args[1], (response) => {
+                if (api.runtime.lastError) {
+                  console.warn("SendMessage failed:", api.runtime.lastError.message);
+                  resolve(null);
+                } else {
+                  resolve(response);
+                }
+              });
+            } else {
+              // sendMessage(message, options)
+              runtimeAPI.sendMessage(args[0], args[1], (response) => {
+                if (api.runtime.lastError) {
+                  console.warn("SendMessage failed:", api.runtime.lastError.message);
+                  resolve(null);
+                } else {
+                  resolve(response);
+                }
+              });
+            }
+          } else if (args.length === 3) {
+            // 检查第三个参数是否是函数（回调）
+            if (typeof args[2] === 'function') {
+              // sendMessage(extensionId, message, callback) 或 sendMessage(message, options, callback)
+              runtimeAPI.sendMessage(args[0], args[1], args[2]);
+              resolve(undefined); // 立即解析 Promise
+            } else {
+              // sendMessage(extensionId, message, options)
+              runtimeAPI.sendMessage(args[0], args[1], args[2], (response) => {
+                if (api.runtime.lastError) {
+                  console.warn("SendMessage failed:", api.runtime.lastError.message);
+                  resolve(null);
+                } else {
+                  resolve(response);
+                }
+              });
+            }
+          } else if (args.length === 4 && typeof args[3] === 'function') {
+            // sendMessage(extensionId, message, options, callback)
+            runtimeAPI.sendMessage(args[0], args[1], args[2], args[3]);
+            resolve(undefined); // 立即解析 Promise
+          } else {
+            console.warn("Invalid arguments for sendMessage:", args);
+            resolve(null);
+          }
+        } catch (error) {
+          console.warn("SendMessage error:", error);
+          resolve(null);
+        }
+      });
+    };
+  };
+
+  // 专门的 tabs.sendMessage 包装器
+  const createTabsSendMessage = (tabsAPI) => {
+    if (!tabsAPI || !tabsAPI.sendMessage) {
+      return async () => {
+        console.warn("tabs.sendMessage not available");
+        return null;
+      };
+    }
+
+    return function (tabId, message, options = {}) {
+      return new Promise((resolve, reject) => {
+        try {
+          if (arguments.length === 2) {
+            // sendMessage(tabId, message)
+            tabsAPI.sendMessage(tabId, message, (response) => {
+              if (api.runtime.lastError) {
+                console.warn("Tabs sendMessage failed:", api.runtime.lastError.message);
+                resolve(null);
+              } else {
+                resolve(response);
+              }
+            });
+          } else {
+            // sendMessage(tabId, message, options)
+            tabsAPI.sendMessage(tabId, message, options, (response) => {
+              if (api.runtime.lastError) {
+                console.warn("Tabs sendMessage failed:", api.runtime.lastError.message);
+                resolve(null);
+              } else {
+                resolve(response);
+              }
+            });
+          }
+        } catch (error) {
+          console.warn("Tabs sendMessage error:", error);
+          resolve(null);
+        }
+      });
+    };
+  };
+
   return {
     // Runtime API
     runtime: {
       getManifest: () => api.runtime.getManifest(),
       getURL: (path) => api.runtime.getURL(path),
-      sendMessage: promisifyNoFail(api.runtime, "sendMessage"),
+      sendMessage: createSendMessage(api.runtime),
       connect: (connectInfo) => api.runtime.connect(connectInfo),
       onMessage: api.runtime.onMessage,
       onConnect: api.runtime.onConnect,
+      onInstalled: api.runtime.onInstalled,
+      onStartup: api.runtime.onStartup,
       lastError: api.runtime.lastError,
       id: api.runtime.id,
     },
 
     // Tabs API
-    tabs: {
+    tabs: api.tabs ? {
       query: promisifyNoFail(api.tabs, "query", []),
       get: promisifyNoFail(api.tabs, "get"),
       create: promisifyNoFail(api.tabs, "create"),
       update: promisifyNoFail(api.tabs, "update"),
       remove: promisifyNoFail(api.tabs, "remove"),
-      sendMessage: promisifyNoFail(api.tabs, "sendMessage"),
+      sendMessage: createTabsSendMessage(api.tabs),
       executeScript: promisifyNoFail(api.tabs, "executeScript"),
       insertCSS: promisifyNoFail(api.tabs, "insertCSS"),
       removeCSS: promisifyNoFail(api.tabs, "removeCSS"),
       onUpdated: api.tabs.onUpdated,
       onActivated: api.tabs.onActivated,
       onRemoved: api.tabs.onRemoved,
+    } : {
+      query: async () => [],
+      get: async () => null,
+      create: async () => null,
+      update: async () => null,
+      remove: async () => null,
+      sendMessage: async () => null,
+      executeScript: async () => null,
+      insertCSS: async () => null,
+      removeCSS: async () => null,
+      onUpdated: { addListener: () => {}, removeListener: () => {} },
+      onActivated: { addListener: () => {}, removeListener: () => {} },
+      onRemoved: { addListener: () => {}, removeListener: () => {} },
     },
 
     // Storage API
@@ -179,7 +338,7 @@ const webext = (() => {
     },
 
     // Downloads API
-    downloads: {
+    downloads: api.downloads ? {
       download: promisifyNoFail(api.downloads, "download"),
       search: promisifyNoFail(api.downloads, "search", []),
       cancel: promisifyNoFail(api.downloads, "cancel"),
@@ -192,6 +351,21 @@ const webext = (() => {
       onCreated: api.downloads.onCreated,
       onChanged: api.downloads.onChanged,
       onErased: api.downloads.onErased,
+      onDeterminingFilename: api.downloads.onDeterminingFilename,
+    } : {
+      download: async () => null,
+      search: async () => [],
+      cancel: async () => null,
+      pause: async () => null,
+      resume: async () => null,
+      erase: async () => null,
+      removeFile: async () => null,
+      show: async () => null,
+      showDefaultFolder: async () => null,
+      onCreated: { addListener: () => {}, removeListener: () => {} },
+      onChanged: { addListener: () => {}, removeListener: () => {} },
+      onErased: { addListener: () => {}, removeListener: () => {} },
+      onDeterminingFilename: { addListener: () => {}, removeListener: () => {} },
     },
 
     // Browser Action / Action API (兼容不同版本)
@@ -252,8 +426,19 @@ const webext = (() => {
 if (typeof module !== "undefined" && module.exports) {
   // Node.js 环境
   module.exports = { webext, webextFlavor };
-} else {
-  // 浏览器环境
+} else if (typeof window !== "undefined") {
+  // 浏览器环境（内容脚本、弹出窗口等）
   window.webext = webext;
   window.webextFlavor = webextFlavor;
+  console.log("WebExt compatibility layer loaded in browser environment");
+} else if (typeof self !== "undefined") {
+  // 服务工作器环境
+  self.webext = webext;
+  self.webextFlavor = webextFlavor;
+  console.log("WebExt compatibility layer loaded in service worker environment");
+} else {
+  // 全局环境
+  this.webext = webext;
+  this.webextFlavor = webextFlavor;
+  console.log("WebExt compatibility layer loaded in global environment");
 }
