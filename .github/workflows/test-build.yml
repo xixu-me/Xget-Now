@@ -1,4 +1,6 @@
 name: 测试构建
+permissions:
+  contents: read
 
 on:
   push:
