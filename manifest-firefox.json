@@ -3,12 +3,6 @@
   "name": "Xget Now",
   "version": "2.0.0",
   "description": "为 Firefox 浏览器提供的 Xget 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速",
-  "applications": {
-    "gecko": {
-      "id": "xget-now@xixu.me",
-      "strict_min_version": "109.0"
-    }
-  },
   "browser_action": {
     "default_icon": {
       "16": "icons/icon16.png",
@@ -103,7 +97,7 @@
   ],
   "browser_specific_settings": {
     "gecko": {
-      "id": "xget-now@xixu.me",
+      "id": "i@xi-xu.me",
       "strict_min_version": "109.0"
     }
   }
