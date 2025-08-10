@@ -1,3 +1,13 @@
+/**
+ * Xget Now - 扩展后台脚本
+ *
+ * 功能：
+ * - 处理扩展设置管理
+ * - 监听标签页更新事件
+ * - 处理来自内容脚本的消息
+ * - 管理扩展状态和配置
+ */
+
 // 导入兼容层
 importScripts("webext-compat.js");
 
@@ -7,7 +17,10 @@ if (typeof webext === "undefined") {
   console.error("WebExt compatibility layer not found");
 }
 
-// 平台配置
+/**
+ * 平台配置定义
+ * 支持的下载加速平台列表
+ */
 const PLATFORMS = {
   // 代码托管平台
   gh: {

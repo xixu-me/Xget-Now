@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 """
 构建脚本，用于生成不同浏览器版本的扩展包
-支持 Chrome/Chromium（Manifest V3）和 Firefox（Manifest V2）
+
+支持平台：
+- Chrome/Chromium（Manifest V3）
+- Firefox（Manifest V2）
+
+使用方法：
+    python build.py --platform all --package
 """
 
 import argparse
@@ -13,7 +19,16 @@ from pathlib import Path
 
 
 def create_build_directory(platform, clean=True):
-    """创建构建目录"""
+    """
+    创建构建目录
+
+    Args:
+        platform (str): 目标平台名称 (chrome/firefox)
+        clean (bool): 是否清理已存在的目录
+
+    Returns:
+        Path: 构建目录路径
+    """
     build_dir = Path(f"build/{platform}")
     if clean and build_dir.exists():
         shutil.rmtree(build_dir)
@@ -22,7 +37,12 @@ def create_build_directory(platform, clean=True):
 
 
 def copy_common_files(build_dir):
-    """复制通用文件"""
+    """
+    复制通用文件到构建目录
+
+    Args:
+        build_dir (Path): 目标构建目录
+    """
     common_files = [
         "webext-compat.js",
         "background.js",
@@ -40,13 +60,18 @@ def copy_common_files(build_dir):
         if os.path.exists(file):
             shutil.copy2(file, build_dir)
 
-    # 复制 icons 目录
+    # 复制图标目录
     if os.path.exists("icons"):
         shutil.copytree("icons", build_dir / "icons", dirs_exist_ok=True)
 
 
 def build_chrome():
-    """构建 Chrome 版本"""
+    """
+    构建 Chrome/Chromium 版本
+
+    Returns:
+        Path: 构建目录路径
+    """
     print("构建 Chrome 版本...")
     build_dir = create_build_directory("chrome")
 
@@ -64,7 +89,12 @@ def build_chrome():
 
 
 def build_firefox():
-    """构建 Firefox 版本"""
+    """
+    构建 Firefox 版本
+
+    Returns:
+        Path: 构建目录路径
+    """
     print("构建 Firefox 版本...")
     build_dir = create_build_directory("firefox")
 
@@ -74,7 +104,7 @@ def build_firefox():
     # 复制 Firefox manifest
     shutil.copy2("manifest-firefox.json", build_dir / "manifest.json")
 
-    # 修改文件为 Firefox 优化
+    # 优化文件以适配 Firefox
     optimize_for_firefox(build_dir)
 
     print(f"Firefox 版本构建完成: {build_dir}")
@@ -82,7 +112,12 @@ def build_firefox():
 
 
 def optimize_for_chrome(build_dir):
-    """为 Chrome 优化文件"""
+    """
+    为 Chrome 优化文件
+
+    Args:
+        build_dir (Path): 构建目录路径
+    """
     # 移除 background.js 中的 importScripts 调用，因为在 Manifest V3 中不需要
     bg_file = build_dir / "background.js"
     if bg_file.exists():
@@ -96,13 +131,27 @@ def optimize_for_chrome(build_dir):
 
 
 def optimize_for_firefox(build_dir):
-    """为 Firefox 优化文件"""
+    """
+    为 Firefox 优化文件
+
+    Args:
+        build_dir (Path): 构建目录路径
+    """
     # Firefox 特有的优化可以在这里添加
     pass
 
 
 def create_package(build_dir, platform):
-    """创建扩展包"""
+    """
+    创建扩展包
+
+    Args:
+        build_dir (Path): 构建目录路径
+        platform (str): 目标平台名称 (chrome/firefox)
+
+    Returns:
+        Path: 扩展包文件路径
+    """
     package_dir = Path("packages")
     package_dir.mkdir(exist_ok=True)
 
@@ -112,11 +161,24 @@ def create_package(build_dir, platform):
         manifest = json.load(f)
 
     version = manifest["version"]
-    package_name = f"xget-now-{platform}-v{version}.zip"
+
+    # 根据平台设置文件扩展名和命名
+    if platform == "chrome":
+        file_ext = "zip"
+        platform_name = "chromium"
+    elif platform == "firefox":
+        file_ext = "xpi"
+        platform_name = "firefox"
+    else:
+        file_ext = "zip"
+        platform_name = platform
+
+    package_name = f"Xget-Now_{version}.{platform_name}.{file_ext}"
     package_path = package_dir / package_name
 
-    # 创建 ZIP 包
-    with zipfile.ZipFile(package_path, "w", zipfile.ZIP_DEFLATED) as zipf:
+    # 创建扩展包
+    compression = zipfile.ZIP_DEFLATED
+    with zipfile.ZipFile(package_path, "w", compression) as zipf:
         for file_path in build_dir.rglob("*"):
             if file_path.is_file():
                 arcname = file_path.relative_to(build_dir)
@@ -127,7 +189,16 @@ def create_package(build_dir, platform):
 
 
 def validate_manifest(manifest_path, platform):
-    """验证 manifest 文件"""
+    """
+    验证 manifest 文件格式和内容
+
+    Args:
+        manifest_path (str): manifest 文件路径
+        platform (str): 目标平台名称 (chrome/firefox)
+
+    Returns:
+        bool: 验证是否通过
+    """
     try:
         with open(manifest_path, encoding="utf-8") as f:
             manifest = json.load(f)

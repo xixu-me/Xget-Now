@@ -1,6 +1,18 @@
 #!/usr/bin/env python3
 """
 开发和测试脚本
+
+提供功能：
+- 启动开发服务器
+- 文件变化监控
+- 代码质量检查
+- 自动化测试
+
+使用方法：
+    python dev.py test    # 运行测试
+    python dev.py lint    # 代码检查
+    python dev.py watch   # 监控文件变化
+    python dev.py serve   # 启动开发服务器
 """
 
 import http.server
@@ -12,14 +24,19 @@ import time
 
 
 def start_dev_server(port=8000):
-    """启动开发服务器用于测试"""
+    """
+    启动开发服务器用于测试扩展
+
+    Args:
+        port (int): 服务器端口号，默认 8000
+    """
 
     class Handler(http.server.SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, directory=os.getcwd(), **kwargs)
 
         def log_message(self, format, *args):
-            # 简化日志输出
+            # 简化日志输出格式
             print(f"[DEV] {format % args}")
 
     with socketserver.TCPServer(("", port), Handler) as httpd:
@@ -32,7 +49,15 @@ def start_dev_server(port=8000):
 
 
 def watch_files():
-    """监控文件变化并自动重新构建"""
+    """
+    监控文件变化并自动重新构建
+
+    监控的文件包括：
+    - manifest.json / manifest-firefox.json
+    - JavaScript 文件 (background.js, content.js, popup.js)
+    - HTML 文件 (popup.html)
+    - 兼容层文件 (webext-compat.js)
+    """
     import os
 
     watch_files = [
@@ -84,11 +109,30 @@ def watch_files():
 
 
 def run_tests():
-    """运行测试"""
+    """
+    运行基础测试套件
+
+    测试内容：
+    - 必需文件存在性检查
+    - Manifest 文件格式和内容验证
+    - 平台特定配置检查
+
+    Returns:
+        bool: 所有测试是否通过
+    """
     print("运行基础测试...")
 
-    # 测试 manifest 文件
     def test_manifest(file_path, platform):
+        """
+        测试 manifest 文件
+
+        Args:
+            file_path (str): manifest 文件路径
+            platform (str): 目标平台 (chrome/firefox)
+
+        Returns:
+            bool: 测试是否通过
+        """
         try:
             with open(file_path, encoding="utf-8") as f:
                 manifest = json.load(f)
@@ -150,27 +194,61 @@ def run_tests():
 
 
 def lint_code():
-    """代码检查"""
+    """
+    执行代码质量检查
+
+    检查内容：
+    - API 使用规范性 (优先使用 webext 兼容层)
+    - 错误处理最佳实践
+    - 接口导出规范性
+
+    特殊处理：
+    - webext-compat.js: 允许直接使用原生 API
+    - platform-detector.js: 允许直接使用原生 API
+    """
     print("运行代码检查...")
 
-    js_files = ["background.js", "content.js", "popup.js", "webext-compat.js"]
+    js_files = [
+        "background.js",
+        "content.js",
+        "popup.js",
+        "webext-compat.js",
+        "platform-detector.js",
+    ]
 
     for file in js_files:
         if os.path.exists(file):
             print(f"检查 {file}...")
 
-            # 简单的语法检查
+            # 读取文件内容进行检查
             with open(file, encoding="utf-8") as f:
                 content = f.read()
 
             # 检查常见问题
             issues = []
 
-            if "chrome." in content and "webext." not in content:
-                issues.append("发现直接使用 chrome API，应使用 webext 兼容层")
+            # 底层文件允许直接使用原生 API
+            bottom_layer_files = ["webext-compat.js", "platform-detector.js"]
 
+            if file not in bottom_layer_files:
+                if "chrome." in content and "webext." not in content:
+                    issues.append("发现直接使用 chrome API，应使用 webext 兼容层")
+            elif file == "webext-compat.js":
+                # 对于 webext-compat.js，检查是否正确导出了 webext 接口
+                if "window.webext" not in content and "module.exports" not in content:
+                    issues.append("兼容层未正确导出 webext 接口")
+            elif file == "platform-detector.js":
+                # 对于 platform-detector.js，检查是否正确导出了平台检测接口
+                if "platformDetector" not in content:
+                    issues.append("平台检测器未正确定义 platformDetector 接口")
+
+            # 检查错误处理
             if "console.log(" in content and "console.error(" not in content:
-                issues.append("建议使用 console.error 处理错误")
+                # 对于底层文件，console.warn 也是可以接受的
+                if file in bottom_layer_files and "console.warn(" in content:
+                    pass  # 底层文件使用 console.warn 是合理的
+                else:
+                    issues.append("建议使用 console.error 处理错误")
 
             if issues:
                 print(f"  ⚠ {file} 发现问题:")

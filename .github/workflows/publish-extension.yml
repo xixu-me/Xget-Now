@@ -1,5 +1,6 @@
 name: 发布扩展到多个应用商店
 
+# 工作流触发条件：手动触发，允许指定版本号
 on:
   workflow_dispatch:
     inputs:
@@ -7,56 +8,54 @@ on:
         description: "版本号 (例如: 1.0.0)"
         required: true
         type: string
-      platforms:
-        description: "发布平台"
-        required: true
-        default: "all"
-        type: choice
-        options:
-          - all
-          - chrome
-          - firefox
 
+# 工作流权限设置
 permissions:
-  contents: write
-  packages: write
+  contents: write # 创建 GitHub Release 需要
+  packages: write # 发布包需要
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
+      # 第一步：检出源代码
       - name: 检出代码
         uses: actions/checkout@v4
 
+      # 第二步：设置 Python 环境用于构建脚本
       - name: 设置 Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
+      # 第三步：设置 Node.js 环境用于 JSON 验证
       - name: 设置 Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "18"
 
+      # 第四步：验证 manifest 文件格式
       - name: 验证 manifest 文件
         run: |
-          # 验证 manifest.json 是否为有效的 JSON
+          # 验证 Chrome manifest.json 是否为有效的 JSON
           node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))"
           echo "✅ Chrome manifest.json 格式有效"
 
-          # 验证 Firefox manifest
+          # 验证 Firefox manifest 是否为有效的 JSON
           node -e "JSON.parse(require('fs').readFileSync('manifest-firefox.json', 'utf8'))"
           echo "✅ Firefox manifest.json 格式有效"
 
+      # 第五步：设置版本号
       - name: 从输入设置版本
         id: version
         run: |
-          # 使用手动提供的版本
+          # 从工作流输入获取版本号
           VERSION="${{ inputs.version }}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "手动设置版本: $VERSION"
 
+      # 第六步：更新所有配置文件中的版本号
       - name: 更新 manifest 版本
         run: |
           # 更新 Chrome manifest.json 中的版本
@@ -77,9 +76,10 @@ jobs:
             console.log('已更新 Firefox manifest.json 版本为:', manifest.version);
           "
 
+      # 第七步：同步更新 package.json 版本
       - name: 更新 package.json 版本
         run: |
-          # 更新 package.json 中的版本以匹配标签
+          # 更新 package.json 中的版本以保持一致性
           node -e "
             const fs = require('fs');
             const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
@@ -88,9 +88,10 @@ jobs:
             console.log('已更新 package.json 版本为:', pkg.version);
           "
 
+      # 第八步：提交版本更改并创建 Git 标签
       - name: 提交并推送版本更新
         run: |
-          # 配置 git 用户信息以进行提交
+          # 配置 Git 用户信息用于自动提交
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
@@ -118,68 +119,56 @@ jobs:
         run: |
           echo "🏗️ 开始构建扩展包..."
 
-          # 运行构建脚本
-          if [ "${{ inputs.platforms }}" = "all" ]; then
-            python build.py --platform all --package
-          elif [ "${{ inputs.platforms }}" = "chrome" ]; then
-            python build.py --platform chrome --package
-          elif [ "${{ inputs.platforms }}" = "firefox" ]; then
-            python build.py --platform firefox --package
-          fi
+          # 运行构建脚本构建所有平台
+          python build.py --platform all --package
 
           echo "📦 扩展包构建完成"
           ls -la packages/ || echo "packages 目录不存在"
-          ls -la build/ || echo "build 目录不存在"
 
       - name: 运行测试
         run: |
           echo "🧪 运行基础测试..."
           python dev.py test
 
-          echo "� 运行代码检查..."
+          echo "🔍 运行代码检查..."
           python dev.py lint
 
       - name: 发布到 Chrome 应用商店
-        if: inputs.platforms == 'all' || inputs.platforms == 'chrome'
         continue-on-error: true
         id: chrome-publish
         uses: mnao305/chrome-extension-upload@v5.0.0
         with:
-          file-path: packages/xget-now-chrome-v${{ steps.version.outputs.version }}.zip
+          file-path: packages/Xget-Now_${{ steps.version.outputs.version }}.chromium.zip
           extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
-          publish: true # 如果只想上传而不发布，设置为 false
+          publish: true
 
       - name: 发布到 Microsoft Edge 加载项
-        if: inputs.platforms == 'all' || inputs.platforms == 'chrome'
         continue-on-error: true
         id: edge-publish
         uses: wdzeng/edge-addon@v2
         with:
           product-id: ${{ secrets.EDGE_PRODUCT_ID }}
-          zip-path: packages/xget-now-chrome-v${{ steps.version.outputs.version }}.zip
+          zip-path: packages/Xget-Now_${{ steps.version.outputs.version }}.chromium.zip
           api-key: ${{ secrets.EDGE_API_KEY }}
           client-id: ${{ secrets.EDGE_CLIENT_ID }}
           notes-for-certification: "自动发布 v${{ steps.version.outputs.version }} - ${{ github.sha }}"
 
-      - name: 准备 Firefox 发布
-        if: inputs.platforms == 'all' || inputs.platforms == 'firefox'
+      - name: 发布到 Firefox 附加组件
         continue-on-error: true
-        id: firefox-prepare
-        run: |
-          echo "🦊 准备 Firefox 扩展发布..."
-
-          # 检查 Firefox 扩展包是否存在
-          if [ -f "packages/xget-now-firefox-v${{ steps.version.outputs.version }}.zip" ]; then
-            echo "✅ Firefox 扩展包存在"
-            echo "firefox-package-exists=true" >> $GITHUB_OUTPUT
-            echo "firefox-package-path=packages/xget-now-firefox-v${{ steps.version.outputs.version }}.zip" >> $GITHUB_OUTPUT
-          else
-            echo "❌ Firefox 扩展包不存在"
-            echo "firefox-package-exists=false" >> $GITHUB_OUTPUT
-          fi
+        id: firefox-publish
+        uses: browser-actions/release-firefox-addon@latest
+        with:
+          addon-id: ${{ secrets.FIREFOX_ADDON_ID }}
+          addon-path: packages/Xget-Now_${{ steps.version.outputs.version }}.firefox.xpi
+          auth-api-issuer: ${{ secrets.FIREFOX_AUTH_API_ISSUER }}
+          auth-api-secret: ${{ secrets.FIREFOX_AUTH_API_SECRET }}
+          approval-note: |
+            这是一个下载加速器扩展，支持多个平台的文件下载加速。
+            源代码位于 GitHub: https://github.com/xixu-me/Xget-Now
+            构建说明：直接从源代码打包，无需编译或转译。
 
       - name: 创建 GitHub 发布
         uses: softprops/action-gh-release@v2
@@ -187,8 +176,29 @@ jobs:
           tag_name: v${{ steps.version.outputs.version }}
           name: Xget Now ${{ steps.version.outputs.version }}
           files: |
-            packages/*.zip
+            packages/Xget-Now_${{ steps.version.outputs.version }}.chromium.zip
+            packages/Xget-Now_${{ steps.version.outputs.version }}.firefox.xpi
           generate_release_notes: true
+          body: |
+            ## 📦 扩展包下载
+
+            ### Chrome/Chromium
+            - **文件**: `Xget-Now_${{ steps.version.outputs.version }}.chromium.zip`
+            - **支持**: Chrome、Chromium、Microsoft Edge 等基于 Chromium 的浏览器
+            - **Manifest**: v3
+
+            ### Firefox
+            - **文件**: `Xget-Now_${{ steps.version.outputs.version }}.firefox.xpi`
+            - **支持**: Firefox 或其他基于 Firefox 的浏览器
+            - **Manifest**: v2
+
+            ## 🚀 安装方法
+
+            详细的安装说明请参考：[手动安装指南](https://github.com/xixu-me/Xget-Now?tab=readme-ov-file#%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85)
+
+            ## 📝 更新日志
+
+            详细的更改内容请查看下方的自动生成的发布说明。
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -197,34 +207,31 @@ jobs:
         run: |
           echo "📊 发布结果摘要:"
           echo "================================"
-          echo "🏗️ 构建平台: ${{ inputs.platforms }}"
           echo "📦 版本: ${{ steps.version.outputs.version }}"
           echo ""
 
-          if [ "${{ inputs.platforms }}" = "all" ] || [ "${{ inputs.platforms }}" = "chrome" ]; then
-            if [ "${{ steps.chrome-publish.outcome }}" = "success" ]; then
-              echo "✅ Chrome 应用商店: 发布成功"
-            elif [ "${{ steps.chrome-publish.outcome }}" = "failure" ]; then
-              echo "❌ Chrome 应用商店: 发布失败"
-            else
-              echo "⚠️ Chrome 应用商店: 已跳过（缺少密钥）"
-            fi
-
-            if [ "${{ steps.edge-publish.outcome }}" = "success" ]; then
-              echo "✅ Microsoft Edge 加载项: 发布成功"
-            elif [ "${{ steps.edge-publish.outcome }}" = "failure" ]; then
-              echo "❌ Microsoft Edge 加载项: 发布失败"
-            else
-              echo "⚠️ Microsoft Edge 加载项: 已跳过（缺少密钥）"
-            fi
+          if [ "${{ steps.chrome-publish.outcome }}" = "success" ]; then
+            echo "✅ Chrome 应用商店: 发布成功"
+          elif [ "${{ steps.chrome-publish.outcome }}" = "failure" ]; then
+            echo "❌ Chrome 应用商店: 发布失败"
+          else
+            echo "⚠️ Chrome 应用商店: 已跳过（缺少密钥或其他原因）"
           fi
 
-          if [ "${{ inputs.platforms }}" = "all" ] || [ "${{ inputs.platforms }}" = "firefox" ]; then
-            if [ "${{ steps.firefox-prepare.outputs.firefox-package-exists }}" = "true" ]; then
-              echo "✅ Firefox 扩展包: 已准备就绪，需要手动提交到 Mozilla"
-            else
-              echo "❌ Firefox 扩展包: 构建失败"
-            fi
+          if [ "${{ steps.edge-publish.outcome }}" = "success" ]; then
+            echo "✅ Microsoft Edge 加载项: 发布成功"
+          elif [ "${{ steps.edge-publish.outcome }}" = "failure" ]; then
+            echo "❌ Microsoft Edge 加载项: 发布失败"
+          else
+            echo "⚠️ Microsoft Edge 加载项: 已跳过（缺少密钥或其他原因）"
+          fi
+
+          if [ "${{ steps.firefox-publish.outcome }}" = "success" ]; then
+            echo "✅ Firefox 附加组件: 发布成功"
+          elif [ "${{ steps.firefox-publish.outcome }}" = "failure" ]; then
+            echo "❌ Firefox 附加组件: 发布失败"
+          else
+            echo "⚠️ Firefox 附加组件: 已跳过（缺少密钥或其他原因）"
           fi
 
           echo ""
@@ -236,16 +243,13 @@ jobs:
           echo ""
           echo "🎉 成功发布 Xget Now ${{ steps.version.outputs.version }}!"
           echo "================================"
-
-          if [ "${{ inputs.platforms }}" = "all" ] || [ "${{ inputs.platforms }}" = "chrome" ]; then
-            echo "🔗 Chrome 应用商店: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"
-            echo "🔗 Microsoft Edge 加载项: 查看发布页面获取最新信息"
-          fi
-
-          if [ "${{ inputs.platforms }}" = "all" ] || [ "${{ inputs.platforms }}" = "firefox" ]; then
-            echo "🦊 Firefox: 手动提交到 Mozilla Add-ons（文件已准备就绪）"
-          fi
-
+          echo "🔗 Chrome 应用商店: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"
+          echo "🔗 Microsoft Edge 加载项: 查看发布页面获取最新信息"
+          echo "🦊 Firefox 附加组件: 查看 Mozilla Add-ons 获取最新信息"
           echo "📦 GitHub 发布: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.version }}"
           echo "📖 安装指南: https://github.com/${{ github.repository }}#installation"
+          echo ""
+          echo "📁 发布的文件:"
+          echo "  - Xget-Now_${{ steps.version.outputs.version }}.chromium.zip (Chrome/Chromium/Edge)"
+          echo "  - Xget-Now_${{ steps.version.outputs.version }}.firefox.xpi (Firefox)"
           echo "================================"

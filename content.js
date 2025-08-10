@@ -1,11 +1,22 @@
-// 内容脚本，在支持的平台上注入下载拦截功能
+/**
+ * Xget Now - 内容脚本
+ *
+ * 功能：
+ * - 在支持的平台页面上注入下载拦截功能
+ * - 监听页面上的下载链接点击事件
+ * - 将下载请求重定向到加速服务
+ * - 处理不同平台的特殊下载逻辑
+ */
 
 // 确保兼容层可用
 if (typeof webext === "undefined") {
   console.error("WebExt compatibility layer not found in content script");
 }
 
-// 平台配置
+/**
+ * 平台配置定义
+ * 与后台脚本保持同步的平台列表
+ */
 const PLATFORMS = {
   // 代码托管平台
   gh: {

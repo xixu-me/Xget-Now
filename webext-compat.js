@@ -1,9 +1,25 @@
 /**
  * WebExtension API 兼容层
- * 提供跨浏览器的统一API接口
+ *
+ * 提供跨浏览器的统一 API 接口，解决不同浏览器间的差异：
+ * - Firefox 使用 browser API，返回 Promise
+ * - Chrome/Chromium 使用 chrome API，使用回调函数
+ * - 不同版本的 Manifest API 差异 (V2 vs V3)
+ *
+ * 功能：
+ * - 自动检测当前浏览器环境
+ * - 提供统一的 Promise 化 API 接口
+ * - 处理 API 调用失败的情况
+ * - 兼容不同浏览器的特性差异
  */
 
-// 检测当前浏览器环境
+/**
+ * 检测当前浏览器环境
+ *
+ * @returns {Object} 浏览器特性信息
+ * @property {number} major - 浏览器主版本号
+ * @property {Set<string>} soup - 浏览器特性标识集合
+ */
 const detectBrowser = () => {
   const ua = navigator.userAgent;
   const manifest = chrome.runtime.getManifest();

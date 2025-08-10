@@ -1,11 +1,27 @@
 /**
  * 平台特定的配置和检测
+ *
+ * 提供浏览器平台检测和特性识别功能：
+ * - 检测当前运行的浏览器类型和版本
+ * - 识别 Manifest 版本 (V2/V3)
+ * - 检测移动端环境
+ * - 识别开发版本
  */
 
-// 检测当前平台和环境
+/**
+ * 平台检测器
+ * 提供浏览器环境检测的核心功能
+ */
 const platformDetector = {
   /**
    * 检测当前浏览器平台
+   *
+   * @returns {Object} 平台检测结果
+   * @property {string} platform - 浏览器类型 (firefox/chrome/edge/opera/safari/unknown)
+   * @property {number} version - 浏览器主版本号
+   * @property {number} manifestVersion - Manifest 版本号
+   * @property {boolean} isMobile - 是否为移动端
+   * @property {boolean} isDevBuild - 是否为开发版本
    */
   detect() {
     const manifest =
@@ -22,6 +38,7 @@ const platformDetector = {
     let platform = "unknown";
     let version = 0;
 
+    // 根据扩展 URL 前缀检测浏览器类型
     if (extURL.startsWith("moz-extension://")) {
       platform = "firefox";
       const match = /Firefox\/(\d+)/.exec(ua);

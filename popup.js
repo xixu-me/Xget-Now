@@ -1,3 +1,13 @@
+/**
+ * Xget Now - 弹窗脚本
+ *
+ * 功能：
+ * - 管理扩展设置界面
+ * - 处理用户交互事件
+ * - 同步设置到后台脚本
+ * - 提供平台开关控制
+ */
+
 document.addEventListener("DOMContentLoaded", async () => {
   // 确保兼容层可用
   if (typeof webext === "undefined") {
@@ -12,6 +22,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupEventListeners();
 });
 
+/**
+ * 加载并应用当前设置到 UI
+ */
 async function loadSettings() {
   try {
     const settings = await webext.runtime.sendMessage({
@@ -26,7 +39,7 @@ async function loadSettings() {
     const enabledValue = settings.enabled && domainValue.trim() !== "";
     document.getElementById("enabledToggle").checked = enabledValue;
 
-    // 更新平台切换
+    // 更新平台切换状态
     const platformToggles = {
       // 代码托管平台
       gh: document.getElementById("ghToggle"),
