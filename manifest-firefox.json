@@ -1,5 +1,17 @@
 {
-  "action": {
+  "manifest_version": 2,
+  "name": "Xget Now",
+  "version": "2.0.0",
+  "description": "为 Firefox 浏览器提供的 Xget 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速",
+
+  "applications": {
+    "gecko": {
+      "id": "xget-now@xixu.me",
+      "strict_min_version": "109.0"
+    }
+  },
+
+  "browser_action": {
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -9,9 +21,12 @@
     "default_popup": "popup.html",
     "default_title": "Xget Now"
   },
+
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["webext-compat.js", "background.js"],
+    "persistent": false
   },
+
   "content_scripts": [
     {
       "js": ["webext-compat.js", "content.js"],
@@ -45,8 +60,11 @@
       "run_at": "document_end"
     }
   ],
-  "description": "为 Chromium 浏览器提供的 Xget 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速",
-  "host_permissions": [
+
+  "permissions": [
+    "downloads",
+    "storage",
+    "activeTab",
     "https://github.com/*",
     "https://gitlab.com/*",
     "https://gitea.com/*",
@@ -73,20 +91,20 @@
     "https://arxiv.org/*",
     "https://f-droid.org/*"
   ],
+
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "manifest_version": 3,
-  "name": "Xget Now",
-  "permissions": ["downloads", "storage", "activeTab"],
-  "version": "2.0.0",
-  "web_accessible_resources": [
-    {
-      "matches": ["<all_urls>"],
-      "resources": ["icons/*"]
+
+  "web_accessible_resources": ["icons/*"],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "xget-now@xixu.me",
+      "strict_min_version": "109.0"
     }
-  ]
+  }
 }

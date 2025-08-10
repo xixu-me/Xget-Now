@@ -1,5 +1,10 @@
 // 内容脚本，在支持的平台上注入下载拦截功能
 
+// 确保兼容层可用
+if (typeof webext === "undefined") {
+  console.error("WebExt compatibility layer not found in content script");
+}
+
 // 平台配置
 const PLATFORMS = {
   // 代码托管平台
@@ -141,7 +146,7 @@ const PLATFORMS = {
   console.log("Xget Now：内容脚本已加载");
 
   // 监听来自后台脚本的消息
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  webext.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "showNotification") {
       showNotification(request.message, request.showRefreshButton);
       sendResponse({ success: true });
@@ -170,7 +175,7 @@ const PLATFORMS = {
 async function getSettings() {
   try {
     return await new Promise((resolve) => {
-      chrome.runtime.sendMessage({ action: "getSettings" }, resolve);
+      webext.runtime.sendMessage({ action: "getSettings" }, resolve);
     });
   } catch (error) {
     console.error("获取设置时出错：", error);

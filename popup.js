@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  // 确保兼容层可用
+  if (typeof webext === "undefined") {
+    console.error("WebExt compatibility layer not found in popup");
+    return;
+  }
+
   // 加载当前设置
   await loadSettings();
 
@@ -8,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadSettings() {
   try {
-    const settings = await chrome.runtime.sendMessage({
+    const settings = await webext.runtime.sendMessage({
       action: "getSettings",
     });
 
@@ -282,7 +288,7 @@ async function saveSettings() {
       settings.xgetDomain = cleanupDomain(settings.xgetDomain);
     }
 
-    const response = await chrome.runtime.sendMessage({
+    const response = await webext.runtime.sendMessage({
       action: "saveSettings",
       settings: settings,
     });

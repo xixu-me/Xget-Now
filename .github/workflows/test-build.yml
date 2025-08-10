@@ -1,0 +1,196 @@
+name: 测试构建
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: 验证 manifest 文件
+        run: |
+          echo "验证 Chrome manifest..."
+          node -e "
+            const manifest = JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'));
+            console.log('Chrome manifest 版本:', manifest.version);
+            console.log('Manifest 版本:', manifest.manifest_version);
+            if (manifest.manifest_version !== 3) {
+              throw new Error('Chrome manifest 应该使用 Manifest V3');
+            }
+          "
+
+          echo "验证 Firefox manifest..."
+          node -e "
+            const manifest = JSON.parse(require('fs').readFileSync('manifest-firefox.json', 'utf8'));
+            console.log('Firefox manifest 版本:', manifest.version);
+            console.log('Manifest 版本:', manifest.manifest_version);
+            if (manifest.manifest_version !== 2) {
+              throw new Error('Firefox manifest 应该使用 Manifest V2');
+            }
+          "
+
+      - name: 检查必需文件
+        run: |
+          echo "检查必需文件是否存在..."
+
+          required_files=(
+            "manifest.json"
+            "manifest-firefox.json"
+            "background.js"
+            "content.js"
+            "popup.js"
+            "popup.html"
+            "webext-compat.js"
+            "build.py"
+            "dev.py"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✅ $file"
+            else
+              echo "❌ $file 缺失"
+              exit 1
+            fi
+          done
+
+      - name: 运行基础测试
+        run: |
+          echo "运行基础测试..."
+          python dev.py test
+
+      - name: 运行代码检查
+        run: |
+          echo "运行代码检查..."
+          python dev.py lint
+
+      - name: 测试 Chrome 构建
+        run: |
+          echo "测试 Chrome 构建..."
+          python build.py --platform chrome
+
+          # 验证构建结果
+          if [ -d "build/chrome" ]; then
+            echo "✅ Chrome 构建目录已创建"
+            ls -la build/chrome/
+          else
+            echo "❌ Chrome 构建失败"
+            exit 1
+          fi
+
+      - name: 测试 Firefox 构建
+        run: |
+          echo "测试 Firefox 构建..."
+          python build.py --platform firefox
+
+          # 验证构建结果
+          if [ -d "build/firefox" ]; then
+            echo "✅ Firefox 构建目录已创建"
+            ls -la build/firefox/
+          else
+            echo "❌ Firefox 构建失败"
+            exit 1
+          fi
+
+      - name: 测试扩展包生成
+        run: |
+          echo "测试扩展包生成..."
+          python build.py --platform all --package
+
+          # 验证扩展包
+          if [ -d "packages" ]; then
+            echo "✅ 扩展包目录已创建"
+            ls -la packages/
+            
+            # 检查是否有 Chrome 和 Firefox 包
+            if [ -f packages/xget-now-chrome-v*.zip ]; then
+              echo "✅ Chrome 扩展包已生成"
+            else
+              echo "❌ Chrome 扩展包生成失败"
+            fi
+            
+            if [ -f packages/xget-now-firefox-v*.zip ]; then
+              echo "✅ Firefox 扩展包已生成"
+            else
+              echo "❌ Firefox 扩展包生成失败"
+            fi
+          else
+            echo "❌ 扩展包生成失败"
+            exit 1
+          fi
+
+      - name: 验证构建的 manifest 文件
+        run: |
+          echo "验证构建的 manifest 文件..."
+
+          # 检查 Chrome 构建的 manifest
+          echo "检查 Chrome manifest..."
+          node -e "
+            const manifest = JSON.parse(require('fs').readFileSync('build/chrome/manifest.json', 'utf8'));
+            console.log('Chrome 构建版本:', manifest.version);
+            if (manifest.manifest_version !== 3) {
+              throw new Error('Chrome 构建应该使用 Manifest V3');
+            }
+            if (!manifest.action) {
+              throw new Error('Chrome 构建应该有 action 字段');
+            }
+          "
+
+          # 检查 Firefox 构建的 manifest
+          echo "检查 Firefox manifest..."
+          node -e "
+            const manifest = JSON.parse(require('fs').readFileSync('build/firefox/manifest.json', 'utf8'));
+            console.log('Firefox 构建版本:', manifest.version);
+            if (manifest.manifest_version !== 2) {
+              throw new Error('Firefox 构建应该使用 Manifest V2');
+            }
+            if (!manifest.browser_action) {
+              throw new Error('Firefox 构建应该有 browser_action 字段');
+            }
+            if (!manifest.applications && !manifest.browser_specific_settings) {
+              throw new Error('Firefox 构建应该有 applications 或 browser_specific_settings 字段');
+            }
+          "
+
+      - name: 上传构建结果
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-builds-${{ github.sha }}
+          path: |
+            build/
+            packages/
+          retention-days: 7
+
+      - name: 测试总结
+        run: |
+          echo ""
+          echo "🎉 所有测试通过！"
+          echo "================================"
+          echo "✅ Manifest 文件验证"
+          echo "✅ 必需文件检查"
+          echo "✅ 基础测试"
+          echo "✅ 代码检查"
+          echo "✅ Chrome 构建"
+          echo "✅ Firefox 构建"
+          echo "✅ 扩展包生成"
+          echo "✅ 构建结果验证"
+          echo "================================"
+          echo "🚀 准备发布！"

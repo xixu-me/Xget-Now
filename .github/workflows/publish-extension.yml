@@ -7,6 +7,15 @@ on:
         description: "版本号 (例如: 1.0.0)"
         required: true
         type: string
+      platforms:
+        description: "发布平台"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - all
+          - chrome
+          - firefox
 
 permissions:
   contents: write
@@ -20,16 +29,25 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
 
+      - name: 设置 Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
       - name: 设置 Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "18"
 
-      - name: 验证 manifest.json
+      - name: 验证 manifest 文件
         run: |
           # 验证 manifest.json 是否为有效的 JSON
           node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))"
-          echo "✅ manifest.json 格式有效"
+          echo "✅ Chrome manifest.json 格式有效"
+
+          # 验证 Firefox manifest
+          node -e "JSON.parse(require('fs').readFileSync('manifest-firefox.json', 'utf8'))"
+          echo "✅ Firefox manifest.json 格式有效"
 
       - name: 从输入设置版本
         id: version
@@ -41,13 +59,22 @@ jobs:
 
       - name: 更新 manifest 版本
         run: |
-          # 更新 manifest.json 中的版本以匹配标签
+          # 更新 Chrome manifest.json 中的版本
           node -e "
             const fs = require('fs');
             const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
             manifest.version = '${{ steps.version.outputs.version }}';
             fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2));
-            console.log('已更新 manifest.json 版本为:', manifest.version);
+            console.log('已更新 Chrome manifest.json 版本为:', manifest.version);
+          "
+
+          # 更新 Firefox manifest.json 中的版本
+          node -e "
+            const fs = require('fs');
+            const manifest = JSON.parse(fs.readFileSync('manifest-firefox.json', 'utf8'));
+            manifest.version = '${{ steps.version.outputs.version }}';
+            fs.writeFileSync('manifest-firefox.json', JSON.stringify(manifest, null, 2));
+            console.log('已更新 Firefox manifest.json 版本为:', manifest.version);
           "
 
       - name: 更新 package.json 版本
@@ -68,7 +95,7 @@ jobs:
           git config --local user.name "GitHub Action"
 
           # 添加更新的文件
-          git add manifest.json package.json
+          git add manifest.json manifest-firefox.json package.json
 
           # 检查是否有需要提交的更改
           if git diff --staged --quiet; then
@@ -87,27 +114,38 @@ jobs:
             echo "✅ 版本更新已提交并推送到主分支，包含标签"
           fi
 
-      - name: 创建扩展包
+      - name: 构建扩展包
         run: |
-          # 创建通用扩展 zip 包（适用于所有基于 Chromium 的浏览器）
-          zip -r extension.zip . \
-            -x "*.git*" \
-            -x "node_modules/*" \
-            -x ".github/*" \
-            -x "*.md" \
-            -x "LICENSE" \
-            -x "*.zip" \
-            -x "*.crx"
+          echo "🏗️ 开始构建扩展包..."
 
-          echo "📦 已创建扩展包"
-          ls -la *.zip
+          # 运行构建脚本
+          if [ "${{ inputs.platforms }}" = "all" ]; then
+            python build.py --platform all --package
+          elif [ "${{ inputs.platforms }}" = "chrome" ]; then
+            python build.py --platform chrome --package
+          elif [ "${{ inputs.platforms }}" = "firefox" ]; then
+            python build.py --platform firefox --package
+          fi
+
+          echo "📦 扩展包构建完成"
+          ls -la packages/ || echo "packages 目录不存在"
+          ls -la build/ || echo "build 目录不存在"
+
+      - name: 运行测试
+        run: |
+          echo "🧪 运行基础测试..."
+          python dev.py test
+
+          echo "� 运行代码检查..."
+          python dev.py lint
 
       - name: 发布到 Chrome 应用商店
+        if: inputs.platforms == 'all' || inputs.platforms == 'chrome'
         continue-on-error: true
         id: chrome-publish
         uses: mnao305/chrome-extension-upload@v5.0.0
         with:
-          file-path: extension.zip
+          file-path: packages/xget-now-chrome-v${{ steps.version.outputs.version }}.zip
           extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
@@ -115,15 +153,53 @@ jobs:
           publish: true # 如果只想上传而不发布，设置为 false
 
       - name: 发布到 Microsoft Edge 加载项
+        if: inputs.platforms == 'all' || inputs.platforms == 'chrome'
         continue-on-error: true
         id: edge-publish
         uses: wdzeng/edge-addon@v2
         with:
           product-id: ${{ secrets.EDGE_PRODUCT_ID }}
-          zip-path: extension.zip
+          zip-path: packages/xget-now-chrome-v${{ steps.version.outputs.version }}.zip
           api-key: ${{ secrets.EDGE_API_KEY }}
           client-id: ${{ secrets.EDGE_CLIENT_ID }}
           notes-for-certification: "自动发布 v${{ steps.version.outputs.version }} - ${{ github.sha }}"
+
+      - name: 准备 Firefox 发布
+        if: inputs.platforms == 'all' || inputs.platforms == 'firefox'
+        continue-on-error: true
+        id: firefox-prepare
+        run: |
+          echo "🦊 准备 Firefox 扩展发布..."
+
+          # 检查 Firefox 扩展包是否存在
+          if [ -f "packages/xget-now-firefox-v${{ steps.version.outputs.version }}.zip" ]; then
+            echo "✅ Firefox 扩展包存在"
+            echo "firefox-package-exists=true" >> $GITHUB_OUTPUT
+            echo "firefox-package-path=packages/xget-now-firefox-v${{ steps.version.outputs.version }}.zip" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Firefox 扩展包不存在"
+            echo "firefox-package-exists=false" >> $GITHUB_OUTPUT
+          fi
+
+          # 创建 Firefox 发布说明
+          cat > firefox-release-notes.txt << 'EOF'
+          此版本的 Xget Now 扩展已针对 Firefox 进行优化：
+
+          ## 🆕 新功能
+          - 完全兼容 Firefox Manifest V2
+          - 支持所有主要功能：下载拦截、设置保存、通知显示
+          - 跨浏览器 API 兼容层确保稳定性
+
+          ## 📦 安装方式
+          1. 临时安装：about:debugging → 临时载入附加组件
+          2. 手动安装：下载 .zip 文件并解压加载
+          3. 等待 Mozilla 审核通过后从 Add-ons 商店安装
+
+          ## 🔧 技术改进
+          - 使用统一的 WebExtension API 兼容层
+          - 优化 Firefox 特有的权限和 API 调用
+          - 改进错误处理和用户体验
+          EOF
 
       - name: 创建 GitHub 发布
         uses: softprops/action-gh-release@v2
@@ -131,20 +207,42 @@ jobs:
           tag_name: v${{ steps.version.outputs.version }}
           name: Xget Now ${{ steps.version.outputs.version }}
           files: |
-            extension.zip
+            packages/*.zip
           generate_release_notes: true
           body: |
-            此版本已自动发布到多个扩展商店。
+            🎉 此版本已自动发布，现在支持多个浏览器平台！
 
             ## 📦 安装选项
 
+            ### Chrome 系列浏览器
             - **Chrome 应用商店**: [从 Chrome 应用商店安装](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN)
             - **Microsoft Edge 加载项**: [从 Microsoft Edge 加载项安装](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN)
-            - **手动安装**: 下载下面的 `extension.zip` 文件或查看 [安装指南](https://github.com/xixu-me/Xget-Now?tab=readme-ov-file#-%E5%AE%89%E8%A3%85) 获取详细说明
+            - **手动安装**: 下载 `xget-now-chrome-v${{ steps.version.outputs.version }}.zip`
+
+            ### Firefox 浏览器
+            - **Firefox Add-ons**: 🚧 等待 Mozilla 审核（即将推出）
+            - **手动安装**: 下载 `xget-now-firefox-v${{ steps.version.outputs.version }}.zip` 并参考 [Firefox 安装指南](https://github.com/xixu-me/Xget-Now/blob/main/FIREFOX_INSTALL.md)
+
+            ## 🆕 新功能亮点
+
+            - ✅ **Firefox 完全支持**: 现在同时支持 Chrome 和 Firefox 浏览器
+            - ✅ **统一功能体验**: 两个平台提供完全一致的功能
+            - ✅ **自动平台检测**: 扩展会自动适配当前浏览器环境
+            - ✅ **跨浏览器兼容**: 使用统一的 API 兼容层确保稳定性
 
             ## 📁 可用文件
 
-            - `extension.zip` - 适用于所有基于 Chromium 的浏览器（Chrome、Edge、Brave、Opera 等）
+            - `xget-now-chrome-v${{ steps.version.outputs.version }}.zip` - 适用于 Chrome、Edge、Brave、Opera 等基于 Chromium 的浏览器
+            - `xget-now-firefox-v${{ steps.version.outputs.version }}.zip` - 专为 Firefox 优化的版本
+
+            ## 🛠️ 开发者信息
+
+            此版本引入了多平台支持架构：
+            - 使用 Manifest V3 (Chrome) 和 Manifest V2 (Firefox)
+            - 统一的 WebExtension API 兼容层
+            - 自动化构建和测试流程
+
+            详细技术文档请参考 [Firefox 支持说明](https://github.com/xixu-me/Xget-Now/blob/main/FIREFOX_SUPPORT.md)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -152,29 +250,72 @@ jobs:
         run: |
           echo "📊 发布结果摘要:"
           echo "================================"
+          echo "🏗️ 构建平台: ${{ inputs.platforms }}"
+          echo "📦 版本: ${{ steps.version.outputs.version }}"
+          echo ""
 
-          if [ "${{ steps.chrome-publish.outcome }}" = "success" ]; then
-            echo "✅ Chrome 应用商店: 发布成功"
-          elif [ "${{ steps.chrome-publish.outcome }}" = "failure" ]; then
-            echo "❌ Chrome 应用商店: 发布失败"
-          else
-            echo "⚠️ Chrome 应用商店: 已跳过（缺少密钥）"
+          if [ "${{ inputs.platforms }}" = "all" ] || [ "${{ inputs.platforms }}" = "chrome" ]; then
+            if [ "${{ steps.chrome-publish.outcome }}" = "success" ]; then
+              echo "✅ Chrome 应用商店: 发布成功"
+            elif [ "${{ steps.chrome-publish.outcome }}" = "failure" ]; then
+              echo "❌ Chrome 应用商店: 发布失败"
+            else
+              echo "⚠️ Chrome 应用商店: 已跳过（缺少密钥）"
+            fi
+
+            if [ "${{ steps.edge-publish.outcome }}" = "success" ]; then
+              echo "✅ Microsoft Edge 加载项: 发布成功"
+            elif [ "${{ steps.edge-publish.outcome }}" = "failure" ]; then
+              echo "❌ Microsoft Edge 加载项: 发布失败"
+            else
+              echo "⚠️ Microsoft Edge 加载项: 已跳过（缺少密钥）"
+            fi
           fi
 
-          if [ "${{ steps.edge-publish.outcome }}" = "success" ]; then
-            echo "✅ Microsoft Edge 加载项: 发布成功"
-          elif [ "${{ steps.edge-publish.outcome }}" = "failure" ]; then
-            echo "❌ Microsoft Edge 加载项: 发布失败"
-          else
-            echo "⚠️ Microsoft Edge 加载项: 已跳过（缺少密钥）"
+          if [ "${{ inputs.platforms }}" = "all" ] || [ "${{ inputs.platforms }}" = "firefox" ]; then
+            if [ "${{ steps.firefox-prepare.outputs.firefox-package-exists }}" = "true" ]; then
+              echo "✅ Firefox 扩展包: 已准备就绪，需要手动提交到 Mozilla"
+            else
+              echo "❌ Firefox 扩展包: 构建失败"
+            fi
           fi
 
-          echo "✅ GitHub 发布: 已创建扩展文件"
+          echo ""
+          echo "✅ GitHub 发布: 已创建包含所有扩展文件"
+          echo "================================"
+
+      - name: Firefox 发布提醒
+        if: (inputs.platforms == 'all' || inputs.platforms == 'firefox') && steps.firefox-prepare.outputs.firefox-package-exists == 'true'
+        run: |
+          echo ""
+          echo "🦊 Firefox 发布提醒:"
+          echo "================================"
+          echo "Firefox 扩展已构建完成，但需要手动提交到 Mozilla Add-ons:"
+          echo ""
+          echo "1. 访问: https://addons.mozilla.org/developers/"
+          echo "2. 登录您的开发者账户"
+          echo "3. 上传文件: packages/xget-now-firefox-v${{ steps.version.outputs.version }}.zip"
+          echo "4. 填写发布信息并提交审核"
+          echo ""
+          echo "Mozilla 审核通常需要几天到几周时间。"
+          echo "在此期间，用户可以手动安装扩展文件。"
           echo "================================"
 
       - name: 通知成功
         run: |
-          echo "🎉 成功发布 Xget Now ${{ steps.version.outputs.version }} 到多个商店！"
-          echo "🔗 Chrome 应用商店: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"
-          echo "🔗 Microsoft Edge 加载项: 查看发布页面获取手动安装文件"
+          echo ""
+          echo "🎉 成功发布 Xget Now ${{ steps.version.outputs.version }}!"
+          echo "================================"
+
+          if [ "${{ inputs.platforms }}" = "all" ] || [ "${{ inputs.platforms }}" = "chrome" ]; then
+            echo "🔗 Chrome 应用商店: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"
+            echo "🔗 Microsoft Edge 加载项: 查看发布页面获取最新信息"
+          fi
+
+          if [ "${{ inputs.platforms }}" = "all" ] || [ "${{ inputs.platforms }}" = "firefox" ]; then
+            echo "🦊 Firefox: 手动提交到 Mozilla Add-ons（文件已准备就绪）"
+          fi
+
           echo "📦 GitHub 发布: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.version }}"
+          echo "📖 安装指南: https://github.com/${{ github.repository }}#installation"
+          echo "================================"

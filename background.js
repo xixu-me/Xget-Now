@@ -1,3 +1,12 @@
+// 导入兼容层
+importScripts("webext-compat.js");
+
+// 确保兼容层可用
+if (typeof webext === "undefined") {
+  // 在非模块环境中，兼容层应该已经通过脚本标签加载
+  console.error("WebExt compatibility layer not found");
+}
+
 // 平台配置
 const PLATFORMS = {
   // 代码托管平台
@@ -201,20 +210,23 @@ const DEFAULT_SETTINGS = {
 };
 
 // 初始化扩展
-chrome.runtime.onInstalled.addListener(async () => {
+webext.runtime.onInstalled.addListener(async () => {
   console.log("Xget Now 已安装");
 
+  // 使用本地存储而不是同步存储以确保兼容性
+  const storageAPI = webext.storage.sync || webext.storage.local;
+
   // 如果尚未设置，则设置默认设置
-  const settings = await chrome.storage.sync.get(DEFAULT_SETTINGS);
-  await chrome.storage.sync.set(settings);
+  const settings = await storageAPI.get(DEFAULT_SETTINGS);
+  await storageAPI.set(settings);
 });
 
 // 防止监听器被多次注册
 let downloadListenerAdded = false;
 
 // 监听下载事件
-if (!downloadListenerAdded) {
-  chrome.downloads.onDeterminingFilename.addListener(handleDownload);
+if (!downloadListenerAdded && webext.downloads.onDeterminingFilename) {
+  webext.downloads.onDeterminingFilename.addListener(handleDownload);
   downloadListenerAdded = true;
 }
 
@@ -228,7 +240,8 @@ function handleDownload(downloadItem, suggest) {
 
 async function processDownloadRedirect(downloadItem) {
   try {
-    const settings = await chrome.storage.sync.get(DEFAULT_SETTINGS);
+    const storageAPI = webext.storage.sync || webext.storage.local;
+    const settings = await storageAPI.get(DEFAULT_SETTINGS);
 
     // 检查扩展是否已启用并配置了域名
     if (!settings.enabled || !settings.xgetDomain) {
@@ -247,10 +260,10 @@ async function processDownloadRedirect(downloadItem) {
 
       try {
         // 取消原始下载
-        await chrome.downloads.cancel(downloadItem.id);
+        await webext.downloads.cancel(downloadItem.id);
 
         // 使用重定向的 URL 开始新下载
-        await chrome.downloads.download({
+        await webext.downloads.download({
           url: redirectedUrl,
           filename: downloadItem.filename || undefined,
           conflictAction: "uniquify",
@@ -258,7 +271,7 @@ async function processDownloadRedirect(downloadItem) {
 
         // 通过内容脚本显示通知
         try {
-          await chrome.tabs.sendMessage(downloadItem.tabId, {
+          await webext.tabs.sendMessage(downloadItem.tabId, {
             action: "showNotification",
             message: "下载已通过 Xget 重定向",
           });
@@ -298,21 +311,23 @@ function transformUrlLegacy(url, settings) {
 }
 
 // 监听来自弹出窗口/选项的消息
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+webext.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  const storageAPI = webext.storage.sync || webext.storage.local;
+
   if (request.action === "getSettings") {
-    chrome.storage.sync.get(DEFAULT_SETTINGS).then(sendResponse);
+    storageAPI.get(DEFAULT_SETTINGS).then(sendResponse);
     return true;
   } else if (request.action === "saveSettings") {
-    chrome.storage.sync.set(request.settings).then(async () => {
+    storageAPI.set(request.settings).then(async () => {
       // 通知相关标签页刷新
       try {
-        const tabs = await chrome.tabs.query({
+        const tabs = await webext.tabs.query({
           url: Object.values(PLATFORMS).map((platform) => platform.base + "/*"),
         });
 
         for (const tab of tabs) {
           try {
-            await chrome.tabs.sendMessage(tab.id, {
+            await webext.tabs.sendMessage(tab.id, {
               action: "showNotification",
               message: "设置已更新！点击刷新页面",
               showRefreshButton: true,
