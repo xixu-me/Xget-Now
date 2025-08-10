@@ -181,26 +181,6 @@ jobs:
             echo "firefox-package-exists=false" >> $GITHUB_OUTPUT
           fi
 
-          # 创建 Firefox 发布说明
-          cat > firefox-release-notes.txt << 'EOF'
-          此版本的 Xget Now 扩展已针对 Firefox 进行优化：
-
-          ## 🆕 新功能
-          - 完全兼容 Firefox Manifest V2
-          - 支持所有主要功能：下载拦截、设置保存、通知显示
-          - 跨浏览器 API 兼容层确保稳定性
-
-          ## 📦 安装方式
-          1. 临时安装：about:debugging → 临时载入附加组件
-          2. 手动安装：下载 .zip 文件并解压加载
-          3. 等待 Mozilla 审核通过后从 Add-ons 商店安装
-
-          ## 🔧 技术改进
-          - 使用统一的 WebExtension API 兼容层
-          - 优化 Firefox 特有的权限和 API 调用
-          - 改进错误处理和用户体验
-          EOF
-
       - name: 创建 GitHub 发布
         uses: softprops/action-gh-release@v2
         with:
@@ -209,40 +189,7 @@ jobs:
           files: |
             packages/*.zip
           generate_release_notes: true
-          body: |
-            🎉 此版本已自动发布，现在支持多个浏览器平台！
 
-            ## 📦 安装选项
-
-            ### Chrome 系列浏览器
-            - **Chrome 应用商店**: [从 Chrome 应用商店安装](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN)
-            - **Microsoft Edge 加载项**: [从 Microsoft Edge 加载项安装](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN)
-            - **手动安装**: 下载 `xget-now-chrome-v${{ steps.version.outputs.version }}.zip`
-
-            ### Firefox 浏览器
-            - **Firefox Add-ons**: 🚧 等待 Mozilla 审核（即将推出）
-            - **手动安装**: 下载 `xget-now-firefox-v${{ steps.version.outputs.version }}.zip` 并参考 [Firefox 安装指南](https://github.com/xixu-me/Xget-Now/blob/main/FIREFOX_INSTALL.md)
-
-            ## 🆕 新功能亮点
-
-            - ✅ **Firefox 完全支持**: 现在同时支持 Chrome 和 Firefox 浏览器
-            - ✅ **统一功能体验**: 两个平台提供完全一致的功能
-            - ✅ **自动平台检测**: 扩展会自动适配当前浏览器环境
-            - ✅ **跨浏览器兼容**: 使用统一的 API 兼容层确保稳定性
-
-            ## 📁 可用文件
-
-            - `xget-now-chrome-v${{ steps.version.outputs.version }}.zip` - 适用于 Chrome、Edge、Brave、Opera 等基于 Chromium 的浏览器
-            - `xget-now-firefox-v${{ steps.version.outputs.version }}.zip` - 专为 Firefox 优化的版本
-
-            ## 🛠️ 开发者信息
-
-            此版本引入了多平台支持架构：
-            - 使用 Manifest V3 (Chrome) 和 Manifest V2 (Firefox)
-            - 统一的 WebExtension API 兼容层
-            - 自动化构建和测试流程
-
-            详细技术文档请参考 [Firefox 支持说明](https://github.com/xixu-me/Xget-Now/blob/main/FIREFOX_SUPPORT.md)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -282,23 +229,6 @@ jobs:
 
           echo ""
           echo "✅ GitHub 发布: 已创建包含所有扩展文件"
-          echo "================================"
-
-      - name: Firefox 发布提醒
-        if: (inputs.platforms == 'all' || inputs.platforms == 'firefox') && steps.firefox-prepare.outputs.firefox-package-exists == 'true'
-        run: |
-          echo ""
-          echo "🦊 Firefox 发布提醒:"
-          echo "================================"
-          echo "Firefox 扩展已构建完成，但需要手动提交到 Mozilla Add-ons:"
-          echo ""
-          echo "1. 访问: https://addons.mozilla.org/developers/"
-          echo "2. 登录您的开发者账户"
-          echo "3. 上传文件: packages/xget-now-firefox-v${{ steps.version.outputs.version }}.zip"
-          echo "4. 填写发布信息并提交审核"
-          echo ""
-          echo "Mozilla 审核通常需要几天到几周时间。"
-          echo "在此期间，用户可以手动安装扩展文件。"
           echo "================================"
 
       - name: 通知成功
