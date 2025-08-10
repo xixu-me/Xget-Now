@@ -182,9 +182,9 @@ jobs:
           body: |
             ## 📦 扩展包下载
 
-            ### Chrome/Chromium
+            ### Chromium
             - **文件**: `Xget-Now_${{ steps.version.outputs.version }}.chromium.zip`
-            - **支持**: Chrome、Chromium、Microsoft Edge 等基于 Chromium 的浏览器
+            - **支持**: Chrome、Microsoft Edge 等基于 Chromium 的浏览器
             - **Manifest**: v3
 
             ### Firefox
@@ -250,6 +250,6 @@ jobs:
           echo "📖 安装指南: https://github.com/${{ github.repository }}#installation"
           echo ""
           echo "📁 发布的文件:"
-          echo "  - Xget-Now_${{ steps.version.outputs.version }}.chromium.zip (Chrome/Chromium/Edge)"
+          echo "  - Xget-Now_${{ steps.version.outputs.version }}.chromium.zip (Chromium)"
           echo "  - Xget-Now_${{ steps.version.outputs.version }}.firefox.xpi (Firefox)"
           echo "================================"

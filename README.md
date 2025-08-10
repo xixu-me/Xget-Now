@@ -1,6 +1,6 @@
 # Xget Now
 
-为 Chromium 浏览器提供的 [Xget](https://github.com/xixu-me/Xget) 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速。
+为 Chromium 和 Firefox 浏览器提供的 [Xget](https://github.com/xixu-me/Xget) 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速。
 
 ## 🚀 功能特性
 
@@ -9,16 +9,15 @@
 - **🔔 智能通知**：下载重定向时的可视化反馈
 - **🛡️ 隐私优先**：所有处理都在你的浏览器本地进行
 - **🎛️ 按平台控制**：为特定平台启用/禁用加速
+- **🌐 跨浏览器支持**：同时支持 Chromium 和 Firefox 浏览器
 
 ## 📦 安装
 
-### 应用商店可用性
+### 商店可用性
 
-| 商店 | 链接 |
-|-------|------|
-| **Chrome 应用商店** | [![Available in the Chrome Web Store](https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png)](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN) |
-| **Microsoft Edge 加载项** | [Available in the Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN) |
-| **Crx 搜搜（镜像）** | [在 Crx 搜搜查看](https://www.crxsoso.com/webstore/detail/ajiejgobfcifcikbahpijopolfjoodgf) |
+- [Chrome 应用商店](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN)
+- [Firefox 附加组件](https://addons.mozilla.org/zh-CN/firefox/addon/xget-now/)
+- [Microsoft Edge 加载项](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN)
 
 ### 手动安装
 
@@ -28,19 +27,30 @@
 
 1. **下载扩展**
    - 前往 [Releases 页面](https://github.com/xixu-me/Xget-Now/releases/latest)
-   - 下载并解压最新发布文件 `extension.zip` - 适用于所有基于 Chromium 的浏览器
+   - 下载对应浏览器的扩展文件：
+     - `Xget-Now_x.x.x.chromium.zip` - 适用于所有基于 Chromium 的浏览器（Chrome、Microsoft Edge、Opera 等）
+     - `Xget-Now_x.x.x.firefox.zip` - 适用于 Firefox 浏览器
 
 2. **在 Chrome 中安装**
+   - 解压下载的 Chromium 版本 ZIP 文件
    - 打开 Chrome 并前往 `chrome://extensions/`
    - 启用「开发者模式」（右上角的切换开关）
-   - 点击「加载已解压的扩展程序」并选择从 ZIP 文件解压的文件夹
+   - 点击「加载已解压的扩展程序」并选择解压的文件夹
 
-3. **在 Microsoft Edge 中安装**
+3. **在 Firefox 中安装**
+   - 打开 Firefox 并前往 `about:debugging`
+   - 点击「此 Firefox」
+   - 点击「临时载入附加组件」
+   - 选择下载的 Firefox 版本 ZIP 文件或解压后的 `manifest.json` 文件
+
+4. **在 Microsoft Edge 中安装**
+   - 解压下载的 Chromium 版本 ZIP 文件
    - 打开 Microsoft Edge 并前往 `edge://extensions/`
    - 启用「开发人员模式」（左侧边栏的切换开关）
-   - 点击「加载解压缩的扩展」并选择从 ZIP 文件解压的文件夹
+   - 点击「加载解压缩的扩展」并选择解压的文件夹
 
-4. **在其他基于 Chromium 的浏览器中安装**
+5. **在其他基于 Chromium 的浏览器中安装**
+   - 使用 Chromium 版本的扩展包
    - 遵循与 Chrome 或 Microsoft Edge 类似的步骤，确保首先启用「开发者模式」
    - 按照相应浏览器的扩展安装指南进行操作
 
@@ -53,10 +63,36 @@
    cd Xget-Now
    ```
 
-2. **在浏览器中加载**
-   - 打开浏览器的扩展管理页面
+2. **构建扩展（可选）**
+
+   如果你想使用优化过的版本：
+
+   ```bash
+   # 安装 Python 3.7+
+   pip install -r requirements.txt  # 如果有依赖文件
+   
+   # 构建特定浏览器版本
+   python build.py --platform chrome    # 构建 Chrome 版本
+   python build.py --platform firefox   # 构建 Firefox 版本
+   python build.py --platform all       # 构建所有版本
+   ```
+
+3. **在浏览器中加载**
+
+   **Chromium 浏览器：**
+   - 打开浏览器的扩展管理页面（`chrome://extensions/` 或 `edge://extensions/`）
    - 启用「开发者模式」
-   - 点击「加载已解压的扩展程序」并选择克隆的文件夹
+   - 点击「加载已解压的扩展程序」并选择：
+     - 源码根目录（如果使用原始源码）
+     - `build/chrome/` 目录（如果使用构建版本）
+
+   **Firefox 浏览器：**
+   - 打开 `about:debugging`
+   - 点击「此 Firefox」
+   - 点击「临时载入附加组件」
+   - 选择以下文件之一：
+     - 源码根目录中的 `manifest-firefox.json`
+     - `build/firefox/` 目录中的 `manifest.json`（如果使用构建版本）
 
 #### 验证安装
 
@@ -115,7 +151,22 @@
 
 ## 📋 要求
 
+### 浏览器支持
+
+**Chromium 浏览器：**
+
 - **Chrome**：版本 88+（Manifest V3 支持）
+- **Microsoft Edge**：版本 88+
+- **Opera**：版本 74+
+- **其他基于 Chromium 的浏览器**：支持 Manifest V3 的版本
+
+**Firefox 浏览器：**
+
+- **Firefox**：版本 109+（Manifest V2 支持）
+- **Firefox ESR**：版本 109+
+
+### Xget 服务要求
+
 - **Xget 服务**：访问 Xget 实例
   - 使用公共实例：`xget.xi-xu.me`
   - 或部署你自己的：[Xget 存储库](https://github.com/xixu-me/Xget)
@@ -172,9 +223,27 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 - 验证目标平台的服务器是否响应
 - 清除浏览器缓存并重新加载扩展
 
+**Firefox 特定问题？**
+
+- 确保 Firefox 版本为 109+
+- 在 `about:debugging` 中检查扩展是否正确加载
+- Firefox 可能需要重启浏览器才能完全应用扩展设置
+- 检查 Firefox 的「隐私和安全」设置是否阻止了扩展功能
+
 ### 调试模式
 
+**Chromium 浏览器：**
+
 启用 Chrome 开发者工具并检查控制台选项卡中的调试消息：
+
+**Firefox 浏览器：**
+
+1. 打开 `about:debugging`
+2. 点击「此 Firefox」
+3. 找到 Xget Now 扩展并点击「检查」
+4. 在打开的开发者工具中查看控制台消息
+
+**通用调试消息：**
 
 - 扩展加载：「Xget Now：内容脚本已加载」
 - 下载重定向：「重定向下载：[原始] -> [Xget]」
@@ -210,11 +279,26 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 
 是的，使用扩展弹出窗口中的按平台切换开关来禁用特定平台的加速。
 
+### 为什么 Chrome 和 Firefox 版本不同？
+
+由于浏览器架构差异，我们针对不同浏览器进行了优化：
+
+- **Chrome 版本**：使用 Manifest V3，支持最新的扩展 API 和安全特性
+- **Firefox 版本**：使用 Manifest V2，确保与 Firefox 扩展系统的最佳兼容性
+
+两个版本的核心功能完全相同，只是技术实现略有不同。
+
+### 可以同时在 Chrome 和 Firefox 中使用吗？
+
+当然可以！你可以在多个浏览器中同时安装和使用 Xget Now，它们会独立工作，各自维护自己的设置。
+
 ## 🌟 支持我们
 
 如果你觉得这个扩展有用，请：
 
 - ⭐ 为此存储库点星
-- 📝 在 [Chrome 应用商店](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN) 留下评价
+- 📝 留下评价：
+  - [Chrome 应用商店](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN)
+  - [Firefox 附加组件](https://addons.mozilla.org/zh-CN/firefox/addon/xget-now/)
 - 🐛 通过 [GitHub Issues](https://github.com/xixu-me/Xget-Now/issues) 报告错误或建议功能
 - 📢 与其他可能受益于更快下载的人分享

@@ -3,7 +3,7 @@
 构建脚本，用于生成不同浏览器版本的扩展包
 
 支持平台：
-- Chrome/Chromium（Manifest V3）
+- Chromium（Manifest V3）
 - Firefox（Manifest V2）
 
 使用方法：
@@ -67,7 +67,7 @@ def copy_common_files(build_dir):
 
 def build_chrome():
     """
-    构建 Chrome/Chromium 版本
+    构建 Chromium 版本
 
     Returns:
         Path: 构建目录路径

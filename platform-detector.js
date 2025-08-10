@@ -100,7 +100,7 @@ const platformDetector = {
       capabilities.popupResize = false; // Firefox 不支持动态调整弹窗大小
     }
 
-    // Chrome/Chromium 特定能力
+    // Chromium 特定能力
     if (
       info.platform === "chrome" ||
       info.platform === "edge" ||

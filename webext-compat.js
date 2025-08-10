@@ -3,7 +3,7 @@
  *
  * 提供跨浏览器的统一 API 接口，解决不同浏览器间的差异：
  * - Firefox 使用 browser API，返回 Promise
- * - Chrome/Chromium 使用 chrome API，使用回调函数
+ * - Chromium 使用 chrome API，使用回调函数
  * - 不同版本的 Manifest API 差异 (V2 vs V3)
  *
  * 功能：
