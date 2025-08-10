@@ -1,4 +1,4 @@
-# Xget for Chromium
+# Xget Now
 
 为 Chromium 浏览器提供的 [Xget](https://github.com/xixu-me/Xget) 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速。
 
@@ -27,7 +27,7 @@
 #### 选项 1：从 GitHub Releases 安装（推荐）
 
 1. **下载扩展**
-   - 前往 [Releases 页面](https://github.com/xixu-me/Xget-for-Chromium/releases/latest)
+   - 前往 [Releases 页面](https://github.com/xixu-me/Xget-Now/releases/latest)
    - 下载并解压最新发布文件 `extension.zip` - 适用于所有基于 Chromium 的浏览器
 
 2. **在 Chrome 中安装**
@@ -49,8 +49,8 @@
 1. **克隆存储库**
 
    ```bash
-   git clone https://github.com/xixu-me/Xget-for-Chromium.git
-   cd Xget-for-Chromium
+   git clone https://github.com/xixu-me/Xget-Now.git
+   cd Xget-Now
    ```
 
 2. **在浏览器中加载**
@@ -176,8 +176,8 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 
 启用 Chrome 开发者工具并检查控制台选项卡中的调试消息：
 
-- 扩展加载：「Xget for Chromium：内容脚本已加载」
-- 下载重定向：「重定向下载：[原始] -> [xget]」
+- 扩展加载：「Xget Now：内容脚本已加载」
+- 下载重定向：「重定向下载：[原始] -> [Xget]」
 - 设置更改：「设置已更新！点击刷新页面」
 
 ## 📄 许可证
@@ -189,10 +189,6 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 ### 这个扩展是免费的吗？
 
 是的，扩展完全免费且在 GPL-3.0 许可证下开源。
-
-### 这对私有存储库有效吗？
-
-扩展适用于任何可下载链接，但你需要对私有存储库有适当的访问权限。
 
 ### 我可以使用自己的 Xget 服务器吗？
 
@@ -220,5 +216,5 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 
 - ⭐ 为此存储库点星
 - 📝 在 [Chrome 应用商店](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN) 留下评价
-- 🐛 通过 [GitHub Issues](https://github.com/xixu-me/Xget-for-Chromium/issues) 报告错误或建议功能
+- 🐛 通过 [GitHub Issues](https://github.com/xixu-me/Xget-Now/issues) 报告错误或建议功能
 - 📢 与其他可能受益于更快下载的人分享

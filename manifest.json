@@ -7,7 +7,7 @@
       "128": "icons/icon128.png"
     },
     "default_popup": "popup.html",
-    "default_title": "Xget for Chromium"
+    "default_title": "Xget Now"
   },
   "background": {
     "service_worker": "background.js"
@@ -82,7 +82,7 @@
     "128": "icons/icon128.png"
   },
   "manifest_version": 3,
-  "name": "Xget for Chromium",
+  "name": "Xget Now",
   "permissions": [
     "downloads",
     "storage",
