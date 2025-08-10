@@ -215,12 +215,21 @@ chrome.downloads.onDeterminingFilename.addListener((downloadItem, suggest) => {
 });
 
 async function handleDownload(downloadItem, suggest) {
+  let suggestionCalled = false;
+
+  const callSuggest = () => {
+    if (!suggestionCalled) {
+      suggestionCalled = true;
+      suggest();
+    }
+  };
+
   try {
     const settings = await chrome.storage.sync.get(DEFAULT_SETTINGS);
 
     // 检查扩展是否已启用并配置了域名
     if (!settings.enabled || !settings.xgetDomain) {
-      suggest();
+      callSuggest();
       return;
     }
 
@@ -254,11 +263,11 @@ async function handleDownload(downloadItem, suggest) {
         console.log("无法向标签页发送通知");
       }
     } else {
-      suggest();
+      callSuggest();
     }
   } catch (error) {
     console.error("处理下载时出错：", error);
-    suggest();
+    callSuggest();
   }
 }
 
