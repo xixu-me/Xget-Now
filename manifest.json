@@ -14,7 +14,10 @@
   },
   "content_scripts": [
     {
-      "js": ["webext-compat.js", "content.js"],
+      "js": [
+        "webext-compat.js",
+        "content.js"
+      ],
       "matches": [
         "https://github.com/*",
         "https://gitlab.com/*",
@@ -81,12 +84,20 @@
   },
   "manifest_version": 3,
   "name": "Xget Now",
-  "permissions": ["downloads", "storage", "activeTab"],
+  "permissions": [
+    "downloads",
+    "storage",
+    "activeTab"
+  ],
   "version": "2.0.0",
   "web_accessible_resources": [
     {
-      "matches": ["<all_urls>"],
-      "resources": ["icons/*"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "resources": [
+        "icons/*"
+      ]
     }
   ]
 }
