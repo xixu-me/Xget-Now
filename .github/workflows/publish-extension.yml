@@ -25,7 +25,7 @@ jobs:
 
       # 第二步：设置 Python 环境用于构建脚本
       - name: 设置 Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
