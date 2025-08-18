@@ -21,7 +21,7 @@ jobs:
     steps:
       # 第一步：检出源代码
       - name: 检出代码
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # 第二步：设置 Python 环境用于构建脚本
       - name: 设置 Python
