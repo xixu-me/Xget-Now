@@ -16,6 +16,7 @@
 ### 商店可用性
 
 - [Chrome 应用商店](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN)
+- [Chrome 应用商店镜像](https://chromewebstore.xi-xu.me/detail/ajiejgobfcifcikbahpijopolfjoodgf)
 - [Firefox 附加组件](https://addons.mozilla.org/zh-CN/firefox/addon/xget-now/)
 - [Microsoft Edge 加载项](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN)
 
