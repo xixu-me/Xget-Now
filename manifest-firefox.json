@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Xget Now",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "为 Firefox 浏览器提供的 Xget 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速",
   "browser_action": {
     "default_icon": {
