@@ -55,6 +55,38 @@
         background: rgba(255, 255, 255, 0.05);
       }
 
+      .header .link-item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        padding: 6px 12px;
+        font-size: 12px;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+        border-radius: 6px;
+        background: var(--container-bg);
+        border: 1px solid var(--container-border);
+        text-decoration: none;
+        color: var(--text-color);
+      }
+
+      .header .link-item:hover {
+        opacity: 1;
+        background: var(--hover-bg);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+
+      .header .link-item .link-icon {
+        margin-right: 6px;
+        font-size: 14px;
+      }
+
+      .header .link-item .link-text {
+        font-size: 12px;
+      }
+
       .header h1 {
         margin: 0;
         font-size: 20px;
@@ -371,6 +403,15 @@
   </head>
   <body>
     <div class="header">
+      <a
+        href="https://xuc.xi-xu.me/"
+        target="_blank"
+        class="link-item"
+        style="margin-bottom: 10px; display: inline-block"
+      >
+        <span class="link-icon">🔗</span>
+        <span class="link-text">URL 转换器</span>
+      </a>
       <h1>Xget Now</h1>
     </div>
 
@@ -569,10 +610,6 @@
           >
             <span class="link-icon">📖</span>
             <span class="link-text">扩展存储库</span>
-          </a>
-          <a href="https://xuc.xi-xu.me/" target="_blank" class="link-item">
-            <span class="link-icon">🔗</span>
-            <span class="link-text">URL 转换器</span>
           </a>
         </div>
       </div>
