@@ -25,13 +25,13 @@ jobs:
 
       # 第二步：设置 Python 环境用于构建脚本
       - name: 设置 Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
       # 第三步：设置 Node.js 环境用于 JSON 验证
       - name: 设置 Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "18"
 
