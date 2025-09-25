@@ -36,18 +36,30 @@ const detectBrowser = () => {
     soup: new Set(["webext"]),
   };
 
-  // 检测 Firefox
+  // 检测 Firefox 和基于 Firefox 的浏览器（如 Zen Browser）
   if (
     typeof browser !== "undefined" &&
     browser.runtime &&
     browser.runtime.getURL("").startsWith("moz-extension://")
   ) {
     flavor.soup.add("firefox");
+    
+    // 检测 Zen Browser
+    if (/\bZen\//.test(ua) || /\bzen\b/i.test(ua)) {
+      flavor.soup.add("zen");
+      const zenMatch = /Zen\/(\d+)/.exec(ua);
+      if (zenMatch) {
+        flavor.major = parseInt(zenMatch[1], 10);
+      }
+    }
+    
     const match = /Firefox\/(\d+)/.exec(ua);
-    flavor.major = match ? parseInt(match[1], 10) : 115;
+    if (!flavor.soup.has("zen")) {
+      flavor.major = match ? parseInt(match[1], 10) : 115;
+    }
 
     // Firefox 特性检测
-    if (CSS.supports("selector(a:has(b))")) {
+    if (typeof CSS !== "undefined" && CSS.supports && CSS.supports("selector(a:has(b))")) {
       flavor.soup.add("native_css_has");
     }
   }
@@ -87,60 +99,143 @@ const webextFlavor = detectBrowser();
 
 // 统一的 WebExtension API
 const webext = (() => {
-  // Firefox 使用 browser API，Chrome 使用 chrome API
+  // Firefox/Zen Browser 使用 browser API，Chrome 使用 chrome API
   let api;
   try {
-    api = typeof browser !== "undefined" && browser.runtime ? browser : chrome;
-    if (!api || !api.runtime) {
+    // 优先使用 browser API（Firefox/Zen Browser）
+    if (typeof browser !== "undefined" && browser.runtime) {
+      api = browser;
+    } else if (typeof chrome !== "undefined" && chrome.runtime) {
+      api = chrome;
+    } else {
       throw new Error("No WebExtension API available");
     }
+    
+    // 验证关键 API 是否可用
+    if (!api || !api.runtime || !api.runtime.getManifest) {
+      throw new Error("WebExtension API incomplete");
+    }
+    
+    // 测试 API 调用以确保其正常工作
+    try {
+      api.runtime.getManifest();
+    } catch (manifestError) {
+      console.warn("Manifest access failed, using fallback:", manifestError);
+      throw manifestError;
+    }
+    
   } catch (error) {
     console.error("Failed to initialize WebExtension API:", error);
-    // 创建一个最小的 API 存根
+    // 创建一个更完整的 API 存根，特别针对 Zen Browser
     api = {
-      runtime: { getManifest: () => ({ version: "0.0.0" }) },
-      storage: { local: {}, sync: {} },
-      tabs: {},
-      downloads: {}
+      runtime: { 
+        getManifest: () => ({ version: "0.0.0", manifest_version: 2 }),
+        getURL: (path) => `moz-extension://unknown/${path}`,
+        lastError: null,
+        onMessage: { addListener: () => {}, removeListener: () => {} },
+        onInstalled: { addListener: () => {}, removeListener: () => {} }
+      },
+      storage: { 
+        local: {
+          get: () => Promise.resolve({}),
+          set: () => Promise.resolve(),
+          remove: () => Promise.resolve(),
+          clear: () => Promise.resolve()
+        }, 
+        sync: {
+          get: () => Promise.resolve({}),
+          set: () => Promise.resolve(),
+          remove: () => Promise.resolve(),
+          clear: () => Promise.resolve()
+        }
+      },
+      tabs: {
+        query: () => Promise.resolve([]),
+        sendMessage: () => Promise.resolve(null),
+        onUpdated: { addListener: () => {}, removeListener: () => {} }
+      },
+      downloads: {
+        download: () => Promise.resolve(null),
+        onDeterminingFilename: { addListener: () => {}, removeListener: () => {} }
+      }
     };
   }
 
-  // Promise 化函数的包装器
+  // Promise 化函数的包装器，增强对 Zen Browser 的支持
   const promisify = (context, methodName) => {
-    const method = context[methodName];
-    if (!method) {
-      throw new Error(`Method ${methodName} not found`);
+    if (!context || typeof context[methodName] !== 'function') {
+      throw new Error(`Method ${methodName} not found or not a function`);
     }
+
+    const method = context[methodName];
 
     return function (...args) {
       return new Promise((resolve, reject) => {
-        method.call(context, ...args, (result) => {
-          if (api.runtime.lastError) {
-            reject(new Error(api.runtime.lastError.message));
-          } else {
-            resolve(result);
+        try {
+          // 检查方法是否已经返回 Promise（Firefox/Zen Browser 风格）
+          const result = method.call(context, ...args, (callbackResult) => {
+            if (api.runtime && api.runtime.lastError) {
+              reject(new Error(api.runtime.lastError.message));
+            } else {
+              resolve(callbackResult);
+            }
+          });
+          
+          // 如果方法返回了 Promise，直接使用它（适用于现代 Firefox/Zen Browser）
+          if (result && typeof result.then === 'function') {
+            result.then(resolve).catch(reject);
           }
-        });
+        } catch (error) {
+          reject(error);
+        }
       });
     };
   };
 
-  // 无失败的 Promise 包装器
+  // 无失败的 Promise 包装器，针对 Zen Browser 优化
   const promisifyNoFail = (context, methodName, defaultValue = undefined) => {
     try {
-      const promisified = promisify(context, methodName);
+      // 检查上下文和方法是否存在
+      if (!context || typeof context[methodName] !== 'function') {
+        return async function (...args) {
+          console.warn(`WebExt API method not available: ${methodName}`);
+          return defaultValue;
+        };
+      }
+
+      // 对于 Firefox/Zen Browser，某些方法可能已经是 Promise 化的
+      const method = context[methodName];
+      
       return async function (...args) {
         try {
-          return await promisified(...args);
+          // 尝试直接调用方法
+          const result = method.call(context, ...args);
+          
+          // 如果返回 Promise，直接等待
+          if (result && typeof result.then === 'function') {
+            return await result;
+          }
+          
+          // 否则使用回调方式
+          return await new Promise((resolve, reject) => {
+            method.call(context, ...args, (callbackResult) => {
+              if (api.runtime && api.runtime.lastError) {
+                console.warn(`WebExt API call failed: ${methodName}`, api.runtime.lastError.message);
+                resolve(defaultValue);
+              } else {
+                resolve(callbackResult);
+              }
+            });
+          });
         } catch (error) {
           console.warn(`WebExt API call failed: ${methodName}`, error);
           return defaultValue;
         }
       };
     } catch (error) {
-      // 如果方法不存在，返回空函数
-      return async function () {
-        console.warn(`WebExt API method not available: ${methodName}`);
+      // 如果方法不存在，返回安全的默认函数
+      return async function (...args) {
+        console.warn(`WebExt API method not available: ${methodName}`, error);
         return defaultValue;
       };
     }

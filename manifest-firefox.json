@@ -15,6 +15,7 @@
   },
   "background": {
     "scripts": [
+      "zen-browser-fix.js",
       "webext-compat.js",
       "background.js"
     ],
@@ -23,6 +24,7 @@
   "content_scripts": [
     {
       "js": [
+        "zen-browser-fix.js",
         "webext-compat.js",
         "content.js"
       ],
