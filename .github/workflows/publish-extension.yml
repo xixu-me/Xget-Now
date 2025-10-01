@@ -145,7 +145,7 @@ jobs:
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
           publish: true
 
-      - name: 发布到 Microsoft Edge 加载项
+      - name: 发布到 Edge 加载项
         continue-on-error: true
         id: edge-publish
         uses: wdzeng/edge-addon@v2
@@ -184,7 +184,7 @@ jobs:
 
             ### Chromium
             - **文件**: `Xget-Now_${{ steps.version.outputs.version }}.chromium.zip`
-            - **支持**: Chrome、Microsoft Edge 等基于 Chromium 的浏览器
+            - **支持**: Chrome、Edge 等基于 Chromium 的浏览器
             - **Manifest**: v3
 
             ### Firefox
@@ -219,11 +219,11 @@ jobs:
           fi
 
           if [ "${{ steps.edge-publish.outcome }}" = "success" ]; then
-            echo "✅ Microsoft Edge 加载项: 发布成功"
+            echo "✅ Edge 加载项: 发布成功"
           elif [ "${{ steps.edge-publish.outcome }}" = "failure" ]; then
-            echo "❌ Microsoft Edge 加载项: 发布失败"
+            echo "❌ Edge 加载项: 发布失败"
           else
-            echo "⚠️ Microsoft Edge 加载项: 已跳过（缺少密钥或其他原因）"
+            echo "⚠️ Edge 加载项: 已跳过（缺少密钥或其他原因）"
           fi
 
           if [ "${{ steps.firefox-publish.outcome }}" = "success" ]; then
@@ -244,7 +244,7 @@ jobs:
           echo "🎉 成功发布 Xget Now ${{ steps.version.outputs.version }}!"
           echo "================================"
           echo "🔗 Chrome 应用商店: https://chrome.google.com/webstore/detail/${{ secrets.CHROME_EXTENSION_ID }}"
-          echo "🔗 Microsoft Edge 加载项: 查看发布页面获取最新信息"
+          echo "🔗 Edge 加载项: 查看发布页面获取最新信息"
           echo "🦊 Firefox 附加组件: 查看 Mozilla Add-ons 获取最新信息"
           echo "📦 GitHub 发布: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.version }}"
           echo "📖 安装指南: https://github.com/${{ github.repository }}#installation"
