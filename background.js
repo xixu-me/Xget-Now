@@ -8,14 +8,61 @@
  * - 管理扩展状态和配置
  */
 
-// 导入兼容层
-importScripts("webext-compat.js");
+// Firefox/Zen Browser 兼容性处理
+// 在 Firefox 中不使用 importScripts，而是依赖 manifest 中的脚本加载顺序
 
-// 确保兼容层可用
-if (typeof webext === "undefined") {
-  // 在非模块环境中，兼容层应该已经通过脚本标签加载
-  console.error("WebExt compatibility layer not found");
-}
+// 等待兼容层加载
+const waitForWebext = () => {
+  return new Promise((resolve) => {
+    if (typeof webext !== "undefined") {
+      resolve();
+    } else {
+      // 如果 webext 不可用，创建基本的兼容层
+      const api = typeof browser !== "undefined" ? browser : chrome;
+      window.webext = {
+        runtime: {
+          onInstalled: api.runtime.onInstalled,
+          onMessage: api.runtime.onMessage,
+          sendMessage: api.runtime.sendMessage?.bind(api.runtime) || (() => Promise.resolve(null))
+        },
+        storage: {
+          local: {
+            get: (keys) => api.storage.local.get(keys),
+            set: (items) => api.storage.local.set(items)
+          },
+          sync: api.storage.sync ? {
+            get: (keys) => api.storage.sync.get(keys),
+            set: (items) => api.storage.sync.set(items)
+          } : null
+        },
+        downloads: api.downloads ? {
+          onDeterminingFilename: api.downloads.onDeterminingFilename,
+          cancel: api.downloads.cancel?.bind(api.downloads) || (() => Promise.resolve()),
+          download: api.downloads.download?.bind(api.downloads) || (() => Promise.resolve())
+        } : {
+          onDeterminingFilename: { addListener: () => {} },
+          cancel: () => Promise.resolve(),
+          download: () => Promise.resolve()
+        },
+        tabs: api.tabs ? {
+          query: api.tabs.query?.bind(api.tabs) || (() => Promise.resolve([])),
+          sendMessage: api.tabs.sendMessage?.bind(api.tabs) || (() => Promise.resolve(null))
+        } : {
+          query: () => Promise.resolve([]),
+          sendMessage: () => Promise.resolve(null)
+        }
+      };
+      resolve();
+    }
+  });
+};
+
+// 初始化
+waitForWebext().then(() => {
+  console.log("Xget Now background script loaded with webext support");
+}).catch(error => {
+  console.error("Failed to initialize webext:", error);
+});
 
 /**
  * 平台配置定义
@@ -222,26 +269,72 @@ const DEFAULT_SETTINGS = {
   },
 };
 
-// 初始化扩展
-webext.runtime.onInstalled.addListener(async () => {
+// 初始化扩展，增强对 Zen Browser 的支持
+const initializeExtension = async () => {
+  // 等待 webext 可用
+  await waitForWebext();
+  
   console.log("Xget Now 已安装");
 
-  // 使用本地存储而不是同步存储以确保兼容性
-  const storageAPI = webext.storage.sync || webext.storage.local;
+  try {
+    // 使用本地存储而不是同步存储以确保兼容性，特别是在 Zen Browser 中
+    const storageAPI = webext.storage.sync || webext.storage.local;
 
-  // 如果尚未设置，则设置默认设置
-  const settings = await storageAPI.get(DEFAULT_SETTINGS);
-  await storageAPI.set(settings);
-});
+    // 检查存储 API 是否可用
+    if (!storageAPI || !storageAPI.get || !storageAPI.set) {
+      console.error("Storage API not available, using fallback");
+      return;
+    }
 
+    // 如果尚未设置，则设置默认设置
+    const existingSettings = await storageAPI.get(DEFAULT_SETTINGS);
+    
+    // 合并默认设置和现有设置
+    const mergedSettings = { ...DEFAULT_SETTINGS, ...existingSettings };
+    await storageAPI.set(mergedSettings);
+    
+    console.log("Settings initialized successfully");
+  } catch (error) {
+    console.error("Failed to initialize settings:", error);
+    // 在 Zen Browser 中，如果存储初始化失败，尝试使用本地存储
+    try {
+      const localSettings = await webext.storage.local.get(DEFAULT_SETTINGS);
+      await webext.storage.local.set({ ...DEFAULT_SETTINGS, ...localSettings });
+      console.log("Fallback to local storage successful");
+    } catch (fallbackError) {
+      console.error("Fallback storage initialization also failed:", fallbackError);
+    }
+  }
+};
+
+// 监听安装事件
+const setupInstallListener = async () => {
+  await waitForWebext();
+  
+  if (webext.runtime.onInstalled) {
+    webext.runtime.onInstalled.addListener(initializeExtension);
+  } else {
+    // 如果没有 onInstalled 事件，直接初始化
+    initializeExtension();
+  }
+};
+
+setupInstallListener();
 // 防止监听器被多次注册
 let downloadListenerAdded = false;
 
-// 监听下载事件
-if (!downloadListenerAdded && webext.downloads.onDeterminingFilename) {
-  webext.downloads.onDeterminingFilename.addListener(handleDownload);
-  downloadListenerAdded = true;
-}
+// 设置下载监听器
+const setupDownloadListener = async () => {
+  await waitForWebext();
+  
+  if (!downloadListenerAdded && webext.downloads && webext.downloads.onDeterminingFilename) {
+    webext.downloads.onDeterminingFilename.addListener(handleDownload);
+    downloadListenerAdded = true;
+    console.log("Download listener added");
+  }
+};
+
+setupDownloadListener();
 
 function handleDownload(downloadItem, suggest) {
   // 立即调用 suggest 来防止多次调用错误
@@ -323,38 +416,63 @@ function transformUrlLegacy(url, settings) {
   }
 }
 
-// 监听来自弹出窗口/选项的消息
-webext.runtime.onMessage.addListener((request, sender, sendResponse) => {
+// 设置消息监听器
+const setupMessageListener = async () => {
+  await waitForWebext();
+  
+  if (webext.runtime.onMessage) {
+    webext.runtime.onMessage.addListener((request, sender, sendResponse) => {
   const storageAPI = webext.storage.sync || webext.storage.local;
 
   if (request.action === "getSettings") {
-    storageAPI.get(DEFAULT_SETTINGS).then(sendResponse);
+    // 增强错误处理，特别针对 Zen Browser
+    storageAPI.get(DEFAULT_SETTINGS)
+      .then(settings => {
+        // 确保返回完整的设置对象
+        const completeSettings = { ...DEFAULT_SETTINGS, ...settings };
+        sendResponse(completeSettings);
+      })
+      .catch(error => {
+        console.error("Failed to get settings:", error);
+        // 如果获取设置失败，返回默认设置
+        sendResponse(DEFAULT_SETTINGS);
+      });
     return true;
   } else if (request.action === "saveSettings") {
-    storageAPI.set(request.settings).then(async () => {
-      // 通知相关标签页刷新
-      try {
-        const tabs = await webext.tabs.query({
-          url: Object.values(PLATFORMS).map((platform) => platform.base + "/*"),
-        });
+    storageAPI.set(request.settings)
+      .then(async () => {
+        // 通知相关标签页刷新
+        try {
+          const tabs = await webext.tabs.query({
+            url: Object.values(PLATFORMS).map((platform) => platform.base + "/*"),
+          });
 
-        for (const tab of tabs) {
-          try {
-            await webext.tabs.sendMessage(tab.id, {
-              action: "showNotification",
-              message: "设置已更新！点击刷新页面",
-              showRefreshButton: true,
-            });
-          } catch (error) {
-            // 标签页可能没有加载内容脚本，忽略
+          for (const tab of tabs) {
+            try {
+              await webext.tabs.sendMessage(tab.id, {
+                action: "showNotification",
+                message: "设置已更新！点击刷新页面",
+                showRefreshButton: true,
+              });
+            } catch (error) {
+              // 标签页可能没有加载内容脚本，忽略
+            }
           }
+        } catch (error) {
+          console.log("无法通知标签页设置更新");
         }
-      } catch (error) {
-        console.log("无法通知标签页设置更新");
-      }
 
-      sendResponse({ success: true });
-    });
+        sendResponse({ success: true });
+      })
+      .catch(error => {
+        console.error("Failed to save settings:", error);
+        sendResponse({ success: false, error: error.message });
+      });
     return true;
   }
-});
+    });
+    console.log("Message listener added");
+  }
+};
+
+setupMessageListener();
