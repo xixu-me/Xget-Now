@@ -40,9 +40,16 @@ const platformDetector = {
 
     // 根据扩展 URL 前缀检测浏览器类型
     if (extURL.startsWith("moz-extension://")) {
-      platform = "firefox";
-      const match = /Firefox\/(\d+)/.exec(ua);
-      version = match ? parseInt(match[1], 10) : 115;
+      // 检测 Zen Browser
+      if (/\bZen\//.test(ua) || /\bzen\b/i.test(ua)) {
+        platform = "zen";
+        const zenMatch = /Zen\/(\d+)/.exec(ua);
+        version = zenMatch ? parseInt(zenMatch[1], 10) : 115;
+      } else {
+        platform = "firefox";
+        const match = /Firefox\/(\d+)/.exec(ua);
+        version = match ? parseInt(match[1], 10) : 115;
+      }
     } else if (extURL.startsWith("safari-web-extension://")) {
       platform = "safari";
       const match = /Version\/(\d+)/.exec(ua);
@@ -93,11 +100,16 @@ const platformDetector = {
       notifications: true,
     };
 
-    // Firefox 特定能力
-    if (info.platform === "firefox") {
+    // Firefox 和 Zen Browser 特定能力
+    if (info.platform === "firefox" || info.platform === "zen") {
       capabilities.webRequest = true;
       capabilities.contentSecurityPolicy = false; // 在 Manifest V2 中有限制
-      capabilities.popupResize = false; // Firefox 不支持动态调整弹窗大小
+      capabilities.popupResize = false; // Firefox/Zen Browser 不支持动态调整弹窗大小
+      
+      // Zen Browser 特殊处理
+      if (info.platform === "zen") {
+        capabilities.zenSpecific = true; // 标记 Zen Browser 特殊功能
+      }
     }
 
     // Chromium 特定能力
@@ -138,12 +150,17 @@ const platformDetector = {
       contentScriptLimitations: [],
     };
 
-    if (info.platform === "firefox") {
+    if (info.platform === "firefox" || info.platform === "zen") {
       limitations.maxStorageSize = 5 * 1024 * 1024; // 5MB for local storage
       limitations.contentScriptLimitations = [
         "limited-eval", // eval() 受限
         "no-dynamic-import", // 动态导入受限
       ];
+      
+      // Zen Browser 可能有额外的限制
+      if (info.platform === "zen") {
+        limitations.zenBrowserQuirks = true;
+      }
     }
 
     if (info.platform === "safari") {
