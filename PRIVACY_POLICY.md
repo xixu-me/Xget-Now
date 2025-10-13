@@ -46,7 +46,7 @@ Xget Now 扩展遵循“隐私优先”的设计原则，所有处理都在您�
 
 ### 数据同步
 
-如果您已登录 Chrome/Microsoft Edge 并启用了扩展同步，您的扩展设置可能会在您的设备之间同步。这是由 Google/Microsoft 的 Chrome/Microsoft Edge 同步服务处理的，不涉及我们的服务器。
+如果您已登录 Chrome/Edge 并启用了扩展同步，您的扩展设置可能会在您的设备之间同步。这是由 Google/Microsoft 的 Chrome/Edge 同步服务处理的，不涉及我们的服务器。
 
 ## 数据处理
 

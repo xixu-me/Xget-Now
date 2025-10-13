@@ -24,7 +24,7 @@ body:
       description: Which browser are you using?
       options:
         - Chrome
-        - Microsoft Edge
+        - Edge
         - Brave
         - Other Chromium-based browser
     validations:

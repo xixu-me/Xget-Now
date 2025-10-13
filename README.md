@@ -18,7 +18,7 @@
 - [Chrome 应用商店](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN)
 - [Chrome 应用商店镜像](https://chromewebstore.xi-xu.me/detail/ajiejgobfcifcikbahpijopolfjoodgf)
 - [Firefox 附加组件](https://addons.mozilla.org/zh-CN/firefox/addon/xget-now/)
-- [Microsoft Edge 加载项](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN)
+- [Edge 加载项](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN)
 
 ### 手动安装
 
@@ -29,7 +29,7 @@
 1. **下载扩展**
    - 前往 [Releases 页面](https://github.com/xixu-me/Xget-Now/releases/latest)
    - 下载对应浏览器的扩展文件：
-     - `Xget-Now_x.x.x.chromium.zip` - 适用于所有基于 Chromium 的浏览器（Chrome、Microsoft Edge、Opera 等）
+     - `Xget-Now_x.x.x.chromium.zip` - 适用于所有基于 Chromium 的浏览器（Chrome、Edge、Opera 等）
      - `Xget-Now_x.x.x.firefox.zip` - 适用于 Firefox 浏览器
 
 2. **在 Chrome 中安装**
@@ -44,15 +44,15 @@
    - 点击「临时载入附加组件」
    - 选择下载的 Firefox 版本 ZIP 文件或解压后的 `manifest.json` 文件
 
-4. **在 Microsoft Edge 中安装**
+4. **在 Edge 中安装**
    - 解压下载的 Chromium 版本 ZIP 文件
-   - 打开 Microsoft Edge 并前往 `edge://extensions/`
+   - 打开 Edge 并前往 `edge://extensions/`
    - 启用「开发人员模式」（左侧边栏的切换开关）
    - 点击「加载解压缩的扩展」并选择解压的文件夹
 
 5. **在其他基于 Chromium 的浏览器中安装**
    - 使用 Chromium 版本的扩展包
-   - 遵循与 Chrome 或 Microsoft Edge 类似的步骤，确保首先启用「开发者模式」
+   - 遵循与 Chrome 或 Edge 类似的步骤，确保首先启用「开发者模式」
    - 按照相应浏览器的扩展安装指南进行操作
 
 #### 选项 2：从源码安装
@@ -147,7 +147,7 @@
 **Chromium 浏览器：**
 
 - **Chrome**：版本 88+（Manifest V3 支持）
-- **Microsoft Edge**：版本 88+
+- **Edge**：版本 88+
 - **Opera**：版本 74+
 - **其他基于 Chromium 的浏览器**：支持 Manifest V3 的版本
 
@@ -291,6 +291,6 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 - 📝 留下评价：
   - [Chrome 应用商店](https://chromewebstore.google.com/detail/ajiejgobfcifcikbahpijopolfjoodgf?hl=zh-CN)
   - [Firefox 附加组件](https://addons.mozilla.org/zh-CN/firefox/addon/xget-now/)
-  - [Microsoft Edge 加载项](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN)
+  - [Edge 加载项](https://microsoftedge.microsoft.com/addons/detail/jigpfhbegabdenhihpplcjhpfdcgnalc?hl=zh-CN&gl=CN)
 - 🐛 通过 [GitHub Issues](https://github.com/xixu-me/Xget-Now/issues) 报告错误或建议功能
 - 📢 与其他可能受益于更快下载的人分享
