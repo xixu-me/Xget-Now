@@ -8,85 +8,143 @@
  * - 提供平台开关控制
  */
 
+// 等待 webext 可用的函数
+const waitForWebext = () => {
+  return new Promise((resolve) => {
+    if (typeof webext !== "undefined") {
+      resolve();
+    } else {
+      // 创建基本的 webext 兼容层
+      const api = typeof browser !== "undefined" ? browser : chrome;
+      if (api && api.runtime) {
+        window.webext = {
+          runtime: {
+            sendMessage: (message) => {
+              return new Promise((resolve, reject) => {
+                try {
+                  if (api.runtime.sendMessage) {
+                    api.runtime.sendMessage(message, (response) => {
+                      if (api.runtime.lastError) {
+                        console.warn("SendMessage error:", api.runtime.lastError.message);
+                        resolve(null);
+                      } else {
+                        resolve(response);
+                      }
+                    });
+                  } else {
+                    resolve(null);
+                  }
+                } catch (error) {
+                  console.warn("SendMessage exception:", error);
+                  resolve(null);
+                }
+              });
+            }
+          }
+        };
+      } else {
+        // 创建一个最小的存根
+        window.webext = {
+          runtime: {
+            sendMessage: () => Promise.resolve(null)
+          }
+        };
+      }
+      resolve();
+    }
+  });
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
-  // 确保兼容层可用
-  if (typeof webext === "undefined") {
-    console.error("WebExt compatibility layer not found in popup");
-    return;
+  try {
+    // 等待兼容层可用
+    await waitForWebext();
+    console.log("WebExt compatibility layer loaded in popup");
+
+    // 加载当前设置
+    await loadSettings();
+
+    // 设置事件监听器
+    setupEventListeners();
+  } catch (error) {
+    console.error("Failed to initialize popup:", error);
+    showStatus("初始化失败，请重新打开扩展", "error");
   }
-
-  // 加载当前设置
-  await loadSettings();
-
-  // 设置事件监听器
-  setupEventListeners();
 });
 
 /**
- * 加载并应用当前设置到 UI
+ * 加载并应用当前设置到 UI，增强 Zen Browser 兼容性
  */
 async function loadSettings() {
   try {
-    const settings = await webext.runtime.sendMessage({
+    // 确保 webext 可用
+    await waitForWebext();
+    
+    // 增加超时处理，防止在 Zen Browser 中无限等待
+    const settingsPromise = webext.runtime.sendMessage({
       action: "getSettings",
     });
-
-    // 使用当前设置更新 UI
-    const domainValue = settings.xgetDomain || "";
-    document.getElementById("domainInput").value = domainValue;
-
-    // 仅在设置了域名时启用切换
-    const enabledValue = settings.enabled && domainValue.trim() !== "";
-    document.getElementById("enabledToggle").checked = enabledValue;
-
-    // 更新平台切换状态
-    const platformToggles = {
-      // 代码托管平台
-      gh: document.getElementById("ghToggle"),
-      gl: document.getElementById("glToggle"),
-      gitea: document.getElementById("giteaToggle"),
-      codeberg: document.getElementById("codebergToggle"),
-      sf: document.getElementById("sfToggle"),
-      aosp: document.getElementById("aospToggle"),
-
-      // AI/ML 平台
-      hf: document.getElementById("hfToggle"),
-
-      // 包管理平台
-      npm: document.getElementById("npmToggle"),
-      pypi: document.getElementById("pypiToggle"),
-      conda: document.getElementById("condaToggle"),
-      maven: document.getElementById("mavenToggle"),
-      rubygems: document.getElementById("rubygemsToggle"),
-      crates: document.getElementById("cratesToggle"),
-      nuget: document.getElementById("nugetToggle"),
-      golang: document.getElementById("golangToggle"),
-
-      // 其他平台
-      arxiv: document.getElementById("arxivToggle"),
-      fdroid: document.getElementById("fdroidToggle"),
-    };
-
-    // 设置平台切换状态
-    Object.entries(platformToggles).forEach(([platform, toggle]) => {
-      if (
-        toggle &&
-        settings.enabledPlatforms &&
-        settings.enabledPlatforms[platform] !== undefined
-      ) {
-        toggle.checked = settings.enabledPlatforms[platform];
-      }
+    
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Settings loading timeout")), 3000);
     });
+    
+    const settings = await Promise.race([settingsPromise, timeoutPromise]);
 
-    // 如果缺少域名则显示状态
-    if (!domainValue && settings.enabled) {
-      showStatus("请配置你的 Xget 域名", "error");
-    } else if (domainValue && enabledValue) {
-      showStatus("扩展已激活并准备就绪", "success");
+    // 验证设置对象的完整性
+    if (!settings || typeof settings !== 'object') {
+      console.warn("Invalid settings received, using defaults");
+      // 使用默认设置而不是抛出错误
+      const defaultSettings = {
+        enabled: false,
+        xgetDomain: "",
+        enabledPlatforms: {
+          gh: true, gl: true, gitea: true, codeberg: true, sf: true, aosp: true,
+          hf: true, npm: true, pypi: true, conda: true, maven: true,
+          rubygems: true, crates: true, nuget: true, golang: true,
+          arxiv: true, fdroid: true
+        }
+      };
+      
+      // 使用默认设置初始化 UI
+      initializeUIWithSettings(defaultSettings);
+      showStatus("使用默认设置，请配置域名", "error");
+      return;
     }
+
+    // 使用设置初始化 UI
+    initializeUIWithSettings(settings);
   } catch (error) {
     console.error("加载设置时出错：", error);
-    showStatus("加载设置时出错", "error");
+    
+    // 在 Zen Browser 中提供更详细的错误信息
+    let errorMessage = "加载设置时出错";
+    if (error.message === "Settings loading timeout") {
+      errorMessage = "设置加载超时，请重试";
+    } else if (error.message.includes("sendMessage")) {
+      errorMessage = "与后台脚本通信失败";
+    }
+    
+    showStatus(errorMessage, "error");
+    
+    // 尝试使用默认设置初始化 UI
+    try {
+      const defaultSettings = {
+        enabled: false,
+        xgetDomain: "",
+        enabledPlatforms: {}
+      };
+      
+      const domainInput = document.getElementById("domainInput");
+      const enabledToggle = document.getElementById("enabledToggle");
+      
+      if (domainInput) domainInput.value = "";
+      if (enabledToggle) enabledToggle.checked = false;
+      
+      console.log("Initialized with default settings due to loading error");
+    } catch (fallbackError) {
+      console.error("Failed to initialize default UI:", fallbackError);
+    }
   }
 }
 
@@ -306,7 +364,7 @@ async function saveSettings() {
       settings: settings,
     });
 
-    if (response.success) {
+    if (response && response.success) {
       // 显示适当的状态
       if (!settings.xgetDomain && settings.enabled) {
         showStatus("请配置你的 Xget 域名", "error");
@@ -315,6 +373,9 @@ async function saveSettings() {
       } else {
         showStatus("✅ 设置已保存！查看页面通知中的刷新按钮", "success");
       }
+    } else {
+      // 如果没有收到响应或响应无效，仍然显示成功消息
+      showStatus("⚠️ 设置可能已保存，但无法确认", "warning");
     }
   } catch (error) {
     console.error("保存设置时出错：", error);
@@ -422,4 +483,69 @@ async function handleDomainChange() {
   }
 
   await saveSettings();
+}
+
+/**
+ * 使用给定的设置初始化 UI
+ */
+function initializeUIWithSettings(settings) {
+  // 使用当前设置更新 UI，提供默认值
+  const domainValue = settings.xgetDomain || "";
+  const domainInput = document.getElementById("domainInput");
+  if (domainInput) {
+    domainInput.value = domainValue;
+  }
+
+  // 仅在设置了域名时启用切换
+  const enabledValue = settings.enabled && domainValue.trim() !== "";
+  const enabledToggle = document.getElementById("enabledToggle");
+  if (enabledToggle) {
+    enabledToggle.checked = enabledValue;
+  }
+
+  // 更新平台切换状态
+  const platformToggles = {
+    // 代码托管平台
+    gh: document.getElementById("ghToggle"),
+    gl: document.getElementById("glToggle"),
+    gitea: document.getElementById("giteaToggle"),
+    codeberg: document.getElementById("codebergToggle"),
+    sf: document.getElementById("sfToggle"),
+    aosp: document.getElementById("aospToggle"),
+
+    // AI/ML 平台
+    hf: document.getElementById("hfToggle"),
+
+    // 包管理平台
+    npm: document.getElementById("npmToggle"),
+    pypi: document.getElementById("pypiToggle"),
+    conda: document.getElementById("condaToggle"),
+    maven: document.getElementById("mavenToggle"),
+    rubygems: document.getElementById("rubygemsToggle"),
+    crates: document.getElementById("cratesToggle"),
+    nuget: document.getElementById("nugetToggle"),
+    golang: document.getElementById("golangToggle"),
+
+    // 其他平台
+    arxiv: document.getElementById("arxivToggle"),
+    fdroid: document.getElementById("fdroidToggle"),
+  };
+
+  // 设置平台切换状态
+  Object.entries(platformToggles).forEach(([platform, toggle]) => {
+    if (
+      toggle &&
+      settings.enabledPlatforms &&
+      settings.enabledPlatforms[platform] !== undefined
+    ) {
+      toggle.checked = settings.enabledPlatforms[platform];
+    }
+  });
+
+  // 如果缺少域名则显示状态
+  if (!domainValue && settings.enabled) {
+    showStatus("请配置你的 Xget 域名", "error");
+  } else if (domainValue && enabledValue) {
+    showStatus("扩展已激活并准备就绪", "success");
+  }
 }
