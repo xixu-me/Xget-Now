@@ -207,9 +207,18 @@ window.runZenTest = function() {
     }
     
     console.clear();
-    // 重新运行测试
-    eval(document.querySelector('script[src*="safe-zen-test"]')?.textContent || 
-         '/* 请手动复制并运行测试脚本 */');
+    // 安全地重新运行测试 - 重新加载脚本而不是使用 eval
+    const script = document.createElement('script');
+    script.src = 'safe-zen-test.js?t=' + Date.now(); // 添加时间戳避免缓存
+    script.onload = function() {
+        console.log('✅ 测试脚本已重新加载');
+        this.remove(); // 清理脚本标签
+    };
+    script.onerror = function() {
+        console.log('❌ 无法重新加载测试脚本，请手动刷新页面');
+        this.remove();
+    };
+    document.head.appendChild(script);
 };
 
 console.log('💡 提示: 可以随时运行 runZenTest() 重新测试');

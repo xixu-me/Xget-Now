@@ -90,6 +90,9 @@
     "activeTab"
   ],
   "version": "2.0.4",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'unsafe-inline'; object-src 'self'"
+  },
   "web_accessible_resources": [
     {
       "matches": [
