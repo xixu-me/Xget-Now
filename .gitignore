@@ -7,7 +7,9 @@ yarn-error.log*
 # Build outputs
 dist/
 build/
+packages/
 *.zip
+*.xpi
 extension.zip
 
 # OS generated files

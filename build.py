@@ -43,20 +43,22 @@ def copy_common_files(build_dir):
     Args:
         build_dir (Path): 目标构建目录
     """
-    common_files = [
-        "webext-compat.js",
-        "background.js",
-        "content.js",
-        "popup.js",
-        "popup.html",
-        "platforms.js",
+    # 创建 src 目录结构
+    src_dir = build_dir / "src"
+
+    # 复制源代码目录
+    if os.path.exists("src"):
+        shutil.copytree("src", src_dir, dirs_exist_ok=True)
+
+    # 复制根目录的文档文件
+    doc_files = [
         "LICENSE",
         "README.md",
         "PRIVACY_POLICY.md",
         "SECURITY.md",
     ]
 
-    for file in common_files:
+    for file in doc_files:
         if os.path.exists(file):
             shutil.copy2(file, build_dir)
 
@@ -81,8 +83,8 @@ def build_chrome():
     # 复制 Chrome manifest
     shutil.copy2("manifest.json", build_dir / "manifest.json")
 
-    # 修改 background.js 为 Chrome 优化
-    optimize_for_chrome(build_dir)
+    # 为 Chrome 创建扁平化的文件结构
+    flatten_for_browser(build_dir, "chrome")
 
     print(f"Chrome 版本构建完成: {build_dir}")
     return build_dir
@@ -104,11 +106,77 @@ def build_firefox():
     # 复制 Firefox manifest
     shutil.copy2("manifest-firefox.json", build_dir / "manifest.json")
 
-    # 优化文件以适配 Firefox
-    optimize_for_firefox(build_dir)
+    # 为 Firefox 创建扁平化的文件结构
+    flatten_for_browser(build_dir, "firefox")
 
     print(f"Firefox 版本构建完成: {build_dir}")
     return build_dir
+
+
+def flatten_for_browser(build_dir, platform):
+    """
+    将 src 目录中的文件扁平化到构建目录根
+
+    Args:
+        build_dir (Path): 构建目录路径
+        platform (str): 目标平台 (chrome/firefox)
+    """
+    src_dir = build_dir / "src"
+
+    if not src_dir.exists():
+        print(f"警告: {src_dir} 不存在")
+        return
+
+    # 将文件从 src 子目录移动到根目录
+    # background/index.js -> background.js
+    bg_file = src_dir / "background" / "index.js"
+    if bg_file.exists():
+        shutil.copy2(bg_file, build_dir / "background.js")
+
+    # content/index.js -> content.js
+    content_file = src_dir / "content" / "index.js"
+    if content_file.exists():
+        shutil.copy2(content_file, build_dir / "content.js")
+
+    # popup/index.html -> popup.html
+    popup_html = src_dir / "popup" / "index.html"
+    if popup_html.exists():
+        shutil.copy2(popup_html, build_dir / "popup.html")
+
+    # popup/popup.js -> popup.js
+    popup_js = src_dir / "popup" / "popup.js"
+    if popup_js.exists():
+        shutil.copy2(popup_js, build_dir / "popup.js")
+
+    # shared/platforms.js -> platforms.js
+    platforms_file = src_dir / "shared" / "platforms.js"
+    if platforms_file.exists():
+        shutil.copy2(platforms_file, build_dir / "platforms.js")
+
+    # shared/platform-detector.js -> platform-detector.js
+    detector_file = src_dir / "shared" / "platform-detector.js"
+    if detector_file.exists():
+        shutil.copy2(detector_file, build_dir / "platform-detector.js")
+
+    # shared/compat/webext-compat.js -> webext-compat.js
+    webext_compat = src_dir / "shared" / "compat" / "webext-compat.js"
+    if webext_compat.exists():
+        shutil.copy2(webext_compat, build_dir / "webext-compat.js")
+
+    # shared/compat/firefox-compat.js -> firefox-compat.js
+    firefox_compat = src_dir / "shared" / "compat" / "firefox-compat.js"
+    if firefox_compat.exists():
+        shutil.copy2(firefox_compat, build_dir / "firefox-compat.js")
+
+    # 删除 src 目录
+    if src_dir.exists():
+        shutil.rmtree(src_dir)
+
+    # 平台特定优化
+    if platform == "chrome":
+        optimize_for_chrome(build_dir)
+    elif platform == "firefox":
+        optimize_for_firefox(build_dir)
 
 
 def optimize_for_chrome(build_dir):

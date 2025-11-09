@@ -23,7 +23,7 @@
 const detectBrowser = () => {
   const ua = navigator.userAgent;
   let manifest;
-  
+
   try {
     manifest = chrome.runtime.getManifest();
   } catch (error) {
@@ -101,7 +101,7 @@ const webext = (() => {
       runtime: { getManifest: () => ({ version: "0.0.0" }) },
       storage: { local: {}, sync: {} },
       tabs: {},
-      downloads: {}
+      downloads: {},
     };
   }
 
@@ -162,7 +162,10 @@ const webext = (() => {
             // sendMessage(message)
             runtimeAPI.sendMessage(args[0], (response) => {
               if (api.runtime.lastError) {
-                console.warn("SendMessage failed:", api.runtime.lastError.message);
+                console.warn(
+                  "SendMessage failed:",
+                  api.runtime.lastError.message
+                );
                 resolve(null);
               } else {
                 resolve(response);
@@ -170,15 +173,18 @@ const webext = (() => {
             });
           } else if (args.length === 2) {
             // 检查第二个参数是否是函数（回调）
-            if (typeof args[1] === 'function') {
+            if (typeof args[1] === "function") {
               // sendMessage(message, callback) - 直接调用回调，不使用 Promise
               runtimeAPI.sendMessage(args[0], args[1]);
               resolve(undefined); // 立即解析 Promise
-            } else if (typeof args[0] === 'string' && args[0].length > 10) {
+            } else if (typeof args[0] === "string" && args[0].length > 10) {
               // sendMessage(extensionId, message)
               runtimeAPI.sendMessage(args[0], args[1], (response) => {
                 if (api.runtime.lastError) {
-                  console.warn("SendMessage failed:", api.runtime.lastError.message);
+                  console.warn(
+                    "SendMessage failed:",
+                    api.runtime.lastError.message
+                  );
                   resolve(null);
                 } else {
                   resolve(response);
@@ -188,7 +194,10 @@ const webext = (() => {
               // sendMessage(message, options)
               runtimeAPI.sendMessage(args[0], args[1], (response) => {
                 if (api.runtime.lastError) {
-                  console.warn("SendMessage failed:", api.runtime.lastError.message);
+                  console.warn(
+                    "SendMessage failed:",
+                    api.runtime.lastError.message
+                  );
                   resolve(null);
                 } else {
                   resolve(response);
@@ -197,7 +206,7 @@ const webext = (() => {
             }
           } else if (args.length === 3) {
             // 检查第三个参数是否是函数（回调）
-            if (typeof args[2] === 'function') {
+            if (typeof args[2] === "function") {
               // sendMessage(extensionId, message, callback) 或 sendMessage(message, options, callback)
               runtimeAPI.sendMessage(args[0], args[1], args[2]);
               resolve(undefined); // 立即解析 Promise
@@ -205,14 +214,17 @@ const webext = (() => {
               // sendMessage(extensionId, message, options)
               runtimeAPI.sendMessage(args[0], args[1], args[2], (response) => {
                 if (api.runtime.lastError) {
-                  console.warn("SendMessage failed:", api.runtime.lastError.message);
+                  console.warn(
+                    "SendMessage failed:",
+                    api.runtime.lastError.message
+                  );
                   resolve(null);
                 } else {
                   resolve(response);
                 }
               });
             }
-          } else if (args.length === 4 && typeof args[3] === 'function') {
+          } else if (args.length === 4 && typeof args[3] === "function") {
             // sendMessage(extensionId, message, options, callback)
             runtimeAPI.sendMessage(args[0], args[1], args[2], args[3]);
             resolve(undefined); // 立即解析 Promise
@@ -244,7 +256,10 @@ const webext = (() => {
             // sendMessage(tabId, message)
             tabsAPI.sendMessage(tabId, message, (response) => {
               if (api.runtime.lastError) {
-                console.warn("Tabs sendMessage failed:", api.runtime.lastError.message);
+                console.warn(
+                  "Tabs sendMessage failed:",
+                  api.runtime.lastError.message
+                );
                 resolve(null);
               } else {
                 resolve(response);
@@ -254,7 +269,10 @@ const webext = (() => {
             // sendMessage(tabId, message, options)
             tabsAPI.sendMessage(tabId, message, options, (response) => {
               if (api.runtime.lastError) {
-                console.warn("Tabs sendMessage failed:", api.runtime.lastError.message);
+                console.warn(
+                  "Tabs sendMessage failed:",
+                  api.runtime.lastError.message
+                );
                 resolve(null);
               } else {
                 resolve(response);
@@ -285,33 +303,35 @@ const webext = (() => {
     },
 
     // Tabs API
-    tabs: api.tabs ? {
-      query: promisifyNoFail(api.tabs, "query", []),
-      get: promisifyNoFail(api.tabs, "get"),
-      create: promisifyNoFail(api.tabs, "create"),
-      update: promisifyNoFail(api.tabs, "update"),
-      remove: promisifyNoFail(api.tabs, "remove"),
-      sendMessage: createTabsSendMessage(api.tabs),
-      executeScript: promisifyNoFail(api.tabs, "executeScript"),
-      insertCSS: promisifyNoFail(api.tabs, "insertCSS"),
-      removeCSS: promisifyNoFail(api.tabs, "removeCSS"),
-      onUpdated: api.tabs.onUpdated,
-      onActivated: api.tabs.onActivated,
-      onRemoved: api.tabs.onRemoved,
-    } : {
-      query: async () => [],
-      get: async () => null,
-      create: async () => null,
-      update: async () => null,
-      remove: async () => null,
-      sendMessage: async () => null,
-      executeScript: async () => null,
-      insertCSS: async () => null,
-      removeCSS: async () => null,
-      onUpdated: { addListener: () => {}, removeListener: () => {} },
-      onActivated: { addListener: () => {}, removeListener: () => {} },
-      onRemoved: { addListener: () => {}, removeListener: () => {} },
-    },
+    tabs: api.tabs
+      ? {
+          query: promisifyNoFail(api.tabs, "query", []),
+          get: promisifyNoFail(api.tabs, "get"),
+          create: promisifyNoFail(api.tabs, "create"),
+          update: promisifyNoFail(api.tabs, "update"),
+          remove: promisifyNoFail(api.tabs, "remove"),
+          sendMessage: createTabsSendMessage(api.tabs),
+          executeScript: promisifyNoFail(api.tabs, "executeScript"),
+          insertCSS: promisifyNoFail(api.tabs, "insertCSS"),
+          removeCSS: promisifyNoFail(api.tabs, "removeCSS"),
+          onUpdated: api.tabs.onUpdated,
+          onActivated: api.tabs.onActivated,
+          onRemoved: api.tabs.onRemoved,
+        }
+      : {
+          query: async () => [],
+          get: async () => null,
+          create: async () => null,
+          update: async () => null,
+          remove: async () => null,
+          sendMessage: async () => null,
+          executeScript: async () => null,
+          insertCSS: async () => null,
+          removeCSS: async () => null,
+          onUpdated: { addListener: () => {}, removeListener: () => {} },
+          onActivated: { addListener: () => {}, removeListener: () => {} },
+          onRemoved: { addListener: () => {}, removeListener: () => {} },
+        },
 
     // Storage API
     storage: {
@@ -338,35 +358,43 @@ const webext = (() => {
     },
 
     // Downloads API
-    downloads: api.downloads ? {
-      download: promisifyNoFail(api.downloads, "download"),
-      search: promisifyNoFail(api.downloads, "search", []),
-      cancel: promisifyNoFail(api.downloads, "cancel"),
-      pause: promisifyNoFail(api.downloads, "pause"),
-      resume: promisifyNoFail(api.downloads, "resume"),
-      erase: promisifyNoFail(api.downloads, "erase"),
-      removeFile: promisifyNoFail(api.downloads, "removeFile"),
-      show: promisifyNoFail(api.downloads, "show"),
-      showDefaultFolder: promisifyNoFail(api.downloads, "showDefaultFolder"),
-      onCreated: api.downloads.onCreated,
-      onChanged: api.downloads.onChanged,
-      onErased: api.downloads.onErased,
-      onDeterminingFilename: api.downloads.onDeterminingFilename,
-    } : {
-      download: async () => null,
-      search: async () => [],
-      cancel: async () => null,
-      pause: async () => null,
-      resume: async () => null,
-      erase: async () => null,
-      removeFile: async () => null,
-      show: async () => null,
-      showDefaultFolder: async () => null,
-      onCreated: { addListener: () => {}, removeListener: () => {} },
-      onChanged: { addListener: () => {}, removeListener: () => {} },
-      onErased: { addListener: () => {}, removeListener: () => {} },
-      onDeterminingFilename: { addListener: () => {}, removeListener: () => {} },
-    },
+    downloads: api.downloads
+      ? {
+          download: promisifyNoFail(api.downloads, "download"),
+          search: promisifyNoFail(api.downloads, "search", []),
+          cancel: promisifyNoFail(api.downloads, "cancel"),
+          pause: promisifyNoFail(api.downloads, "pause"),
+          resume: promisifyNoFail(api.downloads, "resume"),
+          erase: promisifyNoFail(api.downloads, "erase"),
+          removeFile: promisifyNoFail(api.downloads, "removeFile"),
+          show: promisifyNoFail(api.downloads, "show"),
+          showDefaultFolder: promisifyNoFail(
+            api.downloads,
+            "showDefaultFolder"
+          ),
+          onCreated: api.downloads.onCreated,
+          onChanged: api.downloads.onChanged,
+          onErased: api.downloads.onErased,
+          onDeterminingFilename: api.downloads.onDeterminingFilename,
+        }
+      : {
+          download: async () => null,
+          search: async () => [],
+          cancel: async () => null,
+          pause: async () => null,
+          resume: async () => null,
+          erase: async () => null,
+          removeFile: async () => null,
+          show: async () => null,
+          showDefaultFolder: async () => null,
+          onCreated: { addListener: () => {}, removeListener: () => {} },
+          onChanged: { addListener: () => {}, removeListener: () => {} },
+          onErased: { addListener: () => {}, removeListener: () => {} },
+          onDeterminingFilename: {
+            addListener: () => {},
+            removeListener: () => {},
+          },
+        },
 
     // Browser Action / Action API (兼容不同版本)
     action: (() => {
@@ -435,7 +463,9 @@ if (typeof module !== "undefined" && module.exports) {
   // 服务工作器环境
   self.webext = webext;
   self.webextFlavor = webextFlavor;
-  console.log("WebExt compatibility layer loaded in service worker environment");
+  console.log(
+    "WebExt compatibility layer loaded in service worker environment"
+  );
 } else {
   // 全局环境
   this.webext = webext;
