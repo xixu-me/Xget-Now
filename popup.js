@@ -9,17 +9,30 @@
  */
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // 确保兼容层可用
-  if (typeof webext === "undefined") {
-    console.error("WebExt compatibility layer not found in popup");
+  // 确保有可用的API
+  if (
+    typeof webext === "undefined" &&
+    typeof browser === "undefined" &&
+    !window.firefoxAPI
+  ) {
+    console.error("No compatible extension API found");
+    showStatus("扩展API加载失败", "error");
     return;
   }
 
-  // 加载当前设置
-  await loadSettings();
+  // 延迟执行以确保background脚本已准备就绪
+  setTimeout(async () => {
+    try {
+      // 加载当前设置
+      await loadSettings();
 
-  // 设置事件监听器
-  setupEventListeners();
+      // 设置事件监听器
+      setupEventListeners();
+    } catch (error) {
+      console.error("Initialization error:", error);
+      showStatus("初始化失败，请重新打开扩展", "error");
+    }
+  }, 100);
 });
 
 /**
@@ -27,9 +40,41 @@ document.addEventListener("DOMContentLoaded", async () => {
  */
 async function loadSettings() {
   try {
-    const settings = await webext.runtime.sendMessage({
-      action: "getSettings",
-    });
+    console.log("Loading settings...");
+
+    let settings;
+
+    // Firefox 特殊处理
+    if (window.firefoxAPI && typeof browser !== "undefined") {
+      console.log("Using Firefox direct storage API");
+      try {
+        // 首先尝试消息传递
+        settings = await window.firefoxAPI.sendMessage({
+          action: "getSettings",
+        });
+      } catch (msgError) {
+        console.log(
+          "Message passing failed, using direct storage access:",
+          msgError
+        );
+        // 如果消息传递失败，直接从存储读取
+        settings = await window.firefoxAPI.getSettings();
+      }
+    } else if (webext && webext.runtime && webext.runtime.sendMessage) {
+      // 标准 webext API
+      console.log("Using standard webext API");
+      settings = await webext.runtime.sendMessage({
+        action: "getSettings",
+      });
+    } else {
+      throw new Error("No compatible API available");
+    }
+
+    console.log("Settings received:", settings);
+
+    if (!settings) {
+      throw new Error("No response from background script");
+    }
 
     // 使用当前设置更新 UI
     const domainValue = settings.xgetDomain || "";
@@ -301,12 +346,34 @@ async function saveSettings() {
       settings.xgetDomain = cleanupDomain(settings.xgetDomain);
     }
 
-    const response = await webext.runtime.sendMessage({
-      action: "saveSettings",
-      settings: settings,
-    });
+    let response;
 
-    if (response.success) {
+    // Firefox 特殊处理
+    if (window.firefoxAPI && typeof browser !== "undefined") {
+      console.log("Saving settings using Firefox API");
+      try {
+        // 首先尝试消息传递
+        response = await window.firefoxAPI.sendMessage({
+          action: "saveSettings",
+          settings: settings,
+        });
+      } catch (msgError) {
+        console.log("Message passing failed, using direct storage:", msgError);
+        // 如果消息传递失败，直接写入存储
+        response = await window.firefoxAPI.saveSettings(settings);
+      }
+    } else if (webext && webext.runtime && webext.runtime.sendMessage) {
+      // 标准 webext API
+      console.log("Saving settings using standard webext API");
+      response = await webext.runtime.sendMessage({
+        action: "saveSettings",
+        settings: settings,
+      });
+    } else {
+      throw new Error("No compatible API available for saving settings");
+    }
+
+    if (response && response.success) {
       // 显示适当的状态
       if (!settings.xgetDomain && settings.enabled) {
         showStatus("请配置你的 Xget 域名", "error");
@@ -315,6 +382,13 @@ async function saveSettings() {
       } else {
         showStatus("✅ 设置已保存！查看页面通知中的刷新按钮", "success");
       }
+    } else if (response && response.error) {
+      console.error("保存设置失败：", response.error);
+      showStatus("保存设置时出错: " + response.error, "error");
+    } else {
+      // 如果没有响应，可能是消息传递失败
+      console.error("未收到后台脚本的响应");
+      showStatus("保存设置时出错：无法与后台脚本通信", "error");
     }
   } catch (error) {
     console.error("保存设置时出错：", error);

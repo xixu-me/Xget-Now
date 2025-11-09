@@ -8,14 +8,36 @@
  * - 管理扩展状态和配置
  */
 
-// 导入兼容层
-importScripts("webext-compat.js");
+// 对于Firefox Manifest V2，webext-compat.js 通过manifest加载
+// 对于Chrome Manifest V3，通过importScripts加载
+if (typeof importScripts !== "undefined") {
+  try {
+    importScripts("webext-compat.js");
+  } catch (e) {
+    console.log("Running in Firefox/Manifest V2 environment");
+  }
+}
 
 // 确保兼容层可用
 if (typeof webext === "undefined") {
-  // 在非模块环境中，兼容层应该已经通过脚本标签加载
   console.error("WebExt compatibility layer not found");
+  // 尝试使用全局的browser或chrome API
+  if (typeof browser !== "undefined") {
+    console.log("Using Firefox browser API directly");
+    self.webext = browser;
+    self.webextFlavor = { soup: new Set(["firefox"]) };
+  } else if (typeof chrome !== "undefined") {
+    console.log("Using Chrome API directly");
+    self.webext = chrome;
+    self.webextFlavor = { soup: new Set(["chromium"]) };
+  }
 }
+
+// 确认API可用性
+console.log("Background script initializing...");
+console.log("WebExt API available:", typeof webext !== "undefined");
+console.log("Storage API available:", webext && webext.storage ? "yes" : "no");
+console.log("Runtime API available:", webext && webext.runtime ? "yes" : "no");
 
 /**
  * 平台配置定义
@@ -226,12 +248,26 @@ const DEFAULT_SETTINGS = {
 webext.runtime.onInstalled.addListener(async () => {
   console.log("Xget Now 已安装");
 
-  // 使用本地存储而不是同步存储以确保兼容性
-  const storageAPI = webext.storage.sync || webext.storage.local;
+  // 对于Firefox，优先使用local存储，因为sync可能不可用或有限制
+  const isFirefox =
+    webextFlavor && webextFlavor.soup && webextFlavor.soup.has("firefox");
+  const storageAPI = isFirefox
+    ? webext.storage.local
+    : webext.storage.sync || webext.storage.local;
 
-  // 如果尚未设置，则设置默认设置
-  const settings = await storageAPI.get(DEFAULT_SETTINGS);
-  await storageAPI.set(settings);
+  try {
+    // 如果尚未设置，则设置默认设置
+    const settings = await storageAPI.get(DEFAULT_SETTINGS);
+    await storageAPI.set(settings);
+  } catch (error) {
+    console.error("初始化设置时出错：", error);
+    // 尝试使用local storage作为后备
+    try {
+      await webext.storage.local.set(DEFAULT_SETTINGS);
+    } catch (localError) {
+      console.error("使用本地存储初始化设置时出错：", localError);
+    }
+  }
 });
 
 // 防止监听器被多次注册
@@ -253,7 +289,12 @@ function handleDownload(downloadItem, suggest) {
 
 async function processDownloadRedirect(downloadItem) {
   try {
-    const storageAPI = webext.storage.sync || webext.storage.local;
+    // 对于Firefox，优先使用local存储
+    const isFirefox =
+      webextFlavor && webextFlavor.soup && webextFlavor.soup.has("firefox");
+    const storageAPI = isFirefox
+      ? webext.storage.local
+      : webext.storage.sync || webext.storage.local;
     const settings = await storageAPI.get(DEFAULT_SETTINGS);
 
     // 检查扩展是否已启用并配置了域名
@@ -324,37 +365,81 @@ function transformUrlLegacy(url, settings) {
 }
 
 // 监听来自弹出窗口/选项的消息
-webext.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  const storageAPI = webext.storage.sync || webext.storage.local;
+const messageListener = (request, sender, sendResponse) => {
+  console.log("Received message:", request.action);
+
+  // 对于Firefox，优先使用local存储，因为sync可能不可用或有限制
+  const isFirefox =
+    webextFlavor && webextFlavor.soup && webextFlavor.soup.has("firefox");
+  const storageAPI = isFirefox
+    ? webext.storage.local
+    : webext.storage.sync || webext.storage.local;
 
   if (request.action === "getSettings") {
-    storageAPI.get(DEFAULT_SETTINGS).then(sendResponse);
-    return true;
-  } else if (request.action === "saveSettings") {
-    storageAPI.set(request.settings).then(async () => {
-      // 通知相关标签页刷新
+    // 使用Promise处理异步操作
+    (async () => {
       try {
-        const tabs = await webext.tabs.query({
-          url: Object.values(PLATFORMS).map((platform) => platform.base + "/*"),
-        });
-
-        for (const tab of tabs) {
-          try {
-            await webext.tabs.sendMessage(tab.id, {
-              action: "showNotification",
-              message: "设置已更新！点击刷新页面",
-              showRefreshButton: true,
-            });
-          } catch (error) {
-            // 标签页可能没有加载内容脚本，忽略
-          }
-        }
+        const settings = await storageAPI.get(DEFAULT_SETTINGS);
+        console.log("Settings retrieved:", settings);
+        sendResponse(settings || DEFAULT_SETTINGS);
       } catch (error) {
-        console.log("无法通知标签页设置更新");
+        console.error("获取设置时出错：", error);
+        sendResponse(DEFAULT_SETTINGS);
       }
+    })();
+    return true; // 保持消息通道开放
+  } else if (request.action === "saveSettings") {
+    // 确保设置对象有效
+    const settingsToSave = {
+      ...DEFAULT_SETTINGS,
+      ...request.settings,
+    };
 
-      sendResponse({ success: true });
-    });
-    return true;
+    (async () => {
+      try {
+        await storageAPI.set(settingsToSave);
+        console.log("Settings saved successfully");
+
+        // 通知相关标签页刷新
+        try {
+          const tabs = await webext.tabs.query({
+            url: Object.values(PLATFORMS).map(
+              (platform) => platform.base + "/*"
+            ),
+          });
+
+          for (const tab of tabs) {
+            try {
+              await webext.tabs.sendMessage(tab.id, {
+                action: "showNotification",
+                message: "设置已更新！点击刷新页面",
+                showRefreshButton: true,
+              });
+            } catch (error) {
+              // 标签页可能没有加载内容脚本，忽略
+            }
+          }
+        } catch (error) {
+          console.log("无法通知标签页设置更新");
+        }
+
+        sendResponse({ success: true });
+      } catch (error) {
+        console.error("保存设置时出错：", error);
+        sendResponse({ success: false, error: error.message });
+      }
+    })();
+    return true; // 保持消息通道开放
   }
-});
+
+  // 未知消息
+  return false;
+};
+
+// 添加消息监听器
+if (webext && webext.runtime && webext.runtime.onMessage) {
+  webext.runtime.onMessage.addListener(messageListener);
+  console.log("Message listener registered");
+} else {
+  console.error("Cannot register message listener - runtime API not available");
+}

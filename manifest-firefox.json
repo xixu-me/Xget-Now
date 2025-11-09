@@ -1,31 +1,27 @@
 {
-  "manifest_version": 2,
-  "name": "Xget Now",
-  "version": "2.0.4",
-  "description": "为 Firefox 浏览器提供的 Xget 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速",
+  "background": {
+    "persistent": true,
+    "scripts": ["webext-compat.js", "background.js"]
+  },
   "browser_action": {
     "default_icon": {
+      "128": "icons/icon128.png",
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+      "48": "icons/icon48.png"
     },
     "default_popup": "popup.html",
     "default_title": "Xget Now"
   },
-  "background": {
-    "scripts": [
-      "webext-compat.js",
-      "background.js"
-    ],
-    "persistent": false
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "i@xi-xu.me",
+      "strict_min_version": "109.0"
+    }
   },
   "content_scripts": [
     {
-      "js": [
-        "webext-compat.js",
-        "content.js"
-      ],
+      "js": ["webext-compat.js", "content.js"],
       "matches": [
         "https://github.com/*",
         "https://gitlab.com/*",
@@ -56,6 +52,15 @@
       "run_at": "document_end"
     }
   ],
+  "description": "为 Firefox 浏览器提供的 Xget 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速",
+  "icons": {
+    "128": "icons/icon128.png",
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png"
+  },
+  "manifest_version": 2,
+  "name": "Xget Now",
   "permissions": [
     "downloads",
     "storage",
@@ -86,19 +91,6 @@
     "https://arxiv.org/*",
     "https://f-droid.org/*"
   ],
-  "icons": {
-    "16": "icons/icon16.png",
-    "32": "icons/icon32.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  },
-  "web_accessible_resources": [
-    "icons/*"
-  ],
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "i@xi-xu.me",
-      "strict_min_version": "109.0"
-    }
-  }
+  "version": "2.0.4",
+  "web_accessible_resources": ["icons/*"]
 }
