@@ -1,14 +1,17 @@
 {
   "background": {
     "persistent": true,
-    "scripts": ["webext-compat.js", "background.js"]
+    "scripts": [
+      "webext-compat.js",
+      "background.js"
+    ]
   },
   "browser_action": {
     "default_icon": {
-      "128": "icons/icon128.png",
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
-      "48": "icons/icon48.png"
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
     },
     "default_popup": "popup.html",
     "default_title": "Xget Now"
@@ -21,7 +24,10 @@
   },
   "content_scripts": [
     {
-      "js": ["webext-compat.js", "content.js"],
+      "js": [
+        "webext-compat.js",
+        "content.js"
+      ],
       "matches": [
         "https://github.com/*",
         "https://gitlab.com/*",
@@ -54,10 +60,10 @@
   ],
   "description": "为 Firefox 浏览器提供的 Xget 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速",
   "icons": {
-    "128": "icons/icon128.png",
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
-    "48": "icons/icon48.png"
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "manifest_version": 2,
   "name": "Xget Now",
@@ -91,6 +97,8 @@
     "https://arxiv.org/*",
     "https://f-droid.org/*"
   ],
-  "version": "2.0.4",
-  "web_accessible_resources": ["icons/*"]
+  "version": "2.0.5",
+  "web_accessible_resources": [
+    "icons/*"
+  ]
 }
