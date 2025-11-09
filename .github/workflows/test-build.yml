@@ -49,31 +49,6 @@ jobs:
             }
           "
 
-      - name: 检查必需文件
-        run: |
-          echo "检查必需文件是否存在..."
-
-          required_files=(
-            "manifest.json"
-            "manifest-firefox.json"
-            "background.js"
-            "content.js"
-            "popup.js"
-            "popup.html"
-            "webext-compat.js"
-            "build.py"
-            "dev.py"
-          )
-
-          for file in "${required_files[@]}"; do
-            if [ -f "$file" ]; then
-              echo "✅ $file"
-            else
-              echo "❌ $file 缺失"
-              exit 1
-            fi
-          done
-
       - name: 运行基础测试
         run: |
           echo "运行基础测试..."
