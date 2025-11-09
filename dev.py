@@ -54,20 +54,24 @@ def watch_files():
 
     监控的文件包括：
     - manifest.json / manifest-firefox.json
-    - JavaScript 文件 (background.js, content.js, popup.js)
-    - HTML 文件 (popup.html)
-    - 兼容层文件 (webext-compat.js)
+    - JavaScript 文件 (src/background/index.js, src/content/index.js, src/popup/popup.js)
+    - HTML 文件 (src/popup/index.html)
+    - 兼容层文件 (src/shared/compat/*.js)
+    - 平台检测文件 (src/shared/platform-detector.js, src/shared/platforms.js)
     """
     import os
 
     watch_files = [
         "manifest.json",
         "manifest-firefox.json",
-        "background.js",
-        "content.js",
-        "popup.js",
-        "popup.html",
-        "webext-compat.js",
+        "src/background/index.js",
+        "src/content/index.js",
+        "src/popup/popup.js",
+        "src/popup/index.html",
+        "src/shared/compat/webext-compat.js",
+        "src/shared/compat/firefox-compat.js",
+        "src/shared/platform-detector.js",
+        "src/shared/platforms.js",
     ]
 
     file_times = {}
@@ -162,11 +166,14 @@ def run_tests():
         required_files = [
             "manifest.json",
             "manifest-firefox.json",
-            "background.js",
-            "content.js",
-            "popup.js",
-            "popup.html",
-            "webext-compat.js",
+            "src/background/index.js",
+            "src/content/index.js",
+            "src/popup/popup.js",
+            "src/popup/index.html",
+            "src/shared/compat/webext-compat.js",
+            "src/shared/compat/firefox-compat.js",
+            "src/shared/platform-detector.js",
+            "src/shared/platforms.js",
         ]
 
         all_exist = True
@@ -204,16 +211,19 @@ def lint_code():
 
     特殊处理：
     - webext-compat.js: 允许直接使用原生 API
+    - firefox-compat.js: 允许直接使用原生 API
     - platform-detector.js: 允许直接使用原生 API
     """
     print("运行代码检查...")
 
     js_files = [
-        "background.js",
-        "content.js",
-        "popup.js",
-        "webext-compat.js",
-        "platform-detector.js",
+        "src/background/index.js",
+        "src/content/index.js",
+        "src/popup/popup.js",
+        "src/shared/compat/webext-compat.js",
+        "src/shared/compat/firefox-compat.js",
+        "src/shared/platform-detector.js",
+        "src/shared/platforms.js",
     ]
 
     for file in js_files:
@@ -228,24 +238,34 @@ def lint_code():
             issues = []
 
             # 底层文件允许直接使用原生 API
-            bottom_layer_files = ["webext-compat.js", "platform-detector.js"]
+            bottom_layer_files = [
+                "src/shared/compat/webext-compat.js",
+                "src/shared/compat/firefox-compat.js",
+                "src/shared/platform-detector.js",
+            ]
 
             if file not in bottom_layer_files:
                 if "chrome." in content and "webext." not in content:
                     issues.append("发现直接使用 chrome API，应使用 webext 兼容层")
-            elif file == "webext-compat.js":
+            elif "webext-compat.js" in file:
                 # 对于 webext-compat.js，检查是否正确导出了 webext 接口
                 if "window.webext" not in content and "module.exports" not in content:
                     issues.append("兼容层未正确导出 webext 接口")
-            elif file == "platform-detector.js":
+            elif "firefox-compat.js" in file:
+                # 对于 firefox-compat.js，检查 Firefox 特定的兼容性处理
+                if "browser." not in content and "chrome." not in content:
+                    issues.append("Firefox 兼容层应处理 browser/chrome API")
+            elif "platform-detector.js" in file:
                 # 对于 platform-detector.js，检查是否正确导出了平台检测接口
                 if "platformDetector" not in content:
                     issues.append("平台检测器未正确定义 platformDetector 接口")
 
             # 检查错误处理
             if "console.log(" in content and "console.error(" not in content:
-                # 对于底层文件，console.warn 也是可以接受的
-                if file in bottom_layer_files and "console.warn(" in content:
+                # 对于底层文件和平台定义文件，console.warn 也是可以接受的
+                if (
+                    file in bottom_layer_files or "platforms.js" in file
+                ) and "console.warn(" in content:
                     pass  # 底层文件使用 console.warn 是合理的
                 else:
                     issues.append("建议使用 console.error 处理错误")
