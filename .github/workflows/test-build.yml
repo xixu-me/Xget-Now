@@ -5,8 +5,26 @@ permissions:
 on:
   push:
     branches: [main, develop]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "LICENSE"
+      - ".gitignore"
+      - ".editorconfig"
+      - "images/**"
+      - "screenshots/**"
+      - ".vscode/**"
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "LICENSE"
+      - ".gitignore"
+      - ".editorconfig"
+      - "images/**"
+      - "screenshots/**"
+      - ".vscode/**"
   workflow_dispatch:
 
 jobs:
