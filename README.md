@@ -1,6 +1,6 @@
 # Xget Now
 
-为 Chromium 和 Firefox 浏览器提供的 [Xget](https://github.com/xixu-me/Xget) 下载加速扩展，支持 GitHub、GitLab、npm、PyPI 等众多平台的文件下载加速。
+一个适用于 Chromium 和 Firefox 的跨浏览器扩展，通过将文件下载无缝转交给 [Xget](https://github.com/xixu-me/Xget) 实例来加速下载。
 
 ## 🚀 功能特性
 
@@ -33,7 +33,7 @@
      - `Xget-Now_x.x.x.firefox.zip` - 适用于 Firefox 浏览器
 
 2. **在 Chrome 中安装**
-   - 解压下载的 Chromium 版本 ZIP 文件
+   - 解压下载的 Chromium 版本 .zip 文件
    - 打开 Chrome 并前往 `chrome://extensions/`
    - 启用「开发者模式」（右上角的切换开关）
    - 点击「加载已解压的扩展程序」并选择解压的文件夹
@@ -42,10 +42,10 @@
    - 打开 Firefox 并前往 `about:debugging`
    - 点击「此 Firefox」
    - 点击「临时载入附加组件」
-   - 选择下载的 Firefox 版本 ZIP 文件或解压后的 `manifest.json` 文件
+   - 选择下载的 Firefox 版本 .zip 文件或解压后的 `manifest.json` 文件
 
 4. **在 Edge 中安装**
-   - 解压下载的 Chromium 版本 ZIP 文件
+   - 解压下载的 Chromium 版本 .zip 文件
    - 打开 Edge 并前往 `edge://extensions/`
    - 启用「开发人员模式」（左侧边栏的切换开关）
    - 点击「加载解压缩的扩展」并选择解压的文件夹
@@ -122,56 +122,25 @@
 3. **重定向**：下载通过你配置的 Xget 域名路由
 4. **加速**：Xget 的全球 CDN 和优化功能提供更快的下载速度
 
-### 为什么 Xget 让下载更快
-
-- **边缘缓存**：文件在 Cloudflare 的全球边缘位置进行缓存
-- **HTTP/3 支持**：使用最新协议提高性能
-- **智能路由**：自动通过最快的可用服务器路由
-- **压缩**：自动内容压缩减少传输时间
-- **连接优化**：持久连接和预连接功能
-
-## 📈 性能优势
-
-使用 Xget 的实际性能改进：
-
-- **GitHub 发布**：下载速度提升高达 5 倍
-- **大型存储库**：多 GB 存档的显著改进  
-- **国际用户**：通过边缘缓存显著加快下载速度
-- **不稳定连接**：自动重试机制处理网络问题
-- **并发下载**：与直接平台下载相比，没有速率限制
-
 ## 📋 要求
 
 ### 浏览器支持
 
 **Chromium 浏览器：**
 
-- **Chrome**：版本 88+（Manifest V3 支持）
+- **Chrome**：版本 88+
 - **Edge**：版本 88+
 - **Opera**：版本 74+
 - **其他基于 Chromium 的浏览器**：支持 Manifest V3 的版本
 
 **Firefox 浏览器：**
 
-- **Firefox**：版本 109+（Manifest V2 支持）
+- **Firefox**：版本 109+
 - **Firefox ESR**：版本 109+
 
-### Xget 服务要求
+### Xget 实例
 
-- **Xget 服务**：访问 Xget 实例
-  - 使用公共实例：`xget.xi-xu.me`
-  - 或部署你自己的：[Xget 存储库](https://github.com/xixu-me/Xget)
-
-### 关于 Xget 服务
-
-Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，提供：
-
-- **全球边缘分发**：通过 Cloudflare 的全球网络加快下载速度
-- **高级功能**：HTTP/3 支持、智能缓存、自动重试
-- **安全性**：全面的安全标头和内容保护
-- **可靠性**：内置超时保护和性能监控
-
-在 [xget.xi-xu.me](https://xget.xi-xu.me) 或 [Xget 存储库](https://github.com/xixu-me/Xget) 了解更多。
+使用预部署实例 `xget.xi-xu.me` 或参考 [Xget 部署文档](https://github.com/xixu-me/Xget#-%E9%83%A8%E7%BD%B2) 自行部署。
 
 ## 🔒 隐私与安全
 
@@ -205,7 +174,7 @@ Xget 是基于 Cloudflare Workers 构建的高性能、安全的代理服务，�
 - 域名应该不带 `https://` 协议
 - 示例：`xget.xi-xu.me`（不是 `https://xget.xi-xu.me`）
 - 检查域名在浏览器中是否可访问
-- 尝试使用默认的公共实例：`xget.xi-xu.me`
+- 尝试使用默认的预部署实例：`xget.xi-xu.me`
 
 **性能问题？**
 
