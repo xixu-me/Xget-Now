@@ -1,5 +1,7 @@
 # Xget Now
 
+***[English](README.en.md)***
+
 一个适用于 Chromium 和 Firefox 的跨浏览器扩展，通过将文件下载无缝转交给 [Xget](https://github.com/xixu-me/Xget) 实例来加速下载。
 
 ## 🚀 功能特性
